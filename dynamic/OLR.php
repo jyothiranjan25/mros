@@ -220,13 +220,14 @@ if ($valid==1) {
                                     }
                                 }
                             }
-                           // echo "<script>alert('Something gone Wrong... Please Try Again :(');</script>";
 
                      $query=mysqli_query($con,"INSERT INTO `offer_letters` (`id`,`cand_name`,`cand_address`,`jobtype`,`jobmonths`, `pos`, `job_title`,`personal_mail_id`, `joining_date`,`currency_type`, `ctc`, `probation`, `reporting_to`,`requested_by`,`replacement`, `expiry_date`, `work_time`, `work_days`,`entity_name`,`perks`,`status`,`olr_filled_date`)
                      VALUES ('$sn','$cand_name','$cand_address','$jobtype','$jobmonths', '$pos', '$job_title','$mail_id', '$joining_date','$cur_name','$ctc', '$probation', '$report_to','$requested_by','$replacement', '$expire_date', '$work_hour', '$work_days','$entityname','$perks','$status','$submit_date')");
   if(!$query)
   {
-    echo "<script>alert('Something gone Wrong... Please Try Again :(');</script>";
+    echo "<script>alert('Offer Letter Request Failed!');</script>";
+
+    echo "Error Description: " . mysqli_error($con) ."<br>";
   }
 
     //               $subject="OFFER LETTER";
@@ -294,7 +295,7 @@ if ($valid==1) {
                      }
                       else
                          {
-                                echo "<script>alert('Something gone Wrong... Please Try Again :(');</script>";
+                                echo "<script>alert('Something gone Wrong.');</script>";
                          }
       
 
