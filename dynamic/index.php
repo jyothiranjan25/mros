@@ -43,9 +43,6 @@ if (isset($_GET['logout'])) {
     <!-- Custom Theme Style -->
     <link href="../build/css/custom.min.css" rel="stylesheet">
     <style>
-      body{
-        background-color: rgb(22 69 241 / 84%);
-}
 
 
       p{

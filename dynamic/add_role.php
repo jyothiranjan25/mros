@@ -6,13 +6,9 @@ $role_page = strtolower($page . " Role");
 if (isset($_POST['submit'])) {
   $val = 0;
   $name = $_POST['rolename'];
-  $entity_query = mysqli_query($con, "Select * from `$role_page`");
-  while ($row = mysqli_fetch_array($entity_query)) {
-    if ($row['name'] == $name) {
-      $val = 1;
-    }
-  }
-  if ($val == 0) {
+  $selection = mysqli_query($con, "SELECT name FROM `$role_page` WHERE name='$name'");
+  $avail = mysqli_num_rows($selection);
+  if ($avail == 0) {
     $name = strtolower($_POST['rolename']);
     $authority1 = $_POST['authority1'] == 1 ? "1" : "0";
     $authority2 = $_POST['authority2'] == 1 ? "1" : "0";
@@ -24,6 +20,8 @@ if (isset($_POST['submit'])) {
     $authority8 = $_POST['authority8'] == 1 ? "1" : "0";
     $authority9 = $_POST['authority9'] == 1 ? "1" : "0";
     $authority10 = $_POST['authority10'] == 1 ? "1" : "0";
+   
+   
     $insert = mysqli_query($con, "INSERT INTO `$role_page` (`name`,`generate_olr`,`accept_reject_olr`,`approve_olr`,`olr_sent_to_cand`,`view_olr`,`accounts`,`asset_req_manage`,`super_admin`,`new_emp`,`IT`) 
           VALUES ('$name', '$authority1', '$authority2','$authority3','$authority4','$authority5','$authority6','$authority7','$authority8','$authority9','$authority10')");
     if ($insert) {
@@ -31,6 +29,8 @@ if (isset($_POST['submit'])) {
     } else {
       echo "<script>alert('" . mysqli_error($con) . "');</script>";
     }
+
+  
   } else {
     echo "<script>alert('" . $name . " is already a role');</script>";
   }

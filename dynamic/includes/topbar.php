@@ -65,7 +65,7 @@ document.getElementById("edu").value = ""
             <li >
 
 
-<a href="user_manual.html" class="btn btn-outline-success" >
+<a href="user_manual.html" class="btn btn-default" >
 <i class="fa fa-question-circle"></i> HELP
 </a>
 
