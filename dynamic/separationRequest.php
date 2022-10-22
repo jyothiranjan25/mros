@@ -1,6 +1,6 @@
 <?php
 include('../includes/dbconnection.php');
- // error_reporting(0);
+ error_reporting(0);
  session_start();
  $entity=$_SESSION['entity'];
 $emp_id=$_GET['empid'];
@@ -28,8 +28,16 @@ if(isset($_POST['submit']))
                   
                 
  $query=mysqli_query($con,"INSERT INTO `separation`(`empid`,`empname`,`entity`, `position`, `job_title`,`ctc`, `relievingdate`, `requestedby`,`type`) VALUES('$empid','$empname','$entity', '$position', '$job_title','$ctc', '$relievingdate', '$requestedby','$type')");
+ if(!$query){
+   echo mysqli_error($con);
+ }else{
  $query1 = mysqli_query($con,"UPDATE employee_details SET status='$status' WHERE emp_id='$empid'");
+
+   if(!$query1){
+   echo mysqli_error($con);
+ }
                   
+ }
                   
    
          
@@ -40,78 +48,76 @@ if(isset($_POST['submit']))
 
 
 
-                          $query123 = "SELECT * FROM `hr_email` ";
-                          $results1 = mysqli_query($con, $query123);
-                          $results123=mysqli_fetch_array($results1);
-                          require 'phpmailer/PHPMailerAutoload.php';
+                          // $query123 = "SELECT * FROM `hr_email` ";
+                          // $results1 = mysqli_query($con, $query123);
+                          // $results123=mysqli_fetch_array($results1);
+                          // require 'phpmailer/PHPMailerAutoload.php';
                           
-                          $mail = new PHPMailer;
+                          // $mail = new PHPMailer;
                           
-                          //$mail->SMTPDebug = 3;   
-                          $xyz=$results123['email'];                            // Enable verbose debug output
+                          // //$mail->SMTPDebug = 3;   
+                          // $xyz=$results123['email'];                            // Enable verbose debug output
                           
-                          $mail->isSMTP();                                      // Set mailer to use SMTP
-                          $mail->Host = 'smtp.live.com';  // Specify main and backup SMTP servers
-                          $mail->SMTPAuth = true;                               // Enable SMTP authentication
-                          $mail->Username = $results123['email'];                 // SMTP username
-                          $mail->Password = $results123['password'];                           // SMTP password
-                          $mail->SMTPSecure = 'tls';                            // Enable TLS encryption, `ssl` also accepted
-                          $mail->Port = 587;                                    // TCP port to connect to
+                          // $mail->isSMTP();                                      // Set mailer to use SMTP
+                          // $mail->Host = 'smtp.live.com';  // Specify main and backup SMTP servers
+                          // $mail->SMTPAuth = true;                               // Enable SMTP authentication
+                          // $mail->Username = $results123['email'];                 // SMTP username
+                          // $mail->Password = $results123['password'];                           // SMTP password
+                          // $mail->SMTPSecure = 'tls';                            // Enable TLS encryption, `ssl` also accepted
+                          // $mail->Port = 587;                                    // TCP port to connect to
                           
-                          $mail->setFrom($results123['email'], 'IFIM HR');
-                              // Add a recipient
-                          // $mail->addAddress('ellen@example.com');               // Name is optional
+                          // $mail->setFrom($results123['email'], 'IFIM HR');
+                          //     // Add a recipient
+                          // // $mail->addAddress('ellen@example.com');               // Name is optional
                           
-                          // $mail->addCC('cc@example.com');
-                          // $mail->addBCC('bcc@example.com');
+                          // // $mail->addCC('cc@example.com');
+                          // // $mail->addBCC('bcc@example.com');
                           
                           
-                          $name=mysqli_query($con,"SELECT * FROM employee_details where `emp_id`='$empid' ");
+                          // $name=mysqli_query($con,"SELECT * FROM employee_details where `emp_id`='$empid' ");
                               
-                          $row=mysqli_fetch_array($name);
+                          // $row=mysqli_fetch_array($name);
                            
-                                $cand_name=$row['name'];
-                                $entity_name=$row['entity'];
+                          //       $cand_name=$row['name'];
+                          //       $entity_name=$row['entity'];
                                
                             
                           
                            
-                            $table=strtolower($entity." emp");
-                            $mailing = "SELECT * FROM `$table` ";
-                            $sendmail = mysqli_query($con, $mailing);
-                            while ($row=mysqli_fetch_array($sendmail))
-                            {
+                          //   $table=strtolower($entity."_emp");
+                          //   $mailing = "SELECT * FROM `$table` ";
+                          //   $sendmail = mysqli_query($con, $mailing);
+                          //   while ($row=mysqli_fetch_array($sendmail))
+                          //   {
                                
-                                $mail->addAddress($row['email'],$row['name']); //to
-                            } 
+                          //       $mail->addAddress($row['email'],$row['name']); //to
+                          //   } 
                             
                             
-                            // Add attachments
-                            // $mail->addAttachment('/tmp/image.jpg', 'new.jpg');    // Optional name
-                            $mail->isHTML(true);                                  // Set email format to HTML
+                          //   // Add attachments
+                          //   // $mail->addAttachment('/tmp/image.jpg', 'new.jpg');    // Optional name
+                          //   $mail->isHTML(true);                                  // Set email format to HTML
                             
-                            $mail->Subject = 'New Employee';
+                          //   $mail->Subject = 'New Employee';
                         
-                            $body='This is to inform you that there has been a request for '.$type.' for our employee name ,'.$cand_name.', .<br><br><br>';
-                            $mail->Body    = $body;
-                            $mail->AltBody = 'This is the body in plain text for non-HTML mail clients';
+                          //   $body='This is to inform you that there has been a request for '.$type.' for our employee name ,'.$cand_name.', .<br><br><br>';
+                          //   $mail->Body    = $body;
+                          //   $mail->AltBody = 'This is the body in plain text for non-HTML mail clients';
                             
-                            if(!$mail->send()) {
-                              echo '<script type="text/javascript">'; 
-                              echo 'alert("CIF details have been sent");'; 
+                          //   if(!$mail->send()) {
+                          //     echo '<script type="text/javascript">'; 
+                          //     echo 'alert("Employee Separation details have been sent");'; 
                               
-                              echo '</script>';
-                                //echo 'Mailer Error: ' . $mail->ErrorInfo;
-                            } 
-
-
-
+                          //     echo '</script>';
+                          //       //echo 'Mailer Error: ' . $mail->ErrorInfo;
+                          //   } 
                           echo "<script>window.location.href='separationResults.php';</script>";
 
                      }
                       else
                          {
                                 echo "<script>alert('Something gone Wrong... Please Try Again :)');</script>";
+                                echo mysqli_error($con);
                          }
 
     
@@ -154,7 +160,8 @@ if(isset($_POST['submit']))
     <link href="../vendors/bootstrap-daterangepicker/daterangepicker.css" rel="stylesheet">
   <link href="../vendors/switchery/dist/switchery.min.css" rel="stylesheet">
     <!-- Custom Theme Style -->
-    <link href="../build/css/custom.min.css" rel="stylesheet">
+    <link href="../build/css/custom.min.css" rel="stylesheet">    <link href="../build/css/input.css" rel="stylesheet">
+
     <style>
         .site_title{
             overflow: inherit;

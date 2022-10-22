@@ -4,7 +4,7 @@ error_reporting(0);
 $get_role_name=$_GET['name'];
 $page=$_GET['page'];
 
-$role_page=strtolower($page." Role");
+$role_page=strtolower($page."_Role");
 $select_query=mysqli_query($con,"SELECT * FROM  `$role_page` WHERE `name`='$get_role_name'");
 
 while ($row=mysqli_fetch_array($select_query))
@@ -85,11 +85,12 @@ if(isset($_POST['submit']))
     $role_edit_query8=mysqli_query($con,"UPDATE `$role_page` SET `super_admin`='$edit_authority8' WHERE `name`='$get_role_name'");
     $role_edit_query9=mysqli_query($con,"UPDATE `$role_page` SET `new_emp`='$edit_authority9' WHERE `name`='$get_role_name'");
     $role_edit_query10=mysqli_query($con,"UPDATE `$role_page` SET `IT`='$edit_authority10' WHERE `name`='$get_role_name'");
-  if($role_edit_query1 && $role_edit_query2 && $role_edit_query3 && $role_edit_query4 && $role_edit_query5 && $role_edit_query6 && $role_edit_query7 && $role_edit_query8 && $role_edit_query9 && $role_edit_query10)
+  if($role_edit_query1 && $role_edit_query2 && $role_edit_query3 && $role_edit_query4 && $role_edit_query5 && $role_edit_query6 && $role_edit_query7 && $role_edit_query8 && $role_edit_query9 && $role_edit_query10){
     echo "<script>alert('".$get_role_name." Role is updated');</script>";
-    else
+    echo "<script>window.location.href='manage_role.php?page=$page';</script>";
+   } else{
     echo "<script>alert('".$edit_authority1."');</script>";
-
+   }
       
 }
 
@@ -117,7 +118,8 @@ if(isset($_POST['submit']))
     <link href="../vendors/google-code-prettify/bin/prettify.min.css" rel="stylesheet">
 
     <!-- Custom styling plus plugins -->
-    <link href="../build/css/custom.min.css" rel="stylesheet">
+    <link href="../build/css/custom.min.css" rel="stylesheet">    <link href="../build/css/input.css" rel="stylesheet">
+
     <style>
       .site_title{
          overflow: inherit;
@@ -307,9 +309,9 @@ include('includes/topbar.php');
 									
 										<div class="ln_solid"></div>
 										<div class="item form-group">
-											<div class="col-md-6 col-sm-6 offset-md-3">
+											<div class="col-md-6 col-sm-6 offset-md-5">
 												
-												<button name="submit" type="submit" class="btn btn-success">Update</button>
+												<button name="submit" type="submit" class="btn btn-warning">Update</button>
 											</div>
 										</div>
 

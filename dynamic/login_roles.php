@@ -1,9 +1,9 @@
 <?php
 include('../includes/dbconnection.php');
-$entity=$_GET['entity'];
+$entity= str_replace(" ","_",$_GET['entity']);
  
-$entity_table=strtolower($entity." Role");
-$query = "Select * from `$entity_table`";
+$entity_table=strtolower($entity."_Role");
+$query = "SELECT * from `$entity_table`";
 $results = mysqli_query($con, $query);
 
 if (mysqli_num_rows($results) > 0)

@@ -1,0 +1,28 @@
+.form-control:focus {
+     border-color: lightblue;
+     box-shadow: 1px 1px 20px 5px rgba(0, 0, 255, .2) !important;
+     border-radius: 10px;
+}
+
+.form-control {
+     border-radius: 6px !important;
+}
+
+.table-hover tbody tr:hover td,
+.table-hover tbody tr:hover th {
+     background-color: #d1e5ff;
+}
+
+
+.required {
+     color: red;
+}
+
+.site_title {
+     overflow: inherit;
+}
+
+.nav_title {
+     height: 198px;
+     margin-top: -59px;
+}

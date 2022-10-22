@@ -32,35 +32,9 @@ $olr_id=intval($_GET['olrid']);
 
     <title>MROS </title>
 
-    <!-- Bootstrap -->
-    <link href="cdn.datatables.net/1.10.20/css/jquery.dataTables.min.css">
-    <link href="../vendors/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
-    <!-- Font Awesome -->
-    <link href="../vendors/font-awesome/css/font-awesome.min.css" rel="stylesheet">
-    <!-- NProgress -->
-    <link href="../vendors/nprogress/nprogress.css" rel="stylesheet">
-    <!-- iCheck -->
-    <link href="../vendors/iCheck/skins/flat/green.css" rel="stylesheet">
-    <!-- Datatables -->
-    
-    <link href="../vendors/datatables.net-bs/css/dataTables.bootstrap.min.css" rel="stylesheet">
-    <link href="../vendors/datatables.net-buttons-bs/css/buttons.bootstrap.min.css" rel="stylesheet">
-    <link href="../vendors/datatables.net-fixedheader-bs/css/fixedHeader.bootstrap.min.css" rel="stylesheet">
-    <link href="../vendors/datatables.net-responsive-bs/css/responsive.bootstrap.min.css" rel="stylesheet">
-    <link href="../vendors/datatables.net-scroller-bs/css/scroller.bootstrap.min.css" rel="stylesheet">
-
-    <!-- Custom Theme Style -->
-    <link href="../build/css/custom.min.css" rel="stylesheet">
-
-    <style>
-      .site_title{
-         overflow: inherit;
-     }
-     .nav_title{
-         height: 198px;
-         margin-top: -59px;
-     }
- </style>
+  <?php 
+include('includes/html_header.php');
+?>
   </head>
 
   <body class="nav-md">
@@ -91,12 +65,7 @@ include('includes/topbar.php');
                 <div class="x_panel">
                   <div class="x_title">
                    <h2> Oboarding & Induction Feedback</h2>
-                    <ul class="nav navbar-right panel_toolbox">
-                      <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
-                         </li>
-                      
-                      
-                    
+                    <ul class="nav navbar-right panel_toolbox">  
                     </ul>
                     <div class="clearfix"></div>
                   </div>
@@ -148,7 +117,7 @@ while ($row=mysqli_fetch_array($feedback))
 
                                                             <td><?php echo htmlentities($row['q1']+$row['q2']+$row['q3']+$row['q4']+$row['q5']+$row['q6']+$row['q7']+$row['q8']+$row['q9']+$row['q10']+$row['q11']+$row['q12']+$row['q13']+$row['q14']);?> / 70</td>
                                                             
-                                                            <td><?php echo htmlentities($row['comments']);?></td>
+                                                            <td><?php echo $row['comments']=="" ? "No Comments" : $row['comments'] ?></td>
                                                            
                                                        
 

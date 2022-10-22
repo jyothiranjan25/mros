@@ -49,7 +49,8 @@ if(isset($_POST['submit']))
     <link href="../vendors/google-code-prettify/bin/prettify.min.css" rel="stylesheet">
 
     <!-- Custom styling plus plugins -->
-    <link href="../build/css/custom.min.css" rel="stylesheet">
+    <link href="../build/css/custom.min.css" rel="stylesheet">    <link href="../build/css/input.css" rel="stylesheet">
+
     <style>
       .site_title{
          overflow: inherit;

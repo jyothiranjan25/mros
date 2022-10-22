@@ -2,27 +2,49 @@
 include('../includes/dbconnection.php');
 error_reporting(0);
 
+
+if (isset($_POST['name'])) {
+
+$name = $_POST['name'];
+
+        $update_curr = mysqli_query($con, "SELECT * FROM  `currency_control` WHERE `name` = '$name' ");
+        $row = mysqli_fetch_array($update_curr);
+        $amount = $row['amount'];
+        $symbol = $row['symbol'];
+}
+
+
+
 if (isset($_POST['submit'])) {
-    $name=$_POST['cur_name'];
-    $new_val=$_POST['new_amt'];$prev_amt=$_POST['old_amt'];
-    if($name=='0')
-    {
-        echo "<script>alert('Please select any currency to update');</script>";
-    }
-    else{
-        if($prev_amt =="")
-        {
-            $prev_amt="NULL";
-        }
-        $update_curr = mysqli_query($con, "UPDATE currency_control  SET amount = '$new_val' WHERE `name` = '$name' ");
+
+    $name=$_POST['curr_name'];
+    $amount=$_POST['new_amount'];
+
+        $update_curr = mysqli_query($con, "INSERT INTO currency_control (`name`,`amount`) VALUES ('$name','$amount') ");
         if($update_curr)
         {
-            echo "<script>alert('Currency Data Updated');</script>";
+            echo "<script>alert('Currency Added Successfully!');</script>";
+        }else{
+                      echo "<script>alert('Something gone wrong!');</script>";
+
         }
-        else{
-            echo "<script>alert('F');</script>";
+   
+}   
+if (isset($_POST['update'])) {
+
+    $name=$_POST['curr_name'];
+    $amount=$_POST['new_amount'];
+
+        $update_curr = mysqli_query($con, "UPDATE currency_control SET `amount`='$amount' WHERE `name`='$name'");
+        if($update_curr)
+        {
+            echo "<script>alert('Currency Updated Successfully!');</script>";
+        }else{
+
+            echo "<script>alert('Something gone wrong!');</script>";
+
         }
-    }
+   
 }   
 
 ?>
@@ -30,46 +52,13 @@ if (isset($_POST['submit'])) {
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-    <!-- Meta, title, CSS, favicons, etc. -->
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="icon" href="images/ifim_logo.jpg" type="image/ico" />
-    <title>MROS  | </title>
 
-    <!-- Bootstrap -->
-    <link href="../vendors/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
-    <!-- Font Awesome -->
-    <link href="../vendors/font-awesome/css/font-awesome.min.css" rel="stylesheet">
-    <!-- NProgress -->
-    <link href="../vendors/nprogress/nprogress.css" rel="stylesheet">
-    <!-- bootstrap-wysiwyg -->
-    <link href="../vendors/google-code-prettify/bin/prettify.min.css" rel="stylesheet">
+    <title>MROS  |  </title>
 
-    <!-- Custom styling plus plugins -->
-    <link href="../build/css/custom.min.css" rel="stylesheet">
-    <style>
-      .site_title{
-         overflow: inherit;
-     }
-     .nav_title{
-         height: 198px;
-         margin-top: -59px;
-     }
- </style>
-<script>
-    function  selectcuramt(str){
-     var req=new XMLHttpRequest();
-     req.open("get","selectcuramt.php?name="+str,true);
-     req.send();
-     req.onreadystatechange=function(){
-       if(req.readyState==4&&req.status==200){
-         document.getElementById("old_amt").innerHTML=req.responseText;
-       }
-     }
-    } 
-    </script>
+<?php 
+include('includes/html_header.php');
+?>
+
     
   </head>
 
@@ -92,81 +81,85 @@ include('includes/topbar.php');
 					<div class="row">
 						<div class="col-md-12 col-sm-12 ">
 							<div class="x_panel">
-								<div class="x_title">
-									
-									<ul class="nav navbar-right panel_toolbox">
-										<li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
-										</li>
-										
-									
-									</ul>
-									<div class="clearfix"></div>
-								</div>
+						
+							<br>
+							<br>
+							
+							<br>
+							<br>
 								<div class="x_content">
 									<br />
-									<form action="" method="post" enctype="multipart/form-data"  id="demo-form2" data-parsley-validate class="form-horizontal form-label-left">
 
-									
-
-
+																		<form name="send" id="send" data-parsley-validate class="form-horizontal form-label-left" method="POST">
 										<div class="item form-group">
 											<label class="col-form-label col-md-3 col-sm-3 label-align" for="last-name">Currency Name<span class="required">*</span>
 											</label>
-											<div class="col-md-6 col-sm-6 ">
-												<!-- <input type="email" id="last-name" name="email" required="required" class="form-control" > -->
-                        <select  name="cur_name" id="cur_name" title="Select Currency" class="form-control"  required="" onchange="selectcuramt(this.value);" >
-                        <option value="0">Select Currency</option> 
-                        <?php
-                           $name_query=mysqli_query($con,"Select * from `currency_control`");
-                           while ($row=mysqli_fetch_array($name_query))
-                           {
-                             
-                               ?>
-                                <option  required="required" value="<?php echo  $row['name']; ?>"><?php echo $row['name']; ?></option>
-                               <?php
-                            
-                           ?>
-                          
-                           <?php
-                           }
-                        
-                        
-                        ?>
-                        </select>
-											</div>
-                    </div>
+											<div class="col-md-5 col-sm-5 ">
 
+  <input required name="name"  onblur="myFunction('send')" onfocus="this.value=''"list="curr" type="text" class="form-control" value="<?= $name ?>" placeholder="offer letter template name" autocomplete="off">
+                                              <datalist id="curr">
+                                                  <?php
+                                                    $sel_test = mysqli_query($con, "SELECT `name` FROM `currency_control`");
+                                                    if (mysqli_num_rows($sel_test)) {
+                                                        while ($row = mysqli_fetch_array($sel_test)) {
+                                                            echo "<option value='" . $row['name'] . "'></option>";
+                                                        }
+                                                    }
+                                                    ?>
+                                              </datalist>    
+											</div>
+                    </div>
+                                                  </form>
                     <div class="item form-group">
-											<label class="col-form-label col-md-3 col-sm-3 label-align" for="last-name">Current Currency <span class="required">*</span>
+											<label class="col-form-label col-md-3 col-sm-3 label-align" for="last-name">Old Currency Value 
 											</label>
-											<div class="col-md-6 col-sm-6 ">
-                      <select disabled name="old_amt" id="old_amt" title="" class="form-control" required="" >
-                                             <option value="0">First Currency</option> 
-                                      </select>
-                         	
+											<div class="col-md-5 col-sm-5 ">
+                
+                         		 <input name="old_amt" step="0.001" type="number" class="form-control" name="old_curr" value="<?= $amount ?>"  placeholder="Old Currency Value" disabled>
+                          
                           
 											</div>
                     </div>
+									<form action="" method="post" enctype="multipart/form-data"  id="demo-form2" data-parsley-validate class="form-horizontal form-label-left">
+
+ <input type="text" name="curr_name" required="required" value="<?= $name ?>" class="form-control" style="display:none">
+
+
                     <div class="item form-group">
 											<label class="col-form-label col-md-3 col-sm-3 label-align" for="last-name">Update Currency Amount <span class="required">*</span>
 											</label>
-											<div class="col-md-6 col-sm-6 ">
+											<div class="col-md-5 col-sm-5 ">
 
-                                    	 <input name="new_amt" step="0.001" type="number" class="form-control" name="update_curr" id="curr_amt" placeholder="New Currency Value"  required="" />
+                                    	 <input name="new_amount" step="0.001" type="number" class="form-control"  placeholder="New Currency Value"  required="" />
                           
 											</div>
-                    </div>
+                    </div>          
 
-                
+                    <div class="item form-group">
+											<label class="col-form-label col-md-3 col-sm-3 label-align" for="last-name">Update Currency Symbol <span class="required">*</span>
+											</label>
+											<div class="col-md-5 col-sm-5 ">
 
-                     
-                
-										<div class="ln_solid"></div>
+                                    	 <input name="symbol" type="text" class="form-control"  value="<?= $symbol ?>" placeholder="ex: ₹"  required="" />
+                          
+											</div>
+                    </div>          
+<br>
+<br>
+<br>
 										<div class="item form-group">
-											<div class="col-md-6 col-sm-6 offset-md-3">
-												<button class="btn btn-primary" type="button">Cancel</button>
-												<button class="btn btn-primary" type="reset">Reset</button>
+											<div class="col-md-5 col-sm-5 offset-md-5">
+<?php if(!$amount){ ?>
+
+
 												<button name="submit" type="submit" class="btn btn-success">Submit</button>
+
+<?php }else{ ?>
+
+												<button name="update" type="submit" class="btn btn-warning">Update</button>
+
+                        <?php } ?>
+
 											</div>
 										</div>
 
@@ -182,19 +175,22 @@ include('includes/topbar.php');
 				
 				</div>
 			</div>
-			<!-- /page content -->
-
-        <!-- footer content -->
-        <footer>
-          <div class="pull-right">
-            Gentelella - Bootstrap Admin Template by <a href="https://colorlib.com">Colorlib</a>
-          </div>
-          <div class="clearfix"></div>
-        </footer>
-        <!-- /footer content -->
+	
       </div>
     </div>
-   
+   <script>
+
+     function myFunction(x) {
+
+if (document.forms['send'].name.value === "") {
+    alert("empty input field");
+    document.forms['send'].name.blur();
+
+    return false;
+  }                 document.getElementById(x).submit();
+              }
+
+</script>
     
     <!-- jQuery -->
     <script src="../vendors/jquery/dist/jquery.min.js"></script>

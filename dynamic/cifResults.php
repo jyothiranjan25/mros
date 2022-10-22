@@ -83,8 +83,8 @@ while ($row=mysqli_fetch_array($offerletter_deatail_query))
    $mail->isHTML(true);                                  // Set email format to HTML
    
    $mail->Subject = 'New Employee';
-   $page_accept="https://mros.ifim.edu.in/dynamic/cand_offerletter_accept.php?id=".$olr_id;
-   $page_reject="https://mros.ifim.edu.in/dynamic/cand_offerletter_reject.php?id=".$olr_id;
+   $page_accept=$base_link."cand_offerletter_accept.php?id=".$olr_id;
+   $page_reject=$base_link."cand_offerletter_reject.php?id=".$olr_id;
    $body='This is to inform you that a new employee ,'.$cand_name.', will be joining our campus from '.$date_join.', at '.$job_title.' position.<br><b>Please make sure all the required assets are ready.</b><br><br>';
    $mail->Body    = $body;
    $mail->AltBody = 'This is the body in plain text for non-HTML mail clients';
@@ -114,35 +114,9 @@ while ($row=mysqli_fetch_array($offerletter_deatail_query))
 
     <title>MROS </title>
 
-    <!-- Bootstrap -->
-    <link href="cdn.datatables.net/1.10.20/css/jquery.dataTables.min.css">
-    <link href="../vendors/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
-    <!-- Font Awesome -->
-    <link href="../vendors/font-awesome/css/font-awesome.min.css" rel="stylesheet">
-    <!-- NProgress -->
-    <link href="../vendors/nprogress/nprogress.css" rel="stylesheet">
-    <!-- iCheck -->
-    <link href="../vendors/iCheck/skins/flat/green.css" rel="stylesheet">
-    <!-- Datatables -->
-    
-    <link href="../vendors/datatables.net-bs/css/dataTables.bootstrap.min.css" rel="stylesheet">
-    <link href="../vendors/datatables.net-buttons-bs/css/buttons.bootstrap.min.css" rel="stylesheet">
-    <link href="../vendors/datatables.net-fixedheader-bs/css/fixedHeader.bootstrap.min.css" rel="stylesheet">
-    <link href="../vendors/datatables.net-responsive-bs/css/responsive.bootstrap.min.css" rel="stylesheet">
-    <link href="../vendors/datatables.net-scroller-bs/css/scroller.bootstrap.min.css" rel="stylesheet">
-
-    <!-- Custom Theme Style -->
-    <link href="../build/css/custom.min.css" rel="stylesheet">
-
-    <style>
-      .site_title{
-         overflow: inherit;
-     }
-     .nav_title{
-         height: 198px;
-         margin-top: -59px;
-     }
- </style>
+  <?php 
+include('includes/html_header.php');
+?>
   </head>
 
   <body class="nav-md">

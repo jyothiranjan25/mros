@@ -4,7 +4,6 @@ error_reporting(0);
 
 $sn=intval($_GET['formid']);
 
-
  
 
   ?>
@@ -65,23 +64,8 @@ include('includes/topbar.php'); ?>
 
         <!-- page content -->
         <div class="right_col" role="main">
-          <div class="row">
+    
 
-
-            <div class="col-md-12 col-sm-12 ">
-              <div class="x_panel tile " > 
-                <div class="x_title">
-                  <h2>Rating Overview </h2>
-                  <ul class="nav navbar-right panel_toolbox">
-                    <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>    </li>
-                    </li>
-                  </ul>
-                        <div class="clearfix"></div>
-                        </div>
-                        
-                       </div>
-                     </div>
-                 </div>
 
 
         <!-- form starts -->
@@ -92,10 +76,16 @@ include('includes/topbar.php'); ?>
           <div class="col-md-12 col-sm-12 ">
             <div class="x_panel tile " > 
               <div class="x_title">
-                <h2>Feedback Form </h2>
+<?php 
+
+  $feedback=mysqli_query($con,"SELECT * FROM feedback where feedback.sn=$sn");
+  $row=mysqli_fetch_array($feedback);
+  ?>
+  
+                <h2>Name: <span style="color:black"><?= $row['name'] ?></span> Email: <span style="color:black"><?= $row['mail_id'] ?> </span>Entity: <span style="color:black"><?= $row['entity'] ?></span> </h2>
                 <ul class="nav navbar-right panel_toolbox">
-                  <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>    </li>
-                  </li>
+             
+                     <h2>Onboarding Feedback Form </h2>
                 </ul>
                       <div class="clearfix"></div>
                       </div>
@@ -113,9 +103,9 @@ include('includes/topbar.php'); ?>
 
 
 <?php 
-   $feedback=mysqli_query($con,"SELECT * FROM feedback where feedback.sn=$sn");
+ 
 
-
+  $feedback=mysqli_query($con,"SELECT * FROM feedback where feedback.sn=$sn");
 
 
 while ($row=mysqli_fetch_array($feedback))
@@ -174,7 +164,7 @@ while ($row=mysqli_fetch_array($feedback))
                         <div class="row">
                           <div class="col-md-7">
                             <p style="font-size:17px;">4)<span class="requires"> After completing Day 1 and 2 of the induction, I gained an
-                              understanding of IFIM and its expectations from me.</span><span class="required">*</span> </p>
+                              understanding of <?= $_SESSION['entity_name'] ?> and its expectations from me.</span><span class="required">*</span> </p>
                           </div>
                           <div class="col-md-1">
                                     <input type="text"     value="<?php echo htmlentities($row['q4']);?> / 5" class="form-control" readonly/> 
@@ -199,7 +189,7 @@ while ($row=mysqli_fetch_array($feedback))
                       
                         <div class="row">
                           <div class="col-md-7">
-                            <p style="font-size:17px;">6)<span class="requires"> I gained an understanding of the IFIM resources and services and
+                            <p style="font-size:17px;">6)<span class="requires"> I gained an understanding of the <?= $_SESSION['entity_name'] ?> resources and services and
                               where to look for more information.</span><span class="required">*</span> </p>
                           </div>
                           <div class="col-md-1">
@@ -302,7 +292,7 @@ while ($row=mysqli_fetch_array($feedback))
                       
                         <div class="row">
                           <div class="col-md-7">
-                            <p style="font-size:17px;">14) <span class="requires">I feel part of IFIM.</span><span class="required">*</span></p>
+                            <p style="font-size:17px;">14) <span class="requires">I feel part of <?= $_SESSION['entity_name'] ?>.</span><span class="required">*</span></p>
                           </div>
                           <div class="col-md-1">
                                 <input type="text"     value="<?php echo htmlentities($row['q14']);?> / 5" class="form-control" readonly/> 
@@ -321,7 +311,7 @@ while ($row=mysqli_fetch_array($feedback))
                             <div class="form-group">
                              
                            
-                                <textarea name="Comments" class="resizable_textarea form-control" required="required" placeholder="Please mention any other comments" readonly=""><?php echo htmlentities($row['comments']);?></textarea>
+                                <textarea name="Comments" class="resizable_textarea form-control" required="required" placeholder="Please mention any other comments" readonly=""><?php echo  $row['comments'] =="" ? "No Comments" : $row['comments']   ?></textarea>
                             
                             </div>
                           </div>

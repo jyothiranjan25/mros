@@ -3,7 +3,7 @@ include('../includes/dbconnection.php');
 error_reporting(0);
 session_start(); 
 $mail_id=$_SESSION['email'];$completed='0';
-$selection_query=mysqli_query($con,"Select * from feedback where mail_id='".$mail_id."' and status='$completed'");
+$selection_query=mysqli_query($con,"SELECT * from feedback where mail_id='".$mail_id."' and status='$completed'");
 $row_slect=mysqli_fetch_array($selection_query);
 
 if ($row_slect)
@@ -301,7 +301,7 @@ include('includes/topbar.php'); ?>
                         <div class="row">
                           <div class="col-md-7">
                             <p style="font-size:17px;">After completing Day 1 and 2 of the induction, I gained an
-                              understanding of IFIM and its expectations from me.<span class="required">*</span> </p>
+                              understanding of <?= $_SESSION['entity'] ?> and its expectations from me.<span class="required">*</span> </p>
                           </div>
                           <div class="col-md-1">
                                 <div class="radio">
@@ -389,7 +389,7 @@ include('includes/topbar.php'); ?>
                       
                         <div class="row">
                           <div class="col-md-7">
-                            <p style="font-size:17px;">I gained an understanding of the IFIM resources and services and
+                            <p style="font-size:17px;">I gained an understanding of the <?= $_SESSION['entity'] ?> resources and services and
                               where to look for more information.<span class="required">*</span> </p>
                           </div>
                           <div class="col-md-1">
@@ -746,7 +746,7 @@ include('includes/topbar.php'); ?>
                       
                         <div class="row">
                           <div class="col-md-7">
-                            <p style="font-size:17px;">I feel part of IFIM.<span class="required">*</span></p>
+                            <p style="font-size:17px;">I feel part of <?= $_SESSION['entity'] ?>.<span class="required">*</span></p>
                           </div>
                           <div class="col-md-1">
                                 <div class="radio">

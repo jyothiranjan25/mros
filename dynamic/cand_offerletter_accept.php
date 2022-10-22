@@ -16,8 +16,6 @@
         $results1 = mysqli_query($con, $query123);
         $results123=mysqli_fetch_array($results1);
 
-
-
 ?>
 
 <?php
@@ -56,15 +54,12 @@ $mail->addReplyTo($results123['email'], 'OFFER LETTER DETAILS');
     $mail->isHTML(true);                                  // Set email format to HTML
     
     $mail->Subject = 'CIf Details';
-    $page="https://mros.ifim.edu.in/dynamic/CIF_deatail.php?id=".$id;
-    $body='Dear '.$cand_name.'There is a document requirment by '.$cand_entity.'<br/><br/>Please complete the same and revert within the timeframe .<br><a href="'.$page.'" target="_blank">CIF details</a>';
+    $page=$base_link."CIF_deatail.php?id=".$id;
+    $body='Dear '.$cand_name.'There is a document requirment by '.$cand_entity.'<br/><br/>Please complete the same and revert within the timeframe .<br><a href="'.$page.'" target="_blank">Candidate Information Form</a>';
     $mail->Body    = $body;
-    $mail->AltBody = 'This is the body in plain text for non-HTML mail clients';
+    $mail->AltBody = 'Dear '.$cand_name.'There is a document requirment by '.$cand_entity.'<br/><br/>Please complete the same and revert within the timeframe .<br><a href="'.$page.'" target="_blank">Candidate Information Form';
     
     if(!$mail->send()) {
-
-      
-
       echo '<script type="text/javascript">'; 
       echo 'alert("Offer Letter is not sent.");'; 
       echo 'window.location.href = "olr_list_approved.php";';
@@ -74,7 +69,7 @@ $mail->addReplyTo($results123['email'], 'OFFER LETTER DETAILS');
     else
      {
    echo '<script type="text/javascript">'; 
-    echo 'alert("CIF Deatils will be sent to you. Please fill those details.");'; 
+    echo 'alert("Please fill the Candidate Information Form sent to you.");'; 
     echo 'window.close();';
     echo '</script>';
 

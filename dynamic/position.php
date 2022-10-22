@@ -4,7 +4,7 @@ session_start();
 $type=$_GET['type'];
 $entity=$_SESSION['entity'];
 
-$query = "Select Distinct name from `position` Where type='$type'";
+$query = "SELECT Distinct name from `position` Where type='$type'";
 $results = mysqli_query($con, $query);
 
 if (mysqli_num_rows($results) > 0)

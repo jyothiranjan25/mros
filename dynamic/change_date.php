@@ -1,9 +1,7 @@
 <?php
 include('../includes/dbconnection.php');
   
-include('includes/leftbar.php'); 
 
-include('includes/topbar.php'); 
 
 
 error_reporting(0);
@@ -31,16 +29,15 @@ if(isset($_REQUEST['con']))
   {
 $id=$_GET['con'];
 
-
 $arr= array('1' => 'April' ,'2' => 'May' ,'3' => 'June' ,'4' => 'July' ,'5' => 'August' ,'6' => 'September' ,'7' => 'October' ,'8' => 'November' ,'9' => 'December' ,'10' => 'January' ,'11' => 'February' ,'12' => 'March' , );
-          $budget_query=mysqli_query($con,"Select * from offer_letters WHERE id='$id'");
+          $budget_query=mysqli_query($con,"SELECT * from offer_letters WHERE id='$id'");
           while ($row=mysqli_fetch_array($budget_query))
     {
            $ctc=$row['ctc'];
          $mctc=$ctc/12;
             $pos=$row['job_title'];
           $entity=$row['entity_name'];
-          $table=strtolower($entity." headcount");
+          $table=strtolower($entity."_headcount");
             $jobtype=$row['jobtype'];
     $jobmonths=$row['jobmonths'];
 
@@ -205,7 +202,8 @@ for($i=1; $i<$arrlength; $i++)
     <link href="../vendors/datatables.net-scroller-bs/css/scroller.bootstrap.min.css" rel="stylesheet">
 
     <!-- Custom Theme Style -->
-    <link href="../build/css/custom.min.css" rel="stylesheet">
+    <link href="../build/css/custom.min.css" rel="stylesheet">    <link href="../build/css/input.css" rel="stylesheet">
+
 
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.slim.min.js"></script>
     <script type="text/javascript" src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.bundle.min.js"></script>
@@ -223,6 +221,14 @@ for($i=1; $i<$arrlength; $i++)
   </head>
 
   <body class="nav-md">
+<?php 
+
+
+include('includes/leftbar.php'); 
+
+include('includes/topbar.php'); 
+
+?>
 
         <!-- page content -->
         <div class="right_col" role="main">
@@ -278,11 +284,9 @@ for($i=1; $i<$arrlength; $i++)
     
                            </tr>
                       </thead>
-
-
                       <tbody>
                         <?php 
-                        $offerletter_query=mysqli_query($con,"SELECT * FROM offer_letters WHERE `status`='5' or `status`='6' or `status`='7' order by date_sent desc");
+                        $offerletter_query=mysqli_query($con,"SELECT of.*,e.entity_name FROM offer_letters of LEFT JOIN entity e ON e.id=of.entity_id WHERE of.status='5' or of.status='6' or of.status='7' order by of.date_sent desc");
                                     $cnt=1;
                                     while ($row=mysqli_fetch_array($offerletter_query))
                                     {
@@ -299,40 +303,22 @@ for($i=1; $i<$arrlength; $i++)
                                                 elseif($row['status']==7){
                                                     $status="Rejected";
                                                 }
-                                          
-                                            
-                                       
                                     ?>
                                                 <tr>
                                                 <td><?php echo htmlentities($cnt);?></td>
                                                             <td><?php echo htmlentities($row['cand_name']);?></td>
                                                             <td><?php echo htmlentities($row['personal_mail_id']);?></td>
-                             
                                                               <td><?php echo htmlentities(number_format($row['ctc'], 2));?></td>
                                                             <td><?php echo htmlentities($row['pos']);?></td>
                                                             <td><?php echo htmlentities($row['job_title']);?></td>
-                                                           
-                                                       
-
                                                                 <td><?php echo htmlentities($row['requested_by']);?></td>
                                                                  <td><?php echo htmlentities($row['entity_name']);?></td>
-
-
-                                                              
                                                                 <td style="color:blue" ><?php echo htmlentities(date("d-m-y",strtotime($row['date_sent'])));?></td>
-
-
-
-
                                                                       <td><a title="Change Joining Date!" href="hrEditOLR.php?olrid=<?php echo htmlentities($row['id']);?>"   <?php 
                                                               if($row['status']==5){ ?>style="color:red;font-weight:bold;" <?php }?>   <?php 
                                                               if($row['status']==6){ ?>style="color:blue;font-weight:bold;" <?php }?>   <?php 
                                                               if($row['status']==7){ ?>style="color:red;font-weight:bold;" <?php }?> ><i class="fa fa-pencil-square-o" aria-hidden="true"></i> <?php echo htmlentities(date("d-m-y",strtotime($row['joining_date'])));?> </a></td>
-                                                                      
-   
-
-
-
+                                                
                                                               <?php 
                                                               if($row['status']==5){ ?>
                                                               <td style="color:green;font-weight:bold">Sent</td>

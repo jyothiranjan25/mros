@@ -8,14 +8,14 @@ $value=$_GET['olrid'];
 
 
  $arr= array('1' => 'April' ,'2' => 'May' ,'3' => 'June' ,'4' => 'July' ,'5' => 'August' ,'6' => 'September' ,'7' => 'October' ,'8' => 'November' ,'9' => 'December' ,'10' => 'January' ,'11' => 'February' ,'12' => 'March' , );
-$budget_query=mysqli_query($con,"Select * from offer_letters WHERE id='$value'");
+$budget_query=mysqli_query($con,"SELECT  o.*,e.entity_name FROM offer_letters o LEFT JOIN entity e ON e.id=o.entity_id WHERE o.id='$value'");
     while ($row=mysqli_fetch_array($budget_query))
     {
   $ctc=$row['ctc'];
   $mctc=$ctc/12;
     $pos=$row['job_title'];
-      $entity=$row['entity_name'];
-      $table=strtolower($entity." headcount");
+      $entity=str_replace(" ","_",$row['entity_name']);
+      $table=strtolower($entity."_headcount");
             $jobtype=$row['jobtype'];
     $jobmonths=$row['jobmonths'];
 
@@ -38,7 +38,7 @@ $budget_query=mysqli_query($con,"Select * from offer_letters WHERE id='$value'")
 
  
 
-       $selquery=mysqli_query($con,"Select * from  `$table` WHERE position='$pos'");
+       $selquery=mysqli_query($con,"SELECT * from  `$table` WHERE position='$pos'");
             while ($row=mysqli_fetch_array($selquery))
         {
           $mons=$row['month'];
@@ -71,7 +71,7 @@ $budget_query=mysqli_query($con,"Select * from offer_letters WHERE id='$value'")
         }
 
 
-$budgetseq=mysqli_query($con,"Select * from budget WHERE entity='$entity'");
+$budgetseq=mysqli_query($con,"SELECT * from budget WHERE entity='$entity'");
             while ($rows=mysqli_fetch_array($budgetseq))
         {
             $mon=$rows['month'];

@@ -3,6 +3,48 @@ include('../includes/dbconnection.php');
 error_reporting(0);
 $type=$_GET['type'];
 
+if (isset($_POST['submit'])) {
+$number = count($_POST["name"]);
+if($number > 0)
+{
+	for($i=0; $i<$number; $i++)
+	{
+		if(trim($_POST["name"][$i] != ''))
+		{
+
+			$pos_type_name=mysqli_real_escape_string($con, $_POST["name"][$i]);
+			$sql = "INSERT INTO `position`(type,name) VALUES('$type','$pos_type_name')";
+            mysqli_query($con, $sql);
+            $entity_sql = "SELECT * from `entity`";
+            $entity_result=mysqli_query($con, $entity_sql);
+           
+            while ($row=mysqli_fetch_array($entity_result))
+            {
+                    $entity=$row['entity_name'];
+                    $table=strtolower($entity." headcount");
+                   // echo $table;
+                    for($j=1;$j<13;$j++)
+                    {
+                        $value=0;
+                        $insert_sql = "INSERT INTO `$table`(`position`,`month`,`hc`) VALUES('$pos_type_name','$j','$value')";
+                     $check = mysqli_query($con, $insert_sql);
+                    }
+            }
+           
+		
+		}
+	}
+if($check){
+
+		 echo "<script>alert('Added Successfully!');</script>";
+	}
+}
+else
+{
+			 echo "<script>alert('Something gone wrong!');</script>";
+
+}
+}
 ?>
 
 <!DOCTYPE html>
@@ -26,7 +68,8 @@ $type=$_GET['type'];
     <link href="../vendors/google-code-prettify/bin/prettify.min.css" rel="stylesheet">
 
     <!-- Custom styling plus plugins -->
-    <link href="../build/css/custom.min.css" rel="stylesheet">
+    <link href="../build/css/custom.min.css" rel="stylesheet">    <link href="../build/css/input.css" rel="stylesheet">
+
    
 		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>
@@ -54,7 +97,7 @@ include('includes/topbar.php');
 				<div class="">
 					<div class="page-title">
 						<div class="title_left">
-							<h3>Add Job Titile <?php echo $type ?></h3>
+							<h3>Add Job Title for the Position: <span style="color:black"> <?php echo $type ?></span></h3>
 						</div>
 					</div>
 					<div class="clearfix"></div>
@@ -64,25 +107,26 @@ include('includes/topbar.php');
 								<div class="x_title">
 									
 									<ul class="nav navbar-right panel_toolbox">
-										<li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
-										</li>
+								<br>
+								<br>
+								<br>
 										
-									
 									</ul>
-									<div class="clearfix"></div>
-								</div>
-								<div class="x_content">
+							
 									<br />
 								
-                  <form name="add_name" id="add_name">
+                  <form name="add_name" id="add_name" method="POST">
                     <div class="table-responsive">
                       <table class="table table-bordered" id="dynamic_field">
                         <tr>
-                          <td><input type="text" name="name[]" placeholder="Ex: Asst.professor, Professor, HOD" class="form-control name_list" /></td>
+                          <td><input type="text" name="name[]" placeholder="Ex: Asst.professor, Professor, HOD" class="form-control name_list" required></td>
                           <td><button type="button" name="add" id="add" class="btn btn-success">Add More</button></td>
                         </tr>
                       </table>
-                      <input type="button" name="submit" id="submit" class="btn btn-info" value="Submit" />
+                      <br>
+                      
+                    <button  name="submit" type="submit" class="btn btn-secondary">Submit</button>
+                      <!-- <input type="button" name="submit" id="submit" class="btn btn-secondary" value="Submit"> -->
                     </div>
 			          	</form>
 								</div>
@@ -90,22 +134,12 @@ include('includes/topbar.php');
 						</div>
 					</div>
 
-					
-
-
-				
 				</div>
 			</div>
 			<!-- /page content -->
 
         <!-- footer content -->
-        <footer>
-          <div class="pull-right">
-            Gentelella - Bootstrap Admin Template by <a href="https://colorlib.com">Colorlib</a>
-          </div>
-          <div class="clearfix"></div>
-        </footer>
-        <!-- /footer content -->
+       
       </div>
     </div>
     <script type="text/javascript">
@@ -116,7 +150,7 @@ $(document).ready(function(){
 	var i=1;
 	$('#add').click(function(){
 		i++;
-		$('#dynamic_field').append('<tr id="row'+i+'"><td><input type="text" name="name[]" placeholder="Enter Job Titile " class="form-control name_list" /></td><td><button type="button" name="remove" id="'+i+'" class="btn btn-danger btn_remove">X</button></td></tr>');
+		$('#dynamic_field').append('<tr id="row'+i+'"><td><input type="text" name="name[]" placeholder="Enter Job Titile " class="form-control name_list" required></td><td><button type="button" name="remove" id="'+i+'" class="btn btn-danger btn_remove">X</button></td></tr>');
 	});
 	
 	$(document).on('click', '.btn_remove', function(){
@@ -124,18 +158,18 @@ $(document).ready(function(){
 		$('#row'+button_id+'').remove();
 	});
 	
-	$('#submit').click(function(){		
-		$.ajax({
-			url:"job_title_name.php?type=<?php echo $type;  ?>",
-			method:"POST",
-			data:$('#add_name').serialize(),
-			success:function(data)
-			{
-				alert(data);
-				$('#add_name')[0].reset();
-			}
-		});
-	});
+	// $('#submit').click(function(){		
+	// 	$.ajax({
+	// 		url:"job_title_name.php?type=<?php echo $type;  ?>",
+	// 		method:"POST",
+	// 		data:$('#add_name').serialize(),
+	// 		success:function(data)
+	// 		{
+	// 			alert(data);
+	// 			$('#add_name')[0].reset();
+	// 		}
+	// 	});
+	// });
 	
 });
 </script>

@@ -5,7 +5,7 @@ $month=$_POST['month'];
 $position=$_POST['position'];
 
 
-$table=strtolower($entity." headcount");
+$table=strtolower(str_replace(" ","_",$entity)."_headcount");
 
 $query = "Select * from `$table` where position='$position' and month='$month'";
 $results = mysqli_query($con, $query);

@@ -3,7 +3,7 @@ include('../includes/dbconnection.php');
 session_start(); 
 $type=$_GET['type'];
 
-$query = "Select * from `position` Where type='$type'";
+$query = "SELECT * from `position` Where type='$type'";
 $results = mysqli_query($con, $query);
 
 if (mysqli_num_rows($results) > 0)

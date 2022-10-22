@@ -3,19 +3,17 @@ include('../includes/dbconnection.php');
 error_reporting(0);
 
 if(isset($_POST['submit']))
-{
-  
-  
+{ 
   // $role=$_POST['roles'];
    $name=$_POST['username'];
    $mail=$_POST['email'];
    $emp_id=$_POST['emp_id'];
    
-   $detail_query=mysqli_query($con,"Select * from `offer_letters` WHERE status='19' and cand_name='$name'");
+   $detail_query=mysqli_query($con,"SELECT * from `offer_letters` WHERE status='19' and cand_name='$name'");
    $details=mysqli_fetch_array($detail_query);
    $entity=$details['entity_name'];
 $id=$details['id'];
-$new_table=$entity." new_emp";
+$new_table=$entity."_new_emp";
 
 $update_emp_query = "UPDATE `employee_details` SET `emp_id`='$emp_id', `email`='$mail' WHERE `name`='$name'";
 $update_emp_results = mysqli_query($con, $update_emp_query);
@@ -59,7 +57,8 @@ if($update_emp_results && $update_new_emp_results)
     <link href="../vendors/google-code-prettify/bin/prettify.min.css" rel="stylesheet">
 
     <!-- Custom styling plus plugins -->
-    <link href="../build/css/custom.min.css" rel="stylesheet">
+    <link href="../build/css/custom.min.css" rel="stylesheet">    <link href="../build/css/input.css" rel="stylesheet">
+
     <style>
       .site_title{
          overflow: inherit;

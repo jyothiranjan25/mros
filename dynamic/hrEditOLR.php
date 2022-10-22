@@ -70,23 +70,9 @@ $jobmons=13;
                  }
                        else if($mon>$monthy && $mon<$jobmons)
                               {
-                                  
-               
-                             
                                     $budget=$budget+$mctc;
-                                     
                                         $update_ql=mysqli_query($con,"UPDATE `budget` SET `budget`='$budget' WHERE `entity`='$entity' and `month`='$mon'");
-                                        
-                  
-                              
-
-                   
                                   }
-
-                                            
-
-
-
            }
 
                    $a = array();             // HeadCount Restoring starts ...................................................................
@@ -152,9 +138,6 @@ for($i=1; $i<$arrlength; $i++)
 
 ?>
 
-
-
-
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -185,7 +168,8 @@ for($i=1; $i<$arrlength; $i++)
     <link href="../vendors/bootstrap-daterangepicker/daterangepicker.css" rel="stylesheet">
   <link href="../vendors/switchery/dist/switchery.min.css" rel="stylesheet">
     <!-- Custom Theme Style -->
-    <link href="../build/css/custom.min.css" rel="stylesheet">
+    <link href="../build/css/custom.min.css" rel="stylesheet">    <link href="../build/css/input.css" rel="stylesheet">
+
     <style>
         .site_title{
             overflow: inherit;
@@ -202,37 +186,18 @@ for($i=1; $i<$arrlength; $i++)
   </head>
 
   <body class="nav-md">
-
-              
-
         <!-- page content -->
             <div class="right_col" role="main">
             <!-- top tiles -->
-           
           <!-- /top tiles -->
-
-          
           <br />
-
-
                 <form action="" method="post" enctype="multipart/form-data" class="form-horizontal">
-
-
 <?php 
-
 $offerletter_query=mysqli_query($con,"SELECT * FROM offer_letters where offer_letters.id=$value");
-
-
 $cnt=1;
 while ($row=mysqli_fetch_array($offerletter_query))
 {
-   
-
-
   ?>
-
-
-
                 <div class="form-group">
                   <center><h3><b>Offer Letter Request Form</b></h3></center><br>
                     <div class="row">
@@ -242,7 +207,6 @@ while ($row=mysqli_fetch_array($offerletter_query))
                           </div>
                             <div class="col-md-4 col-sm-6 ">
                               <input name="sn"  type="text" value="OLR_SN_<?php echo htmlentities($row['id']);?>" id="sn" required="required" class="form-control" readonly>
-
                              <!--    <input style="display:none" name="olrid"  type="number" value="<?php echo htmlentities($row['id']);?>" class="form-control"  > -->
                             </div>
                             <div class="col-form-label col-md-2 col-sm-3 label-align">
@@ -251,12 +215,10 @@ while ($row=mysqli_fetch_array($offerletter_query))
                           </div>
                             <div class="col-md-4 col-sm-6 ">
                               <input name="reqby"  type="text" value="<?php echo htmlentities($row['requested_by']);?>"  id="reqby" required="required" class="form-control" readonly>
-                            </div>
-                       
+                            </div>            
                     </div>
                     <br>
                     <div class="row">
-
                         <div class="col-form-label col-md-2 col-sm-3 label-align">
                             <label  for="datesubmitted"><b>Date Submitted:</b><span class="required">*</span>
                             </label> 
@@ -267,7 +229,6 @@ while ($row=mysqli_fetch_array($offerletter_query))
                     </div>
                     <br>
                     <div class="row">
-
                         <div class="col-form-label col-md-2 col-sm-3 label-align">
                             <label  for="number"><b>Candidate Name:</b><span class="required">*</span>
                             </label> 
@@ -292,11 +253,9 @@ while ($row=mysqli_fetch_array($offerletter_query))
                               <input name="jobmonths" type="text" id="jobmonths" value="<?php echo htmlentities($row['jobmonths']);?>"  class="form-control" readonly>
                         </div>
                         <?php } ?>
-                        
                         </div>
   <br>
                     <div class="row">
-
                         <div class="col-form-label col-md-2 col-sm-3 label-align">
                             <label  for="number"><b>Position:</b><span class="required">*</span>
                             </label> 
@@ -307,7 +266,6 @@ while ($row=mysqli_fetch_array($offerletter_query))
                     </div>
                     <br>
                     <div class="row">
-
                         <div class="col-form-label col-md-2 col-sm-3 label-align">
                             <label  for="number"><b>Job Title:</b><span class="required">*</span>
                             </label> 
@@ -318,7 +276,6 @@ while ($row=mysqli_fetch_array($offerletter_query))
                     </div>
                     <br>
                     <div class="row">
-
                         <div class="col-form-label col-md-2 col-sm-3 label-align">
                             <label  for="number"><b>Joining Date:</b><span class="required">*</span>
                             </label> 
@@ -329,7 +286,6 @@ while ($row=mysqli_fetch_array($offerletter_query))
                     </div>
                     <br>
                     <div class="row">
-
                         <div class="col-form-label col-md-2 col-sm-3 label-align">
                             <label  for="number"><b>Cost To Company:</b><span class="required">*</span>
                             </label> 
@@ -339,12 +295,10 @@ while ($row=mysqli_fetch_array($offerletter_query))
                         </div>
                         <div class="col-md-4 col-sm-4 ">
                          <b> <h6 style="margin-top:6px;" id="commactc"> </h6></b>
-                        
                           </div>
                     </div>
                     <br>
                     <div class="row">
-
                         <div class="col-form-label col-md-2 col-sm-3 label-align">
                             <label  for="number"><b>Probation:</b><span class="required">*</span>
                             </label> 
@@ -358,7 +312,6 @@ while ($row=mysqli_fetch_array($offerletter_query))
                     </div>
                     <br>
                     <div class="row">
-
                         <div class="col-form-label col-md-2 col-sm-3 label-align">
                             <label  for="number"><b>Reporting To:</b><span class="required">*</span>
                             </label> 
@@ -369,7 +322,6 @@ while ($row=mysqli_fetch_array($offerletter_query))
                     </div>
                     <br>
                     <div class="row">
-
                         <div class="col-form-label col-md-2 col-sm-3 label-align">
                             <label  for="number"><b>Expiry Date:</b><span class="required">*</span>
                             </label> 
@@ -380,27 +332,22 @@ while ($row=mysqli_fetch_array($offerletter_query))
                     </div>
                     <br>
                     <div class="row">
-
                           <div class="col-form-label col-md-2 col-sm-3 label-align">
                               <label  for="number"><b>  Work Timings:</b><span class="required">*</span>
                               </label> 
                           </div>
-                        
                           <div class="col-md-1 col-sm-1 ">
                                 <input name="work_time" id="work_hour" value="<?php echo htmlentities($row['work_time']);?>"required="required" type="number" class="form-control" readonly>
                           </div>
                           <div class="col-md-1 col-sm-4 ">
                           <label  for="number"><b>Hours in </b> </label> 
                           </div>
-                          
                           <div class="col-md-1 col-sm-1 ">
                                 <input name="work_days" id="work_days" value="<?php echo htmlentities($row['work_days']);?>" required="required" type="number" class="form-control" readonly>
                           </div>
-
                           <div class="col-md-4 col-sm-4 ">
                           <label  for="number"><b>working days per week</b> </label> 
                           </div>
-
                     </div>
                     <br>
                     <div class="row">

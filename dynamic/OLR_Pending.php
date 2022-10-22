@@ -3,11 +3,13 @@ include('../includes/dbconnection.php');
 error_reporting(0);
 session_start(); 
 $email=$_SESSION['email'];
+$entity=$_SESSION['entity'];
+
 if(isset($_REQUEST['del']))
   {
 $delid=intval($_GET['del']);
 
-$status=2;
+$status="-2";
 
 $query = "UPDATE offer_letters SET status='$status' WHERE id='$delid'";
  $results = mysqli_query($con, $query);
@@ -17,15 +19,14 @@ $msg="OLR REJECTED SUCCESSFULLY !";
 }
 
 
-
 if(isset($_REQUEST['olrid']))
   {
 $value=intval($_GET['olrid']);
 $entity=$_SESSION['entity'];
-    $table=strtolower($entity." headcount");
+    $table=strtolower($entity."_headcount");
 
 $arr= array('1' => 'April' ,'2' => 'May' ,'3' => 'June' ,'4' => 'July' ,'5' => 'August' ,'6' => 'September' ,'7' => 'October' ,'8' => 'November' ,'9' => 'December' ,'10' => 'January' ,'11' => 'February' ,'12' => 'March' , );
-$budget_query=mysqli_query($con,"Select * from offer_letters WHERE id='$value'");
+$budget_query=mysqli_query($con,"SELECT * from offer_letters WHERE id='$value'");
     while ($row=mysqli_fetch_array($budget_query))
     {
   $ctc=$row['ctc'];
@@ -44,7 +45,7 @@ $monthe=$monthy;
 $monthc=$monthy;
 
  
-       $selquery=mysqli_query($con,"Select * from  `$table` WHERE entity='$entity' and position='$pos'");
+       $selquery=mysqli_query($con,"SELECT * from  `$table` WHERE entity='$entity' and position='$pos'");
             while ($row=mysqli_fetch_array($selquery))
         {
           $mon=$row['month'];
@@ -69,17 +70,10 @@ $monthc=$monthy;
                             echo "<script>alert('Offer Letter Request is Rejected; Due to Headcount Unavailability(:     From ".$arr[$mon]."');</script>";
                               break;
                         }
-            }
-     
-   
-      
+            } 
         }
 
-
-
-
-
-$budgetseq=mysqli_query($con,"Select * from budget WHERE entity='$entity'");
+$budgetseq=mysqli_query($con,"SELECT * from budget WHERE entity='$entity'");
             while ($rows=mysqli_fetch_array($budgetseq))
         {
             $mon=$rows['month'];
@@ -96,37 +90,16 @@ $budgetseq=mysqli_query($con,"Select * from budget WHERE entity='$entity'");
                         $status=3;
                         echo "<script>alert('OLR Sent to Budget Unavailability...As Budget is Unavailable From ".$arr[$mon]." (: ');</script>";
                         $update_query=mysqli_query($con,"UPDATE `offer_letters` SET `status`='3' WHERE `id`='$value'");
-
-
                         break;
                       }
-            }
-        
-      
+                    }
      }   
-
-
-
     if($valids==1 && $status==0)
      {
         echo "<script>alert(' Budget & Headcount is Available :) ');</script>";
         echo "<script>window.location.href='adoEditOLR.php?olrid=$value';</script>";
-
       }
-
-
-
-
-
-}
-
- 
-
-
-   
-   
-
-
+    }
 
   }
 
@@ -135,42 +108,9 @@ $budgetseq=mysqli_query($con,"Select * from budget WHERE entity='$entity'");
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-    <!-- Meta, title, CSS, favicons, etc. -->
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-
-    <title>MROS </title>
-
-    <!-- Bootstrap -->
-    <link href="cdn.datatables.net/1.10.20/css/jquery.dataTables.min.css">
-    <link href="../vendors/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
-    <!-- Font Awesome -->
-    <link href="../vendors/font-awesome/css/font-awesome.min.css" rel="stylesheet">
-    <!-- NProgress -->
-    <link href="../vendors/nprogress/nprogress.css" rel="stylesheet">
-    <!-- iCheck -->
-    <link href="../vendors/iCheck/skins/flat/green.css" rel="stylesheet">
-    <!-- Datatables -->
-    
-    <link href="../vendors/datatables.net-bs/css/dataTables.bootstrap.min.css" rel="stylesheet">
-    <link href="../vendors/datatables.net-buttons-bs/css/buttons.bootstrap.min.css" rel="stylesheet">
-    <link href="../vendors/datatables.net-fixedheader-bs/css/fixedHeader.bootstrap.min.css" rel="stylesheet">
-    <link href="../vendors/datatables.net-responsive-bs/css/responsive.bootstrap.min.css" rel="stylesheet">
-    <link href="../vendors/datatables.net-scroller-bs/css/scroller.bootstrap.min.css" rel="stylesheet">
-
-    <!-- Custom Theme Style -->
-    <link href="../build/css/custom.min.css" rel="stylesheet">
-    <style>
-      .site_title{
-         overflow: inherit;
-     }
-     .nav_title{
-         height: 198px;
-         margin-top: -59px;
-     }
- </style>
+ <?php 
+include('includes/html_header.php');
+?>
   </head>
 
   <body class="nav-md">
@@ -262,19 +202,18 @@ include('includes/topbar.php'); ?>
                       <tbody>
 
 <?php 
- //$offerletter_query=mysqli_query($con,"SELECT * FROM offer_letters where requested_by='$email' and status = 0");
 if($super_admin==1){
-  $offerletter_query=mysqli_query($con,"SELECT * FROM offer_letters where status = 0");
+  $offerletter_query=mysqli_query($con,"SELECT * FROM offer_letters where status = 0 ORDER BY olr_filled_date DESC");
 }
 elseif ($olr_sent_to_cand==1 && $view_olr==1) {
-  $offerletter_query=mysqli_query($con,"SELECT * FROM offer_letters where status = 0");
+  $offerletter_query=mysqli_query($con,"SELECT * FROM offer_letters where status = 0 ORDER BY olr_filled_date DESC");
 }
 elseif($generate_olr==1)
 {
-  $offerletter_query=mysqli_query($con,"SELECT * FROM `offer_letters` where `requested_by`='$email' and `status` = 0");
+  $offerletter_query=mysqli_query($con,"SELECT * FROM `offer_letters` where `requested_by`='$email' and `status` = 0 ORDER BY olr_filled_date DESC");
 }
 else{
-  $offerletter_query=mysqli_query($con,"SELECT * FROM offer_letters where `entity_name`='$sesentity' and `status` = 0");
+  $offerletter_query=mysqli_query($con,"SELECT o.*,e.entity_name FROM offer_letters o LEFT JOIN entity e ON e.id=o.entity_id where o.entity_id='$ses_entity_id' and o.status = 0 ORDER BY olr_filled_date DESC");
 }
 
 

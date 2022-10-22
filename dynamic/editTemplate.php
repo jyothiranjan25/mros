@@ -39,7 +39,8 @@ if (isset($_POST['save']))// if click on save button
     <link href="../vendors/google-code-prettify/bin/prettify.min.css" rel="stylesheet">
 
     <!-- Custom styling plus plugins -->
-    <link href="../build/css/custom.min.css" rel="stylesheet">
+    <link href="../build/css/custom.min.css" rel="stylesheet">    <link href="../build/css/input.css" rel="stylesheet">
+
     <script type="text/javascript" src="js/jquery.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.5.0.js"></script>
     <script type="text/javascript" src="js/tinymce/tinymce.min.js"></script>
@@ -59,10 +60,6 @@ if (isset($_POST['save']))// if click on save button
            }
          }
       }
-
-      
-      
-
     </script>
     <style>
       .site_title{
@@ -115,7 +112,7 @@ if (isset($_POST['save']))// if click on save button
                              <option value="0">Select Entity</option>
                           <?php
                                                             
-                                $entity_query=mysqli_query($con,"Select * from `entity`");
+                                $entity_query=mysqli_query($con,"SELECT * from `entity`");
                                    while ($row=mysqli_fetch_array($entity_query))
                                        {
                                        ?>

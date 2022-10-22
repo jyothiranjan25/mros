@@ -3,31 +3,43 @@ include('../includes/dbconnection.php');
 error_reporting(0);
 session_start(); 
 $entity=$_SESSION['entity'];
+$entity_id=$_SESSION['entity_id'];
 $my_name=$_SESSION['email'];
 
 
 if(isset($_REQUEST['con']))
   {
+
+
+
 $emp_id=$_GET['con'];
 $status=intval($_GET['status']);
 $status=$status+2;
 
 $arr= array('1' => 'April' ,'2' => 'May' ,'3' => 'June' ,'4' => 'July' ,'5' => 'August' ,'6' => 'September' ,'7' => 'October' ,'8' => 'November' ,'9' => 'December' ,'10' => 'January' ,'11' => 'February' ,'12' => 'March' , );
-          $budget_query=mysqli_query($con,"Select * from employee_details WHERE emp_id='$emp_id'");
+          $budget_query=mysqli_query($con,"SELECT * from employee_details WHERE emp_id='$emp_id'");
           while ($row=mysqli_fetch_array($budget_query))
     {
            $ctc=$row['ctc'];
          $mctc=$ctc/12;
             $pos=$row['job_title'];
-          $entity=$row['entity'];
-          $table=strtolower($entity." headcount");
+          // $entity=$row['entity'];
             $jobtype=$row['jobtype'];
     $jobmonths=$row['jobmonths'];
-
-            $entity_tran=$entity.' transaction';
-
+      
           }
-              $budget_q=mysqli_query($con,"Select * from separation WHERE empid='$emp_id'");
+if(!$budget_query){
+  echo "<br>Employee Error: ".mysqli_error($con);
+
+}
+
+
+          $table=strtolower($entity."_headcount");
+
+
+  $entity_tran=strtolower($entity.'_transaction');
+                           
+              $budget_q=mysqli_query($con,"SELECT * from separation WHERE empid='$emp_id'");
           while ($rows=mysqli_fetch_array($budget_q))
     {
            $relievingdate=$rows['relievingdate'];
@@ -52,50 +64,34 @@ $arr= array('1' => 'April' ,'2' => 'May' ,'3' => 'June' ,'4' => 'July' ,'5' => '
 
       // Budget Restoring starts ...................................................................
 
-          $se_query=mysqli_query($con,"Select * from budget WHERE entity='$entity'");
+          $se_query=mysqli_query($con,"SELECT * from budget WHERE entity='$entity'");
             while ($row=mysqli_fetch_array($se_query))
         {
                 $mon=$row['month'];
                 $budget=$row['budget'];
                 if($mon==$monthy)
                  {
-                
-                    
                       $dctc=$mctc/30;
                       $d=30-$dates;
                       $dctc=$dctc*$d;
                       $budget=$budget+$dctc;
                   
                          $update_q=mysqli_query($con,"UPDATE `budget` SET `budget`='$budget' WHERE `entity`='$entity' and `month`='$mon'");
-                     
-              
                       
                  }
                        else if($mon>$monthy && $mon<$jobmons)
                               {
                                  
-               
-                             
                                     $budget=$budget+$mctc;
                                      
                                         $update_ql=mysqli_query($con,"UPDATE `budget` SET `budget`='$budget' WHERE `entity`='$entity' and `month`='$mon'");
-                                        
-
-                  
-                              
-
                    
                                   }
-
-                                            
-
-
-
            }
 
             $a = array();              // HeadCount Restoring starts ...................................................................
 
-           $sel_query1=mysqli_query($con,"Select * from `$table` WHERE `position`='$pos'");
+           $sel_query1=mysqli_query($con,"SELECT * from `$table` WHERE `position`='$pos'");
                           while ($rows=mysqli_fetch_array($sel_query1))
                        {
                              $mons=$rows['month'];
@@ -104,7 +100,7 @@ $arr= array('1' => 'April' ,'2' => 'May' ,'3' => 'June' ,'4' => 'July' ,'5' => '
                         if($mons>=$monthy && $mons<$jobmons)
                         {
 
-                          array_push($a,"$arr[$mons]");
+                          array_push($a,$arr[$mons]);
                            $hc=$hc+1;
                      
                              $update_query=mysqli_query($con,"UPDATE `$table` SET `hc`='$hc' WHERE `position`='$pos'  and `month`='$mons'");
@@ -150,48 +146,51 @@ $mail->setFrom($results123['email'], 'IFIM HR');
 // $mail->addBCC('bcc@example.com');
 
 
-$name=mysqli_query($con,"SELECT * FROM employee_details where `emp_id`='$emp_id' ");
+$name=mysqli_query($con,"SELECT ed.*,e.entity_name FROM employee_details ed LEFT JOIN entity e ON e.id = ed.event WHERE `emp_id`='$emp_id' ");
     
 $row=mysqli_fetch_array($name);
  
       $cand_name=$row['name'];
-      $entity_name=$row['entity'];
+      $entity_name=$row['entity_name'];
      
   
 
  
-  $table=strtolower($entity." emp");
-  $mailing = "SELECT * FROM `$table` ";
+  $table=strtolower($entity."_emp");
+      //  echo $table;
+  $mailing = "SELECT * FROM `$table` WHERE `role` = 'HR'";
   $sendmail = mysqli_query($con, $mailing);
+  $num_send_mail = mysqli_num_rows( $sendmail );
   while ($row=mysqli_fetch_array($sendmail))
   {
      
       $mail->addAddress($row['email'],$row['name']); //to
+
   } 
-  
-  
+     
+
   // Add attachments
   // $mail->addAttachment('/tmp/image.jpg', 'new.jpg');    // Optional name
   $mail->isHTML(true);                                  // Set email format to HTML
   
   $mail->Subject = 'New Employee';
-  $page_accept="https://mros.ifim.edu.in/dynamic/cand_offerletter_accept.php?id=".$olr_id;
-  $page_reject="https://mros.ifim.edu.in/dynamic/cand_offerletter_reject.php?id=".$olr_id;
+  $page_accept=$base_link."cand_offerletter_accept.php?id=".$olr_id;
+  $page_reject=$base_link."cand_offerletter_reject.php?id=".$olr_id;
   $body='This is to inform you that the request for '.$type.' for our employee name ,'.$cand_name.', has been successfully accepted by '.$my_name.' .<br><br><br>';
   $mail->Body    = $body;
   $mail->AltBody = 'This is the body in plain text for non-HTML mail clients';
-  
+  if(  $num_send_mail >0){
   if(!$mail->send()) {
     echo '<script type="text/javascript">'; 
-    echo 'alert("CIF details have been sent");'; 
-    
+        echo 'alert("Email Not Sent! Please Contact Super Admin.");'; 
+
     echo '</script>';
-      //echo 'Mailer Error: ' . $mail->ErrorInfo;
+  echo 'Mailer Error: ' . $mail->ErrorInfo;
   } 
+  }else{
+            echo 'alert("Email Not Sent! No HR Role for the entity "'. $entity.'");'; 
 
-
-
-
+  }
 
 
 $arrlength=count($a);
@@ -207,6 +206,8 @@ for($i=1; $i<$arrlength; $i++)
       $insert_query=mysqli_query($con,"INSERT INTO `$entity_tran`( `budget`, `hc`, `reason`) VALUES('$bud','$hhc','$reason')");
       if ($insert_query) {
            echo "<script>alert('".$reason."');</script>";
+}else{
+  echo "<br>Transaction Error: ".mysqli_error($con);
 }
 
 }
@@ -258,12 +259,8 @@ if ($results && $results1) {
   $row=mysqli_fetch_array($name);
    
         $cand_name=$row['name'];
-        $entity_name=$row['entity'];
-       
-    
-  
-   
-    $table=strtolower($entity." emp");
+        $entity_name=$row['entity'];  
+    $table=strtolower($entity."_emp");
     $mailing = "SELECT * FROM `$table` ";
     $sendmail = mysqli_query($con, $mailing);
     while ($row=mysqli_fetch_array($sendmail))
@@ -278,8 +275,8 @@ if ($results && $results1) {
     $mail->isHTML(true);                                  // Set email format to HTML
     
     $mail->Subject = 'New Employee';
-    $page_accept="https://mros.ifim.edu.in/dynamic/cand_offerletter_accept.php?id=".$olr_id;
-    $page_reject="https://mros.ifim.edu.in/dynamic/cand_offerletter_reject.php?id=".$olr_id;
+    $page_accept=$base_link."cand_offerletter_accept.php?id=".$olr_id;
+    $page_reject=$base_link."cand_offerletter_reject.php?id=".$olr_id;
     $body='This is to inform you that the request for '.$type.' for our employee name ,'.$cand_name.', has been rejected by '.$my_name.' .<br><br><br>';
     $mail->Body    = $body;
     $mail->AltBody = 'This is the body in plain text for non-HTML mail clients';
@@ -312,35 +309,9 @@ if ($results && $results1) {
 
     <title>MROS </title>
 
-    <!-- Bootstrap -->
-    <link href="cdn.datatables.net/1.10.20/css/jquery.dataTables.min.css">
-    <link href="../vendors/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
-    <!-- Font Awesome -->
-    <link href="../vendors/font-awesome/css/font-awesome.min.css" rel="stylesheet">
-    <!-- NProgress -->
-    <link href="../vendors/nprogress/nprogress.css" rel="stylesheet">
-    <!-- iCheck -->
-    <link href="../vendors/iCheck/skins/flat/green.css" rel="stylesheet">
-    <!-- Datatables -->
-    
-    <link href="../vendors/datatables.net-bs/css/dataTables.bootstrap.min.css" rel="stylesheet">
-    <link href="../vendors/datatables.net-buttons-bs/css/buttons.bootstrap.min.css" rel="stylesheet">
-    <link href="../vendors/datatables.net-fixedheader-bs/css/fixedHeader.bootstrap.min.css" rel="stylesheet">
-    <link href="../vendors/datatables.net-responsive-bs/css/responsive.bootstrap.min.css" rel="stylesheet">
-    <link href="../vendors/datatables.net-scroller-bs/css/scroller.bootstrap.min.css" rel="stylesheet">
-
-    <!-- Custom Theme Style -->
-    <link href="../build/css/custom.min.css" rel="stylesheet">
-
-    <style>
-      .site_title{
-         overflow: inherit;
-     }
-     .nav_title{
-         height: 198px;
-         margin-top: -59px;
-     }
- </style>
+  <?php 
+include('includes/html_header.php');
+?>
   </head>
 
   <body class="nav-md">
@@ -406,7 +377,7 @@ include('includes/topbar.php');
 
                       <tbody>
                         <?php 
-                        $feedback=mysqli_query($con,"SELECT * FROM separation");
+                        $feedback=mysqli_query($con,"SELECT * FROM separation WHERE entity='$entity_id'");
 
 
 
@@ -420,7 +391,7 @@ $emp_id = $row['empid'];
 
                                                             <td><?php echo htmlentities($row['empid']);?></td>
                                                             <td><?php echo htmlentities($row['empname']);?></td>
-                                                            <td><?php echo htmlentities($row['entity']);?></td>
+                                                            <td><?php echo htmlentities(str_replace("_"," ",$entity));?></td>
                                                             <td><?php echo htmlentities($row['position']);?></td>
                                                              <td><?php echo htmlentities($row['job_title']);?></td>
 
@@ -435,7 +406,7 @@ $emp_id = $row['empid'];
 
 
 
-$cnt=1;
+$cnt=1; 
 while ($rows=mysqli_fetch_array($sep))
 {
  if($rows['status']==1 || $rows['status']==2){ ?>

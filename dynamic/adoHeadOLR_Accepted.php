@@ -7,42 +7,11 @@ include('../includes/dbconnection.php');
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-    <!-- Meta, title, CSS, favicons, etc. -->
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-
     <title>MROS </title>
 
-    <!-- Bootstrap -->
-    <link href="cdn.datatables.net/1.10.20/css/jquery.dataTables.min.css">
-    <link href="../vendors/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
-    <!-- Font Awesome -->
-    <link href="../vendors/font-awesome/css/font-awesome.min.css" rel="stylesheet">
-    <!-- NProgress -->
-    <link href="../vendors/nprogress/nprogress.css" rel="stylesheet">
-    <!-- iCheck -->
-    <link href="../vendors/iCheck/skins/flat/green.css" rel="stylesheet">
-    <!-- Datatables -->
-    
-    <link href="../vendors/datatables.net-bs/css/dataTables.bootstrap.min.css" rel="stylesheet">
-    <link href="../vendors/datatables.net-buttons-bs/css/buttons.bootstrap.min.css" rel="stylesheet">
-    <link href="../vendors/datatables.net-fixedheader-bs/css/fixedHeader.bootstrap.min.css" rel="stylesheet">
-    <link href="../vendors/datatables.net-responsive-bs/css/responsive.bootstrap.min.css" rel="stylesheet">
-    <link href="../vendors/datatables.net-scroller-bs/css/scroller.bootstrap.min.css" rel="stylesheet">
+<?php
+include('includes/html_header.php'); ?>
 
-    <!-- Custom Theme Style -->
-    <link href="../build/css/custom.min.css" rel="stylesheet">
-    <style>
-      .site_title{
-         overflow: inherit;
-     }
-     .nav_title{
-         height: 198px;
-         margin-top: -59px;
-     }
- </style>
   </head>
 
   <body class="nav-md">
@@ -63,11 +32,7 @@ include('includes/topbar.php'); ?>
             </div>
 
             <div class="clearfix"></div>
-
             <div class="row">
-              
-
-
               <div class="col-md-12 col-sm-12 ">
                 <div class="x_panel">
                   <div class="x_title">
@@ -91,25 +56,23 @@ include('includes/topbar.php'); ?>
                         <tr>
                           <th>SNo.</th>
                           <th>Candidate Name</th>
-                            <th>Mail Id</th>
+                          <th>Mail Id</th>
                           <th>Joining Date</th>
                           <th>CTC/Annum</th>
                           <th>Position</th>
                           <th>Job Title</th>
                           <th>Requested By</th>
                           <th>Approved on</th>
-                          <th>Details (PDF)</th>
-                          <th>Select signed Offer Letter</th>
+                          <th>Offer Letter</th>
+                          <th>Upload Offer Letter</th>
                         </tr>
                       </thead>
-
-
                        <tbody>
                         <?php 
 
 
 
-                        $offerletter_query=mysqli_query($con,"SELECT * FROM offer_letters where status = 1  order by datesubmitted desc ");
+                        $offerletter_query=mysqli_query($con,"SELECT of.*,e.entity_name FROM offer_letters of LEFT JOIN entity e ON e.id=of.entity_id where status >= 1  order by datesubmitted desc ");
 $cnt=1;
 while ($row=mysqli_fetch_array($offerletter_query))
 {
@@ -123,25 +86,62 @@ while ($row=mysqli_fetch_array($offerletter_query))
                                                               <td><b><?php echo htmlentities(inr_format($row['ctc']));?></b></td>
                                                             <td><?php echo htmlentities($row['pos']);?></td>
                                                             <td><?php echo htmlentities($row['job_title']);?></td>
-                                                           
                                                                <!--  <td><?php echo htmlentities($row['reporting_to']);?></td> -->
-
                                                                 <td><?php echo htmlentities($row['requested_by']);?></td>
  
 <td><?php echo htmlentities(date("d-M-Y", strtotime($row['datesubmitted'])));?></td>
 
-  <td><a href="../Offer_Letters/<?php echo htmlentities($row['entity_name']);?>/OLR_SN_<?php echo htmlentities($row['id']);?>.pdf" target="_blank" class="btn btn-success" > Download </a></td>
+  <td><a href="view_offer_letter.php?olr_id=<?= $row['id'];?>" target="_blank" class="btn btn-primary" > view  </a></td>
   <td>
-   <form name="ex<?php echo $cnt;?>" action="adoHeadOLR_signed.php?entity=<?php echo htmlentities($row['entity_name']);?>&olr_id=<?php echo htmlentities($row['id']);?>&name=<?php echo htmlentities($username); ?>" method="post" enctype="multipart/form-data">
 
-  <input type="file" name="img" accept=".pdf" required/>
-   <input type="submit" name="submit" id="submit<?php echo $cnt; ?>" value="Submit" class="btn btn-warning" >
-</form> 
+   <input type="button" data-toggle="modal" data-target="#myModal" value="upload" class="btn btn-warning" >
+
   
 </td>
 </tr>   
 
-<?php $cnt=$cnt+1;} 
+
+ <!-- Modal -->
+     <div class="modal fade" id="myModal">
+          <div class="modal-dialog modal-dialog-centered">
+               <div class="modal-content">
+
+                    <!-- Modal Header -->
+                    <div class="modal-header">
+                         <h4 class="modal-title">Upload Offer Letter File</h4>
+                         <a class="close" data-dismiss="modal" style="cursor: pointer;"><i class="fa fa-times" aria-hidden="true"></i></a>
+                    </div>
+
+                    <!-- Modal body -->
+                    <div class="modal-body">
+ <form name="ex<?php echo $cnt;?>" action="adoHeadOLR_signed.php?entity=<?php echo htmlentities($row['entity_name']);?>&olr_id=<?php echo htmlentities($row['id']);?>&name=<?php echo htmlentities($username); ?>" method="post" enctype="multipart/form-data">
+Signed Copy: <br><br>
+  <input type="file" name="img" accept=".pdf" required/> <br>
+  <br>
+
+
+                       
+                    </div>
+
+  <div class="modal-footer">
+                                             <button  class="btn btn-secondary" data-dismiss="modal"  >Cancel </button>
+                                             
+                                             <input type="submit" name="submit" id="submit<?php echo $cnt; ?>" value="Submit" class="btn btn-primary" > 
+</form>
+
+     </div>
+
+               </div>
+          </div>
+     </div>
+
+<?php $cnt=$cnt+1;
+
+
+
+
+
+} 
 
 
    function inr_format($amount) {
@@ -181,44 +181,9 @@ while ($row=mysqli_fetch_array($offerletter_query))
       </div>
     </div>
 
-    <!-- jQuery -->
-    <script src="../vendors/jquery/dist/jquery.min.js"></script>
-    <!-- Bootstrap -->
-   <script src="../vendors/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    <!-- FastClick -->
-    <script src="../vendors/fastclick/lib/fastclick.js"></script>
-    <!-- NProgress -->
-    <script src="../vendors/nprogress/nprogress.js"></script>
-    <!-- iCheck -->
-    <script src="../vendors/iCheck/icheck.min.js"></script>
-    <!-- Datatables -->
-    <script src="../vendors/datatables.net/js/jquery.dataTables.min.js"></script>
-    <script src="../vendors/datatables.net-bs/js/dataTables.bootstrap.min.js"></script>
-    <script src="../vendors/datatables.net-buttons/js/dataTables.buttons.min.js"></script>
-    <script src="../vendors/datatables.net-buttons-bs/js/buttons.bootstrap.min.js"></script>
-    <script src="../vendors/datatables.net-buttons/js/buttons.flash.min.js"></script>
-    <script src="../vendors/datatables.net-buttons/js/buttons.html5.min.js"></script>
-    <script src="../vendors/datatables.net-buttons/js/buttons.print.min.js"></script>
-    <script src="../vendors/datatables.net-fixedheader/js/dataTables.fixedHeader.min.js"></script>
-    <script src="../vendors/datatables.net-keytable/js/dataTables.keyTable.min.js"></script>
-    <script src="../vendors/datatables.net-responsive/js/dataTables.responsive.min.js"></script>
-    <script src="../vendors/datatables.net-responsive-bs/js/responsive.bootstrap.js"></script>
-    <script src="../vendors/datatables.net-scroller/js/dataTables.scroller.min.js"></script>
-    <script src="../vendors/jszip/dist/jszip.min.js"></script>
-    <script src="../vendors/pdfmake/build/pdfmake.min.js"></script>
-    <script src="../vendors/pdfmake/build/vfs_fonts.js"></script>
-
-    <!-- Custom Theme Scripts -->
-    <script src="../build/js/custom.min.js"></script>
-
+<?php include('includes/html_footer.php'); ?>
   </body>
-</html><html><head><META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=utf-8"><meta name="Robots" content="NOINDEX " /></head><body></body>
-                <script type="text/javascript">
-                 var gearPage = document.getElementById('GearPage');
-                 if(null != gearPage)
-                 {
-                     gearPage.parentNode.removeChild(gearPage);
-                     document.title = "Error";
-                 }
-                 </script>
-                 </html>
+</html>
+
+
+    

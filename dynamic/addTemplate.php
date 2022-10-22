@@ -1,65 +1,99 @@
 <?php
+
 include('../includes/dbconnection.php');
 error_reporting(0);
+
+
+
+   $template_name = mysqli_real_escape_string($con, $_POST['template_name']);
+        if ($template_name) {
+
+
+       $entity = $_POST['entity'];
+       $table = strtolower(str_replace(" ","_",$entity)."_Templates");
+
+            $data = mysqli_query($con, "SELECT html from $table WHERE template_name='$template_name';");
+
+            $row = mysqli_fetch_array($data);
+            $num_rows = mysqli_num_rows($data);
+            if($num_rows>0){
+            $html = $row['html'];
+            }
+        }
+
+
+
+
+
+
 
 if(isset($_POST['submit']))
 {
     
-    $entity_name=$_POST['entity'];
+    $entity_name=str_replace(" ","_",$_POST['entity']);
     $template_name=($_POST['template_name']);
 
-    $target_dir = "../Offer_Letter_Templates/".$entity_name."/";
-
+$html = $_POST['html'];
 
     $table_name= strtolower($entity_name."_Templates");
     $flag=mysqli_query($con,"SHOW TABLES LIKE `$table_name`");
+    $num_tables=mysqli_num_rows($flag);
 
-    if(empty($flag))
+    if(!($num_tables > 0))
     {
-      $create_template_table=mysqli_query($con,"CREATE TABLE `$table_name` ( `id` INT(20) NOT NULL AUTO_INCREMENT , `template_name` VARCHAR(100) NOT NULL , PRIMARY KEY (`id`)) ENGINE = InnoDB;");
+      echo $num_tables;
+      $create_template_table=mysqli_query($con,"CREATE TABLE `$table_name` ( `id` INT(20) NOT NULL AUTO_INCREMENT , `template_name` VARCHAR(100) NOT NULL ,`html` TEXT NOT NULL , PRIMARY KEY (`id`) , UNIQUE(`template_name`)) ENGINE = InnoDB;");
+        if(!$create_template_table)
+        {
+          echo mysqli_error($con);
+        }
 
-      $insert=mysqli_query($con,"INSERT INTO `$table_name` (`template_name`) 
-         VALUES ('$template_name')");
+      $insert=mysqli_query($con,"INSERT INTO `$table_name` (`template_name`,`html`) 
+         VALUES ('$template_name','$html')");
        if(!$insert)
         {
           echo mysqli_error($con);
         }
         else
         {
-         echo "<script>alert('".$template_name." created');</script>";
+         echo "<script>alert('Template: ".$template_name." created');</script>";
         }
     }
     else
     {
-        $insert=mysqli_query($con,"INSERT INTO `$table_name` (`template_name`) 
-         VALUES ('$template_name')");
+        $insert=mysqli_query($con,"INSERT INTO `$table_name` (`template_name`,`html`) 
+         VALUES ('$template_name','$html')");
        if(!$insert)
         {
           echo mysqli_error($con);
         }
         else
         {
-         echo "<script>alert('".$template_name." created');</script>";
+         echo "<script>alert('Template: ".$template_name." created');</script>";
         }
-    }
+    }  
+
+}
+
+
+if(isset($_POST['update']))
+{
     
+    $entity_name=str_replace(" ","_",$_POST['entity']);
+    $table_name= strtolower($entity_name."_Templates");
+    $template_name=($_POST['template_name']);
+$html = $_POST['html'];
 
 
-
-    if(! is_dir($target_dir))
-    {
-      
-      mkdir($target_dir, 0755, true);
-     
-    }
-
-    file_put_contents($target_dir.$template_name.".html", $_POST['edit_template']);
-    // $ext=".rtf";
-    // require_once('php-html-to-rtf-converter-master/src/HtmlToRtf.php');
-    // $htmlToRtfConverter = new HtmlToRtf\HtmlToRtf($_POST['edit_template']);
-    // $htmlToRtfConverter->getRTFFile($target_dir,$template_name.$ext);
-    
-
+        $upd=mysqli_query($con,"UPDATE  `$table_name` SET html='$html' WHERE `template_name` ='$template_name'");
+       if(!$upd)
+        {
+          echo mysqli_error($con);
+        }
+        else
+        {
+         echo "<script>alert('Template: ".$template_name." Updated Successfully!');</script>";
+        }
 }
 
 ?>
@@ -73,7 +107,7 @@ if(isset($_POST['submit']))
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="icon" href="images/ifim_logo.jpg" type="image/ico" />
-    <title>MROS  | </title>
+    <title>MROS  | Add Template</title>
 
     <!-- Bootstrap -->
     <link href="../vendors/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -85,7 +119,8 @@ if(isset($_POST['submit']))
     <link href="../vendors/google-code-prettify/bin/prettify.min.css" rel="stylesheet">
 
     <!-- Custom styling plus plugins -->
-    <link href="../build/css/custom.min.css" rel="stylesheet">
+    <link href="../build/css/custom.min.css" rel="stylesheet">    <link href="../build/css/input.css" rel="stylesheet">
+
     <style>
       .site_title{
          overflow: inherit;
@@ -95,14 +130,56 @@ if(isset($_POST['submit']))
          margin-top: -59px;
      }
  </style>
-
-    <script type="text/javascript" src="js/jquery.min.js"></script>
-    <script type="text/javascript" src="js/tinymce/tinymce.min.js"></script>
-    <script type="text/javascript" src="js/tinymce/init-tinymce.js"></script>
-
+   <script type="text/javascript" src="js/jquery.min.js"></script>
+     <script type="text/javascript" src="js/js/tinymce/tinymce.min.js"> </script>
+          <script language="text/javascript" type="text/javascript">
+              tinyMCE.init({
+                  relative_urls: false,
+                  remove_script_host: false,
+                  convert_urls: false,
+                  selector: '#tinymce_1',
+                  height: '600px',
+                  extended_valid_elements: "newpage",
+                  custom_elements: "newpage",
+                  plugins: [
+                      'advlist autolink link image lists charmap print preview hr anchor pagebreak',
+                      'searchreplace wordcount visualblocks visualchars code fullscreen insertdatetime media nonbreaking',
+                      'table emoticons template paste help',
+                      'fullpage'
+                  ],
+                  toolbar: 'undo redo | styleselect | bold italic | alignleft aligncenter alignright alignjustify | ' +
+                      'bullist numlist outdent indent | link image | print preview media fullpage | ' +
+                      'forecolor backcolor emoticons | help',
+                  menu: {
+                      favs: {
+                          title: 'My Favorites',
+                          items: 'code visualaid | searchreplace | emoticons'
+                      }
+                  },
+                  menubar: 'favs file edit view insert format tools table help',
+              });
+          </script>
+  
+   
+    <script type="text/javascript">
+      function selecttype(str)
+      {
+      
+         var req=new XMLHttpRequest();
+         req.open("get","template_name.php?entity="+str,true);
+         req.send();
+         req.onreadystatechange=function()
+         {
+           if(req.readyState==4&&req.status==200)
+           {
+             document.getElementById("school").innerHTML=req.responseText;
+           }
+         }
+      }
+    </script>
   </head>
 
-  <body class="nav-md">
+  <body class="nav-md" onload="selecttype(document.getElementById('entity').value)">
 <?php
     include('includes/leftbar.php'); 
   
@@ -131,22 +208,31 @@ if(isset($_POST['submit']))
 									<div class="clearfix"></div>
 								</div>
 								<div class="x_content">
-									<br />
-									<form action="" method="post" enctype="multipart/form-data"  id="demo-form2" data-parsley-validate class="form-horizontal form-label-left">
+									<br>
+									<form name="email" id="email" data-parsley-validate class="form-horizontal form-label-left" method="POST">
 
 										<div class="item form-group">
-											<label class="col-form-label col-md-3 col-sm-3 label-align" class="form-control" for="entity_name">Select the entity for which the new template is being generated:<span class="required">*</span>
+											<label class=" col-md-3 col-sm-3 " class="form-control" for="entity_name">Select the entity for which the new template is being generated:<span class="required">*</span>
                             </label>
-                      <div class="col-md-6 col-sm-6 " style="margin-top: 6px;">
-                      <select class="form-control" name="entity" id="entity" required="required" >
+                      <div class="col-md-4 col-sm-4 " style="margin-top: 6px;">
+                      <select class="form-control" name="entity" id="entity"  onchange="selecttype(this.value)"  required >
+                                                   <option value="">Select Entity</option>
+
                              
                           <?php
                                                             
-                                $entity_query=mysqli_query($con,"Select * from `entity`");
+                                $entity_query=mysqli_query($con,"SELECT * from `entity`");
                                    while ($row=mysqli_fetch_array($entity_query))
                                        {
-                                       ?>
-                                           <option  required="required" value="<?php echo  $row['entity_name']; ?>"><?php echo $row['entity_name']; ?></option>
+                                    
+                                       if($entity == $row['entity_name']){
+
+                                        $selected ="selected";
+                                       }else{
+                                          $selected =""; 
+                                       }
+                                         ?>
+                                           <option <?= $selected ?> required="required" value="<?php echo  $row['entity_name']; ?>"><?php echo $row['entity_name']; ?></option>
                                       <?php
                                       }
                           ?>
@@ -159,33 +245,50 @@ if(isset($_POST['submit']))
 										</div>
 
                     <div class="item form-group">
-                            <label class="col-form-label col-md-3 col-sm-3 label-align" class="form-control" for="template_name">Name of template:<span class="required">*</span>
+                            <label class="col-form-label col-md-3 col-sm-3" class="form-control" for="template_name">Name of template:<span class="required">*</span>
                             </label>
-                            <div class="col-md-6 col-sm-6 " style="margin-top: 6px;">
-                              <input type="text" name="template_name" required="required" class="form-control  ">
+                            <div class="col-md-4 col-sm-4 " style="margin-top: 6px;">
+  <input required name="template_name"  onblur="myFunction('email')"  onfocus="this.value=''" list="school" type="text" class="form-control" value="<?php echo $template_name ?>" placeholder="offer letter template name" autocomplete="off">
+                                              <datalist id="school">
+                                                  <?php
+                                                    $sel_test = mysqli_query($atr, "SELECT name FROM offer_letters");
+                                                    if (mysqli_num_rows($sel_test)) {
+                                                        while ($row = mysqli_fetch_array($sel_test)) {
+                                                            echo "<option value='" . $row['name'] . "'></option>";
+                                                        }
+                                                    }
+                                                    ?>
+                                              </datalist>
                             </div>
                     </div>
+                                                  </form>
+                                                  <form action="" method="post" enctype="multipart/form-data" id="demo-form2" data-parsley-validate class="form-horizontal form-label-left">
 
-                    <div class="ln_solid"></div>
-                    <div class="item form-group">
-                      <label class="col-form-label col-md-3 col-sm-3 label-align" class="form-control" for="edit_template">Enter the template details: <span class="required">*</span>
+
+  <input required name="entity"   value="<?php echo $entity ?>"  autocomplete="off" style="display:none">
+  <input required name="template_name"   value="<?php echo $template_name ?>"  autocomplete="off" style="display:none">
+
+
+
+<br>                    <div class="item form-group">
+                      <label class="col-form-label col-md-3 col-sm-3" class="form-control" >Enter the template details: <span class="required">*</span>
                             </label>
                       <div class="col-md-9 col-sm-8 ">
-                        <textarea name="edit_template" id="edit_template" class="tinymce"></textarea>
+                        <textarea name="html" id="tinymce_1" > <?php echo $html ?> </textarea>
                       </div>
                     </div>
-
-
-                    
-     					
-										<div class="ln_solid"></div>
+									<br>
 										<div class="item form-group">
-											<div class="col-md-6 col-sm-6 offset-md-9">
+											<div class="col-md-6 col-sm-6 offset-md-5">
+                        <?php if($html =="") { ?>
 												<button name="submit" type="submit" class="btn btn-success">Submit</button>
+                          <?php } else { ?>
+												<button name="update" type="submit" class="btn btn-warning">Update</button>
+                        <?php } ?>
 											</div>
 										</div>
-
 									</form>
+                  	<div class="ln_solid"></div>
                             <pre>
 <h2>Variables</h2>
 <b>
@@ -242,9 +345,17 @@ function CheckColors(val){
 
   }
 }
+  function myFunction(x) {
 
+if (document.forms['email'].template_name.value === "") {
+    alert("empty input field");
+     document.forms['email'].template_name.blur();
+    return false;
+  }                 document.getElementById(x).submit();
+              }
 
 </script>
+ 
     
     <!-- jQuery -->
     <script src="../vendors/jquery/dist/jquery.min.js"></script>

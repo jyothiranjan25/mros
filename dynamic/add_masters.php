@@ -2,10 +2,10 @@
 include('../includes/dbconnection.php');
 error_reporting(0);
 $page=$_GET['page'];
-$dep_page=strtolower($page." Dep");
-$role_page=strtolower($page." Role");
-$table=strtolower($page." Emp");
-$new_table=strtolower($page." New_Emp");
+$dep_page=strtolower($page."_Dep");
+$role_page=strtolower($page."_Role");
+$table=strtolower($page."_Emp");
+$new_table=strtolower($page."_New_Emp");
 if(isset($_POST['submit']))
 {
   
@@ -32,7 +32,7 @@ $inset_query=mysqli_query($con, "INSERT INTO `$table` (name, email, emp_id, role
       else{
         echo "<script>alert('F');</script>";
       }
-      $detail_query=mysqli_query($con,"Select * from `offer_letters` WHERE status='8' and cand_name='$name'");
+      $detail_query=mysqli_query($con,"SELECT * from `offer_letters` WHERE status='8' and cand_name='$name'");
       $details=mysqli_fetch_array($detail_query);
     $emp_status=10;$date=$details['joining_date'];$ctc=$details['ctc'];
       // $insert_employee_table=mysqli_query($con,"INSERT INTO `employee_details` (`emp_id`,`name`,`entity`,`pos`,`job_title`,`email`,`joining_date`,`ctc`,`status`) 
@@ -67,7 +67,8 @@ $results = mysqli_query($con, $query);
     <link href="../vendors/google-code-prettify/bin/prettify.min.css" rel="stylesheet">
 
     <!-- Custom styling plus plugins -->
-    <link href="../build/css/custom.min.css" rel="stylesheet">
+    <link href="../build/css/custom.min.css" rel="stylesheet">    <link href="../build/css/input.css" rel="stylesheet">
+
     <style>
       .site_title{
          overflow: inherit;

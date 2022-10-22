@@ -16,7 +16,7 @@ $message_data=mysqli_fetch_array($message_query);
 
 
 
-$status=2;
+$status=-2;
 $offerletter_query=mysqli_query($con,"UPDATE offer_letters SET status=$status WHERE id=$delid");
 
 }
@@ -74,7 +74,8 @@ $offerletter_query=mysqli_query($con,"UPDATE offer_letters SET status=$status WH
     <link href="../vendors/datatables.net-scroller-bs/css/scroller.bootstrap.min.css" rel="stylesheet">
 
     <!-- Custom Theme Style -->
-    <link href="../build/css/custom.min.css" rel="stylesheet">
+    <link href="../build/css/custom.min.css" rel="stylesheet">    <link href="../build/css/input.css" rel="stylesheet">
+
     <style>
       .site_title{
          overflow: inherit;

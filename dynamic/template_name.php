@@ -1,8 +1,8 @@
 <?php
 include('../includes/dbconnection.php');
 $entity=$_GET['entity'];
-$table_name=strtolower($entity."_templates");
-$query = "Select * from `$table_name`";
+$table_name=strtolower(str_replace(" ","_",$entity)."_templates");
+$query = "SELECT * from `$table_name`";
 $results = mysqli_query($con, $query);
 
 if (mysqli_num_rows($results) > 0)
@@ -14,7 +14,7 @@ if (mysqli_num_rows($results) > 0)
 }
 else
 {
-    echo "<option value=0>".mysqli_num_rows($results)."</option>";
+    echo "<option value='No Data'> ".mysqli_num_rows($results)."</option>";
 }
 
 ?>

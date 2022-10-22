@@ -1,22 +1,17 @@
-      <?php
-include('includes/leftbar.php'); 
+<?php
+
+include('../includes/dbconnection.php');
+error_reporting(0); 
 session_start(); 
+
+
 if(!$_SESSION['role'])
 {
     echo "<script>window.location.href='login.php';</script>";
 }
-  ?>
-<?php
-include('includes/topbar.php'); 
-?>
-<?php
 
-include('../includes/dbconnection.php');
-error_reporting(0);
 $num = 0; $nums = 0;   $dstring ="";
-
-
-    $ustring ="";     $vstring =""; $msg = ""; $error = ""; $qstring = ""; 
+$ustring ="";     $vstring =""; $msg = ""; $error = ""; $qstring = ""; 
   
 
  if(isset($_POST['import'])){
@@ -49,10 +44,7 @@ $num = 0; $nums = 0;   $dstring ="";
                     $mailid  = $line[7];
                      $joiningdate  = $line[8];
                       $ctc  = $line[9];
-                      $status = 0;
-
-
-              
+                      $status = 0;     
                 
                 // Check whether member already exists in the database with the same email
  $prevQuery=mysqli_query($con,"SELECT * FROM employee_details WHERE email = '".$mailid."'");
@@ -75,10 +67,6 @@ if($update_query){
         }
 
 }
-
-
-
-
                 }else if($emp_id != ""){
                     
   $insert=mysqli_query($con,"INSERT INTO `employee_details`(`emp_id`,`name`,`entity`,`jobtype`,`jobmonths`,`pos`,`job_title`,`email`,`joining_date`,`ctc`,`status`) VALUES('$emp_id','$name','$entity','$jobtype','$months','$position','$jobtitle','$mailid','$joiningdate','$ctc','$status')");
@@ -89,9 +77,7 @@ $nums++;
 }
 
                 }
-            }
-        
-
+            }    
             // Close opened CSV file
             fclose($csvFile);
             
@@ -112,45 +98,24 @@ if(!$insert && !$update_query){
     }
 
 }
-
 ?>
 
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-    <!-- Meta, title, CSS, favicons, etc. -->
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="icon" href="images/ifim_logo.jpg" type="image/ico" />
     <title>MROS  | Update Employee Details</title>
 
-    <!-- Bootstrap -->
-    <link href="../vendors/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
-    <!-- Font Awesome -->
-    <link href="../vendors/font-awesome/css/font-awesome.min.css" rel="stylesheet">
-    <!-- NProgress -->
-    <link href="../vendors/nprogress/nprogress.css" rel="stylesheet">
-    <!-- bootstrap-wysiwyg -->
-    <link href="../vendors/google-code-prettify/bin/prettify.min.css" rel="stylesheet">
+  <?php 
+include('includes/html_header.php');
+?>
 
-    <!-- Custom styling plus plugins -->
-    <link href="../build/css/custom.min.css" rel="stylesheet">
-    <style>
-      .site_title{
-         overflow: inherit;
-     }
-     .nav_title{
-         height: 198px;
-         margin-top: -59px;
-     }
-     .required{color:red;}
- </style>
   </head>
 
   <body class="nav-md">
- 
+      <?php
+ include('includes/leftbar.php'); 
+include('includes/topbar.php'); 
+?>
       <!-- page content -->
             <div class="right_col" role="main">
                 <div class="">
@@ -175,7 +140,7 @@ if(!$insert && !$update_query){
                                     <div class="clearfix required">*</div>
                                 </div>
                                 <div class="x_content">
-                                    <br />
+                                    <br>
                              
 
 
@@ -203,7 +168,11 @@ if(!$insert && !$update_query){
 <input type="file" name="file" id="file" accept=".csv" onchange="ValidateSingleInput(this);" required=" " />
     <br />
        </div>  </div>
-         <div class="col-md-6 col-sm-6 offset-md-9">
+       <br>
+       <br>
+       <br>
+       <br>
+         <div class="col-md-6 col-sm-6 offset-md-5">
     <input type="submit" name="import" class="btn btn-success" data-loading-text="Loading..."value="I M P O R T" />
      </div>
    </form>
@@ -235,8 +204,7 @@ echo $ustring; ?> <br> <?php  echo $vstring; ?> <br> <?php  echo $msg; ?> <br><?
       </div>
     </div>
  
-    
-    <!-- jQuery -->
+      <!-- jQuery -->
     <script src="../vendors/jquery/dist/jquery.min.js"></script>
     <!-- Bootstrap -->
    <script src="../vendors/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
@@ -244,10 +212,24 @@ echo $ustring; ?> <br> <?php  echo $vstring; ?> <br> <?php  echo $msg; ?> <br><?
     <script src="../vendors/fastclick/lib/fastclick.js"></script>
     <!-- NProgress -->
     <script src="../vendors/nprogress/nprogress.js"></script>
-    <!-- bootstrap-wysiwyg -->
-    <script src="../vendors/bootstrap-wysiwyg/js/bootstrap-wysiwyg.min.js"></script>
-    <script src="../vendors/jquery.hotkeys/jquery.hotkeys.js"></script>
-    <script src="../vendors/google-code-prettify/src/prettify.js"></script>
+    <!-- iCheck -->
+    <script src="../vendors/iCheck/icheck.min.js"></script>
+    <!-- Datatables -->
+    <script src="../vendors/datatables.net/js/jquery.dataTables.min.js"></script>
+    <script src="../vendors/datatables.net-bs/js/dataTables.bootstrap.min.js"></script>
+    <script src="../vendors/datatables.net-buttons/js/dataTables.buttons.min.js"></script>
+    <script src="../vendors/datatables.net-buttons-bs/js/buttons.bootstrap.min.js"></script>
+    <script src="../vendors/datatables.net-buttons/js/buttons.flash.min.js"></script>
+    <script src="../vendors/datatables.net-buttons/js/buttons.html5.min.js"></script>
+    <script src="../vendors/datatables.net-buttons/js/buttons.print.min.js"></script>
+    <script src="../vendors/datatables.net-fixedheader/js/dataTables.fixedHeader.min.js"></script>
+    <script src="../vendors/datatables.net-keytable/js/dataTables.keyTable.min.js"></script>
+    <script src="../vendors/datatables.net-responsive/js/dataTables.responsive.min.js"></script>
+    <script src="../vendors/datatables.net-responsive-bs/js/responsive.bootstrap.js"></script>
+    <script src="../vendors/datatables.net-scroller/js/dataTables.scroller.min.js"></script>
+    <script src="../vendors/jszip/dist/jszip.min.js"></script>
+    <script src="../vendors/pdfmake/build/pdfmake.min.js"></script>
+    <script src="../vendors/pdfmake/build/vfs_fonts.js"></script>
 
     <!-- Custom Theme Scripts -->
     <script src="../build/js/custom.min.js"></script>

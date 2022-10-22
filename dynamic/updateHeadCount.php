@@ -6,7 +6,7 @@ if(isset($_POST['submit']))
 {
    $arr= array('1' => 'April' ,'2' => 'May' ,'3' => 'June' ,'4' => 'July' ,'5' => 'August' ,'6' => 'September' ,'7' => 'October' ,'8' => 'November' ,'9' => 'December' ,'10' => 'January' ,'11' => 'February' ,'12' => 'March' , );
 
-$entity=$_POST['entity'];
+$entity=str_replace(" ","_",$_POST['entity']);
   $hc=$_POST['hc'];
    $position=$_POST['position'];
   $month=$_POST['month'];
@@ -16,7 +16,7 @@ $entity=$_POST['entity'];
           $months=$tomonth-$month;
 $reason=$_POST['reason'];
 
-$table=strtolower($entity." headcount");
+$table=strtolower($entity."_headcount");
 
 $qry=mysqli_query($con,"SELECT * FROM `$table` WHERE position='$position' and month='$month' ");
 $rowCheck=mysqli_num_rows($qry);
@@ -78,7 +78,8 @@ elseif ($query) {
     <link href="../vendors/datatables.net-scroller-bs/css/scroller.bootstrap.min.css" rel="stylesheet">
 
     <!-- Custom Theme Style -->
-    <link href="../build/css/custom.min.css" rel="stylesheet">
+    <link href="../build/css/custom.min.css" rel="stylesheet">    <link href="../build/css/input.css" rel="stylesheet">
+
     <style>
       .site_title{
          overflow: inherit;

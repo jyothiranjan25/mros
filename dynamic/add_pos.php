@@ -2,19 +2,30 @@
 include('../includes/dbconnection.php');
 error_reporting(0);
 $page = $_GET['page'];
-// if(isset($_POST['submit']))
-// {
+if (isset($_POST['submit'])) {
+$number = count($_POST["name"]);
+if($number > 0)
+{
+	for($i=0; $i<$number; $i++)
+	{
+		if(trim($_POST["name"][$i] != ''))
+		{
+			$pos_type_name=mysqli_real_escape_string($con, $_POST["name"][$i]);
+			$sql = "INSERT INTO `position_type`(name) VALUES('$pos_type_name')";
+			$check = mysqli_query($con, $sql);
+		}
+	}
+	if($check){
 
-//     $name=$_POST['depname'];
+		 echo "<script>alert('Added Successfully!');</script>";
+	}
+}
+else
+{
+			 echo "<script>alert('Something gone wrong!');</script>";
 
-//        $dep_page=$page." Dep";
-//          // $create=mysqli_query($con,"CREATE TABLE `$roles` ( `id` INT(20) NOT NULL AUTO_INCREMENT , `name` VARCHAR(20) NOT NULL , `email` VARCHAR(20) NOT NULL , PRIMARY KEY (`id`)) ENGINE = InnoDB");
-//           $insert=mysqli_query($con,"INSERT INTO `$dep_page` (`name`) VALUES ('$name')");
-
-//           echo "<script>alert('".$name." is A Department of ".$page."');</script>";
-
-
-// }
+}
+}
 
 ?>
 
@@ -76,29 +87,25 @@ $page = $_GET['page'];
 			<div class="row">
 				<div class="col-md-12 col-sm-12 ">
 					<div class="x_panel">
-						<div class="x_title">
-
-							<ul class="nav navbar-right panel_toolbox">
-								<li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
-								</li>
-
-
-							</ul>
-							<div class="clearfix"></div>
-						</div>
+					<br><br>
+					
 						<div class="x_content">
-							<br />
+							<br>
 
 
-							<form name="add_name" id="add_name">
+							<form name="add_name" id="add_name" method="POST">
 								<div class="table-responsive">
 									<table class="table table-bordered" id="dynamic_field">
 										<tr>
-											<td><input type="text" name="name[]" placeholder="Ex: Staff, Faculty, Intern etc" class="form-control name_list" /></td>
+											<td><input type="text" name="name[]" placeholder="Ex: Staff, Faculty, Intern etc" class="form-control name_list" required></td>
 											<td><button type="button" name="add" id="add" class="btn btn-success">Add More</button></td>
 										</tr>
 									</table>
-									<input type="button" name="submit" id="submit" class="btn btn-info" value="Submit" />
+																<br>
+
+							<br>
+
+									<button type="submit" name="submit" id="submit" class="btn btn-secondary"  >Add Position Type</button>
 								</div>
 							</form>
 						</div>
@@ -116,9 +123,7 @@ $page = $_GET['page'];
 
 	<!-- footer content -->
 	<footer>
-		<!-- <div class="pull-right">
-            Gentelella - Bootstrap Admin Template by <a href="https://colorlib.com">Colorlib</a>
-          </div> -->
+		
 		<div class="clearfix"></div>
 	</footer>
 	<!-- /footer content -->
@@ -129,7 +134,7 @@ $page = $_GET['page'];
 			var i = 1;
 			$('#add').click(function() {
 				i++;
-				$('#dynamic_field').append('<tr id="row' + i + '"><td><input type="text" name="name[]" placeholder="Enter Position Name " class="form-control name_list" /></td><td><button type="button" name="remove" id="' + i + '" class="btn btn-danger btn_remove">X</button></td></tr>');
+				$('#dynamic_field').append('<tr id="row' + i + '"><td><input type="text" name="name[]" placeholder="Enter Position Name " class="form-control name_list" required></td><td><button type="button" name="remove" id="' + i + '" class="btn btn-danger btn_remove">X</button></td></tr>');
 			});
 
 			$(document).on('click', '.btn_remove', function() {
@@ -137,17 +142,7 @@ $page = $_GET['page'];
 				$('#row' + button_id + '').remove();
 			});
 
-			$('#submit').click(function() {
-				$.ajax({
-					url: "pos_name.php",
-					method: "POST",
-					data: $('#add_name').serialize(),
-					success: function(data) {
-						alert(data);
-						$('#add_name')[0].reset();
-					}
-				});
-			});
+			
 
 		});
 	</script>

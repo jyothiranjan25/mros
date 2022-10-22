@@ -1,7 +1,7 @@
 <?php
 include('../includes/dbconnection.php');
 error_reporting(0);
-$page = strtolower($_GET['page'] . " Dep");
+$page = strtolower($_GET['page'] . "_Dep");
 
 
 ?>
@@ -16,7 +16,7 @@ $page = strtolower($_GET['page'] . " Dep");
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="icon" href="images/ifim_logo.jpg" type="image/ico" />
-  <title>MROS | </title>
+  <title>Add Department</title>
 
   <!-- Bootstrap -->
   <link href="../vendors/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -28,7 +28,8 @@ $page = strtolower($_GET['page'] . " Dep");
   <link href="../vendors/google-code-prettify/bin/prettify.min.css" rel="stylesheet">
 
   <!-- Custom styling plus plugins -->
-  <link href="../build/css/custom.min.css" rel="stylesheet">
+  <link href="../build/css/custom.min.css" rel="stylesheet">    <link href="../build/css/input.css" rel="stylesheet">
+
 
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>
@@ -106,7 +107,6 @@ $page = strtolower($_GET['page'] . " Dep");
   <!-- footer content -->
   <footer>
     <div class="pull-right">
-      Gentelella - Bootstrap Admin Template by <a href="https://colorlib.com">Colorlib</a>
     </div>
     <div class="clearfix"></div>
   </footer>

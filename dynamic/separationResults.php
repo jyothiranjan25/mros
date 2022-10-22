@@ -15,35 +15,9 @@ include('../includes/dbconnection.php');
 
     <title>MROS </title>
 
-    <!-- Bootstrap -->
-    <link href="cdn.datatables.net/1.10.20/css/jquery.dataTables.min.css">
-    <link href="../vendors/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
-    <!-- Font Awesome -->
-    <link href="../vendors/font-awesome/css/font-awesome.min.css" rel="stylesheet">
-    <!-- NProgress -->
-    <link href="../vendors/nprogress/nprogress.css" rel="stylesheet">
-    <!-- iCheck -->
-    <link href="../vendors/iCheck/skins/flat/green.css" rel="stylesheet">
-    <!-- Datatables -->
-    
-    <link href="../vendors/datatables.net-bs/css/dataTables.bootstrap.min.css" rel="stylesheet">
-    <link href="../vendors/datatables.net-buttons-bs/css/buttons.bootstrap.min.css" rel="stylesheet">
-    <link href="../vendors/datatables.net-fixedheader-bs/css/fixedHeader.bootstrap.min.css" rel="stylesheet">
-    <link href="../vendors/datatables.net-responsive-bs/css/responsive.bootstrap.min.css" rel="stylesheet">
-    <link href="../vendors/datatables.net-scroller-bs/css/scroller.bootstrap.min.css" rel="stylesheet">
-
-    <!-- Custom Theme Style -->
-    <link href="../build/css/custom.min.css" rel="stylesheet">
-
-    <style>
-      .site_title{
-         overflow: inherit;
-     }
-     .nav_title{
-         height: 198px;
-         margin-top: -59px;
-     }
- </style>
+  <?php 
+include('includes/html_header.php');
+?>
   </head>
 
   <body class="nav-md">
@@ -139,7 +113,7 @@ while ($row=mysqli_fetch_array($feedback))
                                                            
                               <td><?php echo htmlentities($row['ctc']);?></td>
                                 <td><?php echo htmlentities($row['entity']);?></td>
-<?php if($row['status']==0){ ?>}
+<?php if($row['status']==0){ ?>
 <td>
   <a  href="separationRequest.php?empid=<?php echo htmlentities($row['emp_id']);?>" type="button" class="btn btn-danger">Request</a>
  </td>
@@ -160,7 +134,7 @@ while ($row=mysqli_fetch_array($feedback))
  <?php
 } ?>
 </tr>
-<?php $cnt=$cnt+1;} ?>
+<?php $cnt=$cnt+1; }?>
                          
                       </tbody>
                     </table>

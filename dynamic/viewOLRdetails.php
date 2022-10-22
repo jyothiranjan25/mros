@@ -38,7 +38,8 @@ $olr_id=intval($_GET['olrid']);
     <link href="../vendors/bootstrap-daterangepicker/daterangepicker.css" rel="stylesheet">
   <link href="../vendors/switchery/dist/switchery.min.css" rel="stylesheet">
     <!-- Custom Theme Style -->
-    <link href="../build/css/custom.min.css" rel="stylesheet">
+    <link href="../build/css/custom.min.css" rel="stylesheet">    <link href="../build/css/input.css" rel="stylesheet">
+
     <style>
         .site_title{
             overflow: inherit;
@@ -76,7 +77,7 @@ include('includes/topbar.php'); ?>
 
 <?php 
 
-$offerletter_query=mysqli_query($con,"SELECT * FROM offer_letters where offer_letters.id=$olr_id");
+$offerletter_query=mysqli_query($con,"SELECT of.*,e.entity_name,c.name as cname FROM offer_letters of LEFT JOIN entity e ON e.id = of.entity_id LEFT JOIN currency_control c ON of.currency_type=c.id where of.id=$olr_id");
 
 $cnt=1;
 while ($row=mysqli_fetch_array($offerletter_query))
@@ -177,32 +178,12 @@ while ($row=mysqli_fetch_array($offerletter_query))
                             </label> 
                         </div>
 
-                        <?php
-                        if($row['currency_type']!="INR(Rs)")
-                        {
-
-                            $ctc_to_show=$row['ctc'];
-                        }
-                        $curr_ctc=$row['ctc'];
-                        if($row['currency_type'] !="INR(Rs)")
-                            {
-                              $cur_name=$row['currency_type'];
-                              $query = "Select * from `currency_control` Where name='$cur_name'";
-                                $results = mysqli_query($con, $query);
-                                if (mysqli_num_rows($results) > 0)
-                                {
-                                    while ($curr_row=mysqli_fetch_array($results))
-                                    {
-                                        $ctc_to_show=$curr_ctc/$curr_row['amount'];                                        
-                                    }
-                                }
-                            }
-                        ?>
+                    
                         <div class="col-md-4 col-sm-6 ">
-                              <input name="ctc" type="text" id="ctc" value="<?php echo htmlentities(inr_format($ctc_to_show)); ?>" required="required" class="form-control" placeholder="Per Annum"  readonly>
+                              <input name="ctc" type="text" id="ctc" value="<?php echo htmlentities(inr_format($row['ctc'])); ?>" required="required" class="form-control" placeholder="Per Annum"  readonly>
                         </div>
                         <div class="col-md-2 col-sm-3 ">
-                              <input name="curr_type" type="text" id="curr_type" value="<?php echo htmlentities($row['currency_type']); ?>" required="required" class="form-control" placeholder="Per Annum"  readonly>
+                              <input name="curr_type" type="text" id="curr_type" value="<?php echo htmlentities($row['cname']); ?>" required="required" class="form-control" placeholder="Per Annum"  readonly>
                         </div>
                           <div class="col-md- col-sm-4 ">
                           <label  for="number" style="margin-top:6px;"><b>per Annum</b> </label> 

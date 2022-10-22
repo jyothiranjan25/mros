@@ -7,8 +7,8 @@ session_start();
 $entity=$_SESSION['entity'];
                 $email=$_SESSION['email'];
                  $role_name=$_SESSION['role'];
-                $entity_table=$_SESSION['entity']." New_Emp";
-                  $query=mysqli_query($con,"Select * from `$entity_table` WHERE role='$role_name' and email='$email'");
+                $entity_table=$_SESSION['entity']."_New_Emp";
+                  $query=mysqli_query($con,"SELECT * from `$entity_table` WHERE role='$role_name' and email='$email'");
                   while ($row=mysqli_fetch_array($query))
                   {
                       if($c>1){
@@ -44,7 +44,7 @@ if(isset($_POST['submit']))
   $comments=$_POST['Comments'];
   $status=1;
   $sn=0;
-  $sel_query=mysqli_query($con,"Select * from feedback");
+  $sel_query=mysqli_query($con,"SELECT * from feedback");
   while ($row=mysqli_fetch_array($sel_query))
     {
       $sn=$row['sn'];

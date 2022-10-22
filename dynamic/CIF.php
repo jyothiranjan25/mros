@@ -27,7 +27,8 @@ $olr_id=$_GET['id'];
     <link href="../vendors/nprogress/nprogress.css" rel="stylesheet">
 
     <!-- Custom Theme Style -->
-    <link href="../build/css/custom.min.css" rel="stylesheet">
+    <link href="../build/css/custom.min.css" rel="stylesheet">    <link href="../build/css/input.css" rel="stylesheet">
+
     
     <script src="https://code.jquery.com/jquery-3.5.0.js"></script>
     <script type="text/javascript" src="script.js"></script>

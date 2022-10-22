@@ -2,8 +2,8 @@
 include('../includes/dbconnection.php');
 error_reporting(0);
 session_start(); 
-$page=$_GET['page'];
-$table=strtolower($page." role");
+$page= str_replace(" ","_",$_GET['page']);
+$table=strtolower($page."_role");
 $total_roles="";
 $email=$_SESSION['email'];
 
@@ -11,42 +11,9 @@ $email=$_SESSION['email'];
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-    <!-- Meta, title, CSS, favicons, etc. -->
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-
-    <title>MROS </title>
-
-    <!-- Bootstrap -->
-    <link href="cdn.datatables.net/1.10.20/css/jquery.dataTables.min.css">
-    <link href="../vendors/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
-    <!-- Font Awesome -->
-    <link href="../vendors/font-awesome/css/font-awesome.min.css" rel="stylesheet">
-    <!-- NProgress -->
-    <link href="../vendors/nprogress/nprogress.css" rel="stylesheet">
-    <!-- iCheck -->
-    <link href="../vendors/iCheck/skins/flat/green.css" rel="stylesheet">
-    <!-- Datatables -->
-    
-    <link href="../vendors/datatables.net-bs/css/dataTables.bootstrap.min.css" rel="stylesheet">
-    <link href="../vendors/datatables.net-buttons-bs/css/buttons.bootstrap.min.css" rel="stylesheet">
-    <link href="../vendors/datatables.net-fixedheader-bs/css/fixedHeader.bootstrap.min.css" rel="stylesheet">
-    <link href="../vendors/datatables.net-responsive-bs/css/responsive.bootstrap.min.css" rel="stylesheet">
-    <link href="../vendors/datatables.net-scroller-bs/css/scroller.bootstrap.min.css" rel="stylesheet">
-
-    <!-- Custom Theme Style -->
-    <link href="../build/css/custom.min.css" rel="stylesheet">
-    <style>
-      .site_title{
-         overflow: inherit;
-     }
-     .nav_title{
-         height: 198px;
-         margin-top: -59px;
-     }
- </style>
+ <?php 
+include('includes/html_header.php');
+?>
   </head>
 
   <body class="nav-md">
@@ -62,7 +29,7 @@ include('includes/topbar.php'); ?>
           <div class="">
             <div class="page-title">
               <div class="title_left">
-                <h3>Manage Roles<small></small></h3>
+                <h3>Manage Roles: <span style="color:black"> <?= strtoupper(str_replace("_"," ",$page)); ?> </span> </h3>
               </div>
 
               
@@ -76,17 +43,7 @@ include('includes/topbar.php'); ?>
 
               <div class="col-md-12 col-sm-12 ">
                 <div class="x_panel">
-                  <div class="x_title">
-                       <h2> Masters  </h2>
-                    <ul class="nav navbar-right panel_toolbox">
-                      <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
-                         </li>
-                      
-                      
-                    
-                    </ul>
-                    <div class="clearfix"></div>
-                  </div>
+               
                   <div class="x_content">
                       <div class="row">
                           <div class="col-sm-12">
@@ -98,7 +55,6 @@ include('includes/topbar.php'); ?>
     <th>SNo.</th>
     <th>Role</th>
     <th>Authority</th>
-    
      <th>Action</th>
     
      
@@ -122,50 +78,50 @@ include('includes/topbar.php'); ?>
                                     $name=$row['name'];
                                     if($row['generate_olr']==='1')
                                     {
-                                      $total_roles= $total_roles."Generate Offer Letter ,";
+                                      $total_roles= $total_roles."Generate Offer Letter; ";
                                     }
                                     if($row['accept_reject_olr']==='1')
                                     {
-                                      $total_roles= $total_roles."Accept/Reject Offer Letter ,";
+                                      $total_roles= $total_roles."Accept/Reject Offer Letter; ";
                                     }
                                     if($row['approve_olr']==='1')
                                     {
-                                      $total_roles= $total_roles."Approve Offer Letter ,";
+                                      $total_roles= $total_roles."Approve Offer Letter; ";
                                     }
                                     if($row['olr_sent_to_cand']==='1')
                                     {
-                                      $total_roles= $total_roles."Offer Letter Sent to candidate,";
+                                      $total_roles= $total_roles."Offer Letter Sent to candidate; ";
                                     }
                                     if($row['view_olr']==='1')
                                     {
-                                      $total_roles= $total_roles."View Offer Letter ,";
+                                      $total_roles= $total_roles."View Offer Letter; ";
                                     }
                                     if($row['accounts']==='1')
                                     {
-                                      $total_roles= $total_roles."Manage Accounts,";
+                                      $total_roles= $total_roles."Manage Accounts; ";
                                     }
                                     if($row['super_admin']==='1')
                                     {
-                                      $total_roles= $total_roles."Super Admin,";
+                                      $total_roles= $total_roles."Super Admin; ";
                                     }
                                     if($row['new_emp']==='1')
                                     {
-                                      $total_roles= $total_roles."New Employee,";
+                                      $total_roles= $total_roles."New Employee; ";
                                     }  
                                      if($row['IT']==='1')
                                     {
-                                      $total_roles= $total_roles."IT Sector,";
+                                      $total_roles= $total_roles."IT Sector; ";
                                     }
                                     if($row['asset_req_manage']==='1')
                                     {
-                                      $total_roles= $total_roles."Asset Managment,";
+                                      $total_roles= $total_roles."Asset Managment; ";
                                     }
                                     
                                     ?>
                                     <td><?php echo htmlentities($total_roles);?></td>
                                    <?php $total_roles=""; ?>
                                     <td>
-                                    <a href="edit_role.php?name=<?php echo htmlentities($row['name']);?>&page=<?php echo htmlentities($page);?>" class="btn btn-primary" >Edit Role</a>    
+                                    <a href="edit_role.php?name=<?php echo htmlentities($row['name']);?>&page=<?php echo htmlentities($page);?>" title="edit role" class="btn btn-primary" ><i class="fa fa-edit" aria-hidden="true"></i>  </a>    
                                    </td>          
                             </tr>
                             <?php

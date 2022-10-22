@@ -1,7 +1,7 @@
 <?php
 include('../includes/dbconnection.php');
 error_reporting(0);
-if(isset($_POST['view']))
+if(isset($_POST['id']))
 {
                                                             
   $entity_query=mysqli_query($con,"SELECT * FROM `exit_interview` WHERE `id` = '".$_POST['id']."'");
@@ -74,7 +74,8 @@ if(isset($_POST['view']))
     <link href="../vendors/bootstrap-daterangepicker/daterangepicker.css" rel="stylesheet">
   <link href="../vendors/switchery/dist/switchery.min.css" rel="stylesheet">
     <!-- Custom Theme Style -->
-    <link href="../build/css/custom.min.css" rel="stylesheet">
+    <link href="../build/css/custom.min.css" rel="stylesheet">    <link href="../build/css/input.css" rel="stylesheet">
+
     <style>
         .site_title{
             overflow: inherit;
@@ -88,11 +89,12 @@ if(isset($_POST['view']))
         visibility: hidden;
         display: none;
     }
+}
     </style>
     
   </head>
 
-  <body class="nav-md">
+  <body class="nav-md" >
     <?php
 include('includes/leftbar.php'); ?>
 <?php
@@ -107,7 +109,7 @@ include('includes/topbar.php'); ?>
           
           <br />
                 <div class="box-header with-border">
-              <a href="#" onclick="window.print()" class="btn btn-success btn-sm btn-flat hideOnprint"><span class="glyphicon glyphicon-print"></span> Print</a>
+              <a href="#" onclick="window.print()" style="align:right" class="btn btn-success btn-sm btn-flat hideOnprint"><span class="glyphicon glyphicon-print"></span> Print</a>
             </div>
                 <form action="" method="post" id="exit_interview_form" enctype="multipart/form-data" class="form-horizontal">
                 <div class="x_content">
@@ -120,26 +122,26 @@ include('includes/topbar.php'); ?>
                             </label> 
                         </div>
                         <div class="col-md-3 col-sm-6 ">
-                              <select name="id" id="id" class="form-control">
-                                <option value="<?php echo  $id; ?>"><?php echo  $id; ?></option>
+                              <select name="id" id="id" class="form-control" onblur="myFunction('exit_interview_form')" required>
+                                <option value="">-select email-</option>
                                 <?php
                                                             
-                                $entity_query=mysqli_query($con,"SELECT `id` FROM `exit_interview`");
+                                $entity_query=mysqli_query($con,"SELECT ei.id,ed.email FROM `exit_interview` ei LEFT JOIN employee_details ed ON ei.id=ed.emp_id");
                                    while ($row=mysqli_fetch_array($entity_query))
                                        {
-                                        if($row['id'] != $id)
-                                         { 
+                                        if($row['id'] == $id)
+                                         { $selected ="selected";}else{
+                                             $selecetd ="";
+                                         }
                                        ?>
-                                           <option  required="required" value="<?php echo  $row['id']; ?>"><?php echo $row['id']; ?></option>
+                                           <option  required="required" value="<?php echo  $row['id']; ?>" <?= $selected ?>><?php echo $row['email']; ?></option>
                                       <?php
-                                    }
+                                    
                                       }
                           ?>
                               </select>
                         </div>
-                        <div class="col-md-2 offset-md-5 ">
-                              <input name="view" id="view" type="submit" value="VIEW" class="btn btn-info btn-lg hideOnprint" style="width: 150px; border-radius: 10px;background-color: #3f51b5;">
-                        </div>
+                  
 
                     </div>
                     <br>
@@ -156,18 +158,18 @@ include('includes/topbar.php'); ?>
                     <br>
                     <div class="row">
 
-                        <div class="col-form-label col-md-2 col-sm-3 label-align">
+                        <div class="col-form-label col-md-2 col-sm-2 label-align">
                             <label  for="job_title"><b>Job Title:</b><span class="required">*</span>
                             </label> 
                         </div>
-                        <div class="col-md-3 col-sm-6 ">
+                        <div class="col-md-3 col-sm-3 ">
                               <input name="job_title" type="text" id="job_title" readonly="true"  value="<?php echo $job_title; ?>" class="form-control"  >
                         </div>
-                        <div class="col-form-label col-md-2 col-sm-3 label-align">
+                        <div class="col-form-label col-md-2 col-sm-2 label-align">
                             <label  for="department"><b>Department:</b><span class="required">*</span>
                             </label> 
                         </div>
-                        <div class="col-md-3 col-sm-6 ">
+                        <div class="col-md-3 col-sm-3 ">
                               <input name="department" id="department" type="text" readonly="true" value="<?php echo $department; ?>" class="form-control">
                         </div>
                         
@@ -175,18 +177,18 @@ include('includes/topbar.php'); ?>
                     <br>
                   
                     <div class="row">
-                        <div class="col-form-label col-md-2 col-sm-3 label-align">
+                        <div class="col-form-label col-md-2 col-sm-2 label-align">
                             <label  for="joining_date"><b>Joining Date:</b><span class="required">*</span>
                             </label> 
                         </div>
-                        <div class="col-md-3 col-sm-6 ">
+                        <div class="col-md-3 col-sm-3 ">
                               <input name="joining_date" id="joining_date"  readonly="true" class="date-picker form-control" value="<?php echo $joining_date; ?>" type="date">
                         </div>
-                        <div class="col-form-label col-md-2 col-sm-3 label-align">
+                        <div class="col-form-label col-md-2 col-sm-2 label-align">
                             <label  for="separation_date"><b>Separation Date:</b><span class="required">*</span>
                             </label> 
                         </div>
-                        <div class="col-md-3 col-sm-6 ">
+                        <div class="col-md-3 col-sm-3 ">
                               <input name="separation_date" id="separation_date" type="date" readonly="true" value="<?php echo $separation_date; ?>" class="date-picker form-control">
                         </div>
                     </div>
@@ -495,31 +497,32 @@ include('includes/topbar.php'); ?>
                     <br>
                     <br>
                     
-                    <footer>
+           
                     <div class="row">
-                      <div class="col-form-label col-md-12 col-sm-3 label-align" style="text-align: left;">
+                      <div class=" col-md-11 col-sm-11 " style="text-align: left;">
                             <label  for="reason"><b>I have returned, or arranged for the return of, all Institute property, including, but not limited to, computers, software, documents, financial records, personnel files, equipment and tools, vehicles, credit cards, keys, security cards, parking passes, works in progress, client or customer lists, books, resource materials, and confidential or trade secret items.</b><span class="required">*</span>
                             </label> 
                         </div>
                       </div>
                       <div class="row">
-                        <div class="col-form-label col-md-2 col-sm-3 label-align">
+                        <div class="col-form-label col-md-2 col-sm-2 label-align">
                             <label  for="applicant"><b>Applicant Name:</b><span class="required">*</span>
                             </label> 
                         </div>
-                        <div class="col-md-5 col-sm-6 ">
+                        <div class="col-md-5 col-sm-5 ">
                               <input name="applicant" id="applicant" type="text" readonly="true" value="<?php echo $applicant; ?>"   class="form-control">
                         </div>
-                        <div class="col-form-label col-md-2 col-sm-3 label-align">
+                     
+                        <div class="col-form-label col-md-2 col-sm-2 label-align">
                             <label  for="todays_date"><b>DATE:</b><span class="required">*</span>
                             </label> 
                         </div>
-                        <div class="col-md-3 col-sm-6 ">
+                        <div class="col-md-3 col-sm-3 ">
                               <input name="todays_date" type="date" id="todays_date"   readonly="true" value="<?php echo $todays_date; ?>" class="date-picker form-control"  >
                         </div>
                       </div>
                     
-                    </footer>
+             
                     <br>
                      
 
@@ -546,7 +549,11 @@ include('includes/topbar.php'); ?>
         <!-- /footer content -->
       </div>
     </div>
-
+   <script>
+              function myFunction(x) {
+                  document.getElementById(x).submit();
+              }
+          </script>
     <!-- jQuery -->
     <script src="../vendors/jquery/dist/jquery.min.js"></script>
     <!-- Bootstrap -->

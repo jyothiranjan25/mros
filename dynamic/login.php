@@ -1,59 +1,66 @@
 <?php
 include('../includes/dbconnection.php');
-error_reporting(0);
+require "vendor/autoload.php";
+// error_reporting(0);
 session_start();
-if (isset($_POST['submit'])) {
+echo "<script>alert('TEST');</script>";
 
-  $check_entity = $_POST['entity'];
-  $entity = "";
+use myPHPnotes\Microsoft\Auth;
+use myPHPnotes\Microsoft\Handlers\Session;
+use myPHPnotes\Microsoft\Models\User;
 
-  $email = mysqli_real_escape_string($con, $_POST['email']);
-  $entity = mysqli_real_escape_string($con, $_POST['entity']);
-  $role = $_POST['role'];
-  // if($check_entity==="ALL"){
-  //   $entity_problem = "SELECT * FROM `entity` ORDER BY id desc";
-  //   $entity_results = mysqli_query($con, $entity_problem);
-  //   $row=mysqli_fetch_array($entity_results);
-  //   $entity=$row['entity_name'];
-  // }
-  // else{
-  //   $entity=$check_entity;
-  // }
+if ($_SESSION['email'] == "") {
 
-  if ($role != "New Employee") {
-    $emp = strtolower($entity . " emp");
-    $query = "SELECT * FROM `$emp` WHERE email='$email' and role='$role'";
+  $auth = new Auth(Session::get("tenant_id"), Session::get("client_id"), Session::get("client_secret"), Session::get("redirect_uri"), Session::get("scopes"));
+  $tokens = $auth->getToken($_REQUEST['code']);
+  $accessToken = $tokens->access_token;
+
+  $auth->setAccessToken($accessToken);
+
+  $user = new User;
+
+  $name = $user->data->getDisplayName();
+  $email = $user->data->getUserPrincipalName();
+  $_SESSION['email'] = $email;
+  $_SESSION['name'] = $name;
+} else {
+  $email =   $_SESSION['email'];
+  $name = $_SESSION['name'];
+}
+
+if ($email) {
+
+  $query_entity = "SELECT `entity_id`,`role` FROM `login` WHERE email='$email'";
+  $resultz = mysqli_query($con, $query_entity);
+  $rowz = mysqli_fetch_array($resultz);
+  $entity_id = $rowz['entity_id'];
+  $role = $rowz['role'];
+
+  if ($role) {
+    echo "<script>alert('$role ');</script>";
+    $query = "SELECT * FROM entity WHERE id='$entity_id' ";
     $results = mysqli_query($con, $query);
 
-    if (mysqli_num_rows($results) == 1) {
+    if (mysqli_num_rows($results) > 0) {
       $row = mysqli_fetch_array($results);
       $_SESSION['email'] = $email;
-      $_SESSION['entity'] = $entity;
+      $_SESSION['entity'] =  str_replace(" ", "_", $row['entity_name']);
+      $_SESSION['entity_name'] = $row['entity_name'];
       $_SESSION['role'] = $role;
-      $_SESSION['dep'] = $row['dep'];
-      $_SESSION['empid'] = $row['emp_id'];
+      $_SESSION['entity_id'] = $entity_id;
+      // $_SESSION['dep'] = $row['dep'];
+      // $_SESSION['empid'] = $row['emp_id'];
       header('location: index.php');
       // echo "<script>alert('".$_SESSION['success']."');</script>";
     } else {
-      echo "<script>alert('Please Enter proper details ');</script>";
+      echo "<script>alert('No role assigned for $email, Please contact SuperAdmin! ');</script>";
+      //  header('location: index.php');
     }
   } else {
-    $emp = strtolower($entity . " New_Emp");
-    $query = "SELECT * FROM `$emp` WHERE email='$email' and role='$role'";
-    $results = mysqli_query($con, $query);
-
-    if (mysqli_num_rows($results) == 1) {
-      $row = mysqli_fetch_array($results);
-      $_SESSION['email'] = $email;
-      $_SESSION['entity'] = $entity;
-      $_SESSION['role'] = $role;
-      $_SESSION['dep'] = $row['dep'];
-      $_SESSION['empid'] = $row['emp_id'];
-      header('location: index.php');
-      // echo "<script>alert('".$_SESSION['success']."');</script>";
-    } else {
-      echo "<script>alert('" . $role . " ');</script>";
-    }
+    echo "<script>alert('No user access for $email, Please contact SuperAdmin! ');</script>";
+    //  header('location: sign.php');
+    echo "<script>
+                window.location.href='sign.php';</script>";
   }
 }
 ?>
@@ -62,29 +69,14 @@ if (isset($_POST['submit'])) {
 <html lang="en">
 
 <head>
-  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-  <!-- Meta, title, CSS, favicons, etc. -->
-  <meta charset="utf-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-
   <title>MROS | </title>
 
-  <!-- Bootstrap -->
-  <link href="../vendors/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
-  <!-- Font Awesome -->
-  <link href="../vendors/font-awesome/css/font-awesome.min.css" rel="stylesheet">
-  <!-- NProgress -->
-  <link href="../vendors/nprogress/nprogress.css" rel="stylesheet">
-  <!-- Animate.css -->
-  <link href="../vendors/animate.css/animate.min.css" rel="stylesheet">
+  <?php
+  include('includes/html_header.php');
+  ?>
 
-  <!-- Custom Theme Style -->
-  <link href="../build/css/custom.min.css" rel="stylesheet">
   <style>
-    .login_content {
-      margin: 110px auto;
-    }
+
   </style>
   <script>
     function selectentity(str) {
@@ -98,71 +90,66 @@ if (isset($_POST['submit'])) {
       }
     }
   </script>
+  <style>
+    .glow {
 
+      box-shadow:
+        0 0 20px 10px white,
+        0 0 72px 20px white,
+        0 0 140px 1px white;
+    }
+
+    .fade {
+
+      box-shadow:
+        0 0 20px 10px black,
+        0 0 72px 20px black,
+        0 0 140px 1px black;
+    }
+  </style>
 </head>
 
-<body class="login">
+<body class="login" style="background-color:#bdc3c7">
   <div>
+    <br> <br> <br>
 
-    <a class="hiddenanchor" id="signup"></a>
-    <a class="hiddenanchor" id="signin"></a>
-
-    <div class="login_wrapper">
-      <img style="" src="../images/mros_logo.jpeg" alt="MROS Logo">
-      <div class="animate form login_form">
+    <div class="login_wrapper glow" style="border-radius:5px; padding:20px;max-width: 500px; margin-top:60px">
 
 
-        <section class="login_content">
+
+      <section class="login_content">
+        <br>
+
+        <center>
+          <h3 style="color:black"> M R O S </h3>
+        </center>
+        <br>
+
+        <form action="login_redirect.php" method="post" enctype="multipart/form-data" id="form" data-parsley-validate class="form-horizontal form-label-left">
+          <div>
+            <input name="name" style="color:black" type="text" class="form-control" title="user name" placeholder="name" required="" value="<?= $name ?>" readonly>
+          </div>
+          <div>
+            <input name="email" style="color:black" type="text" class="form-control" title="email" placeholder="email" required="" value="<?= $email ?>" readonly>
+
+          </div>
+
+          <span style="color:red"> Invalid Login Credentials, Please Contact SuperAdmin </span>
           <br>
-          <img width="300px" src="https://vijaybhoomi.edu.in/images/logomain.png" alt="Vijaybhoomi Logo">
-          <form action="" method="post" enctype="multipart/form-data" id="form" data-parsley-validate class="form-horizontal form-label-left">
-            <h1>Login Form</h1>
-            <div>
-              <input name="email" type="text" class="form-control" placeholder="Email" required="" />
-            </div>
 
 
-            <div>
-              <select name="entity" id="entity" title="Select a Entity" class="form-control" required="" onchange="selectentity(this.value);">
-                <option value="0">--SELECT ENTITY---</option>
-
-                <?php
-
-                $entity_query = mysqli_query($con, "Select * from `entity`");
-                while ($row = mysqli_fetch_array($entity_query)) {
-                ?>
-                  <option required="required" value="<?php echo  $row['entity_name']; ?>"><?php echo $row['entity_name']; ?></option>
-                <?php
-                }
-                ?>
-              </select>
-            </div>
-
-            <br>
-            <div>
-              <select name="role" id="role" title="Select a Role" class="form-control" required="">
-                <option value=0>First Select Entity</option>
-              </select>
-            </div>
-
-            <br>
-            <button type="submit" name="submit" class="btn btn-primary submit" style="text-decoration: none;">Log in</button>
-            <!-- <a class="reset_pass" href="#">Lost your password?</a> -->
-      </div>
-
-      <div class="clearfix"></div>
-
-      <div class="separator">
-
-
-        <div class="clearfix"></div>
-        <br />
-
-
-      </div>
-      </form>
-      </section>
+          <br>
+          <a href="sign.php" class="btn btn-danger submit" style="text-decoration: none;">Sign Out</a>
+          <!-- <a class="reset_pass" href="#">Lost your password?</a> -->
     </div>
+
+    <br />
+
+
+  </div>
+  </form>
+  </section>
+  </div>
 
   </div>
   </div>

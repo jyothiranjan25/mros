@@ -27,7 +27,8 @@
     <link href="../vendors/bootstrap-daterangepicker/daterangepicker.css" rel="stylesheet">
   <link href="../vendors/switchery/dist/switchery.min.css" rel="stylesheet">
     <!-- Custom Theme Style -->
-    <link href="../build/css/custom.min.css" rel="stylesheet">
+    <link href="../build/css/custom.min.css" rel="stylesheet">    <link href="../build/css/input.css" rel="stylesheet">
+
     <style>
         .site_title{
             overflow: inherit;

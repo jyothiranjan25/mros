@@ -7,30 +7,30 @@ $notification_table = strtolower($entity . " notification");
 ?>
 
 <?php
-$query123 = "SELECT * FROM `hr_email` ";
-$results1 = mysqli_query($con, $query123);
-$results123 = mysqli_fetch_array($results1);
-require 'phpmailer/PHPMailerAutoload.php';
+// $query123 = "SELECT * FROM `hr_email` ";
+// $results1 = mysqli_query($con, $query123);
+// $results123 = mysqli_fetch_array($results1);
+// require 'phpmailer/PHPMailerAutoload.php';
 
-$mail = new PHPMailer;
+// $mail = new PHPMailer;
 
-//$mail->SMTPDebug = 3;   
-$xyz = $results123['email'];                            // Enable verbose debug output
+// //$mail->SMTPDebug = 3;   
+// $xyz = $results123['email'];                            // Enable verbose debug output
 
-$mail->isSMTP();                                      // Set mailer to use SMTP
-$mail->Host = 'smtp.live.com';  // Specify main and backup SMTP servers
-$mail->SMTPAuth = true;                               // Enable SMTP authentication
-$mail->Username = $results123['email'];                 // SMTP username
-$mail->Password = $results123['password'];                           // SMTP password
-$mail->SMTPSecure = 'tls';                            // Enable TLS encryption, `ssl` also accepted
-$mail->Port = 587;                                    // TCP port to connect to
+// $mail->isSMTP();                                      // Set mailer to use SMTP
+// $mail->Host = 'smtp.live.com';  // Specify main and backup SMTP servers
+// $mail->SMTPAuth = true;                               // Enable SMTP authentication
+// $mail->Username = $results123['email'];                 // SMTP username
+// $mail->Password = $results123['password'];                           // SMTP password
+// $mail->SMTPSecure = 'tls';                            // Enable TLS encryption, `ssl` also accepted
+// $mail->Port = 587;                                    // TCP port to connect to
 
-$mail->setFrom($results123['email'], 'IFIM HR');
-// Add a recipient
-// $mail->addAddress('ellen@example.com');               // Name is optional
-$mail->addReplyTo($results123['email'], 'IFIM HR');
-// $mail->addCC('cc@example.com');
-// $mail->addBCC('bcc@example.com');
+// $mail->setFrom($results123['email'], 'IFIM HR');
+// // Add a recipient
+// // $mail->addAddress('ellen@example.com');               // Name is optional
+// $mail->addReplyTo($results123['email'], 'IFIM HR');
+// // $mail->addCC('cc@example.com');
+// // $mail->addBCC('bcc@example.com');
 
 
 
@@ -56,10 +56,9 @@ if (isset($_REQUEST['olrid'])) {
   $mail->addAttachment('../Offer_Letters/' . $row['entity_name'] . '/OLR_SN_' . $row['id'] . '.pdf', 'OFFER LETTER');         // Add attachments
   // $mail->addAttachment('/tmp/image.jpg', 'new.jpg');    // Optional name
   $mail->isHTML(true);                                  // Set email format to HTML
-
   $mail->Subject = 'Offer Letter';
-  $page_accept = "https://mros.ifim.edu.in/dynamic/cand_offerletter_accept.php?id=" . $olr_id;
-  $page_reject = "https://mros.ifim.edu.in/dynamic/cand_offerletter_reject.php?id=" . $olr_id;
+  $page_accept = $base_link."cand_offerletter_accept.php?id=" . $olr_id;
+  $page_reject = $base_link."cand_offerletter_reject.php?id=" . $olr_id;
   $body = 'Dear ' . $cand_name . ' ,<br>You have recieved email from ' . $entity_cand . '<br>Please go through and revert as requested<br><br><br><br><br>
     <a class="btn btn-primary" style="background-color: #000044a6;color: white;text-decoration: none;padding: 10px;" href="' . $page_accept . '" target="_blank">Accept</a>
     <a class="btn btn-primary" style="background-color: #c80e0ea6;color: white;text-decoration: none;padding: 10px;" href="' . $page_reject . '" target="_blank">Reject</a><br><br><br><br><br>Reach out to HR @ ' . $results123['email'];
@@ -70,8 +69,6 @@ if (isset($_REQUEST['olrid'])) {
     echo '<script type="text/javascript">';
     echo 'alert("Offer Letter is not sent.");';
     echo 'alert("' . $xyz . '");';
-
-
     echo 'window.location.href = "olr_list_approved.php";';
     echo '</script>';
     //echo 'Mailer Error: ' . $mail->ErrorInfo;
@@ -79,10 +76,8 @@ if (isset($_REQUEST['olrid'])) {
     //update
     $cur_date = date("Y-m-d");
     $status = 5;
-    $message_query = mysqli_query($con, "Select * from `offer_letters` WHERE id='$olr_id'");
+    $message_query = mysqli_query($con, "SELECT * from `offer_letters` WHERE id='$olr_id'");
     $message_data = mysqli_fetch_array($message_query);
-
-
 
     $query = "UPDATE offer_letters SET status='$status',date_sent='$cur_date' WHERE id='$olr_id'";
     $results = mysqli_query($con, $query);
@@ -127,7 +122,8 @@ if (isset($_REQUEST['olrid'])) {
   <link href="../vendors/datatables.net-scroller-bs/css/scroller.bootstrap.min.css" rel="stylesheet">
 
   <!-- Custom Theme Style -->
-  <link href="../build/css/custom.min.css" rel="stylesheet">
+  <link href="../build/css/custom.min.css" rel="stylesheet">    <link href="../build/css/input.css" rel="stylesheet">
+
 
   <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.slim.min.js"></script>
   <script type="text/javascript" src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.bundle.min.js"></script>
@@ -207,7 +203,7 @@ if (isset($_REQUEST['olrid'])) {
 
                       <tbody>
                         <?php
-                        $offerletter_query = mysqli_query($con, "SELECT * FROM offer_letters where status = 4");
+                        $offerletter_query = mysqli_query($con, "SELECT of.*, e.entity_name FROM offer_letters of LEFT JOIN entity e ON e.id=of.entity_id WHERE of.status = 4");
                         $cnt = 1;
                         while ($row = mysqli_fetch_array($offerletter_query)) {
                         ?>
@@ -215,20 +211,36 @@ if (isset($_REQUEST['olrid'])) {
                             <td><?php echo htmlentities($cnt); ?></td>
                             <td><?php echo htmlentities($row['cand_name']); ?></td>
                             <td><?php echo htmlentities($row['personal_mail_id']); ?></td>
-                            <td><?php echo htmlentities($row['joining_date']); ?></td>
+                            <td><?php echo date("jS-M-Y",strtotime(($row['joining_date']))); ?></td>
                             <td><?php echo htmlentities(inr_format($row['ctc'])); ?></td>
                             <td><?php echo htmlentities($row['pos']); ?></td>
                             <td><?php echo htmlentities($row['job_title']); ?></td>
-
-
-
                             <td><?php echo htmlentities($row['requested_by']); ?></td>
-
-
                             <td><?php echo htmlentities($row['replacement']); ?><br>(<?php echo htmlentities($row['datesubmitted']); ?>)</td>
 
-                            <td><a href="../Offer_Letters/<?php echo htmlentities($row['entity_name']); ?>/OLR_SN_<?php echo htmlentities($row['id']); ?>.pdf" target="_blank" class="btn btn-success"><i class="fa fa-eye" aria-hidden="true"></i> View </a></td>
-                            <td><a href="olr_list_approved.php?olrid=<?php echo htmlentities($row['id']); ?>" class="btn btn-primary"><i class="fa fa-paper-plane-o" aria-hidden="true"></i> SEND </a></td>
+                            <td>
+                               <?php 
+                               
+                               $file = "../offer_letters/".str_replace(' ','_',$row['entity_name'])."/OLR_SN_".$row['id'].".pdf";
+                               
+                               if(file_exists($file)){
+
+                            ?>  
+                            
+                            <a style="color:black" href="../offer_letters/<?= str_replace(" ","_",$row['entity_name']); ?>/OLR_SN_<?= $row['id']; ?>.pdf" target="_blank" class="btn btn-warning"><i class="fa fa-eye" aria-hidden="true"></i> View </a>
+                          
+                          
+                          <?php } else { echo "No Attachment"; } ?>
+
+
+
+                          
+                          </td>
+                            <td>
+                              
+                         
+                            
+                            <a href="olr_list_approved.php?olrid=<?php echo htmlentities($row['id']); ?>" class="btn btn-primary"><i class="fa fa-paper-plane-o" aria-hidden="true"></i> SEND </a></td>
 
                           </tr>
                         <?php $cnt = $cnt + 1;
@@ -256,7 +268,6 @@ if (isset($_REQUEST['olrid'])) {
   <!-- footer content -->
   <footer>
     <div class="pull-right">
-      Gentelella - Bootstrap Admin Template by <a href="https://colorlib.com">Colorlib</a>
     </div>
     <div class="clearfix"></div>
   </footer>

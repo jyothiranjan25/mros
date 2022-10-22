@@ -1,10 +1,5 @@
 <?php
 include('../includes/dbconnection.php');
-session_start();
-
-
-
-// error_reporting(0);
 
 if (!isset($_SESSION['email'])) {
   $_SESSION['msg'] = "You must log in first";
@@ -16,12 +11,44 @@ if (isset($_GET['logout'])) {
   unset($_SESSION['mailid']);
   unset($_SESSION['role']);
   unset($_SESSION['entity']);
-  header("location: index.php");
+  header("location: sign.php");
+}
+
+
+if($_POST['post_entity']){
+   
+$post_entity  = $_POST['post_entity'];
+
+  $inst_query = mysqli_query($con, "SELECT * from `entity` WHERE name='$post_entity'");
+    $inst_row = mysqli_fetch_array($inst_query);
+    $ses_entity_id = $inst_row['id'];
+
+
+ $adm_email=$_SESSION['email'];
+    $login_query = mysqli_query($con, "SELECT * from `login` WHERE email='$adm_email' AND entity_id='$ses_entity_id'");
+    $count = mysqli_num_rows($login_query);
+    $fet = mysqli_fetch_array($login_query);
+    if ($count > 0) {
+
+        unset($_SESSION['entity']);
+    unset($_SESSION['entity_id']);
+$_SESSION['entity_id'] = $ses_entity_id;
+// $_SESSION['entity']=$post_entity;
+      $_SESSION['entity'] =  str_replace(" ","_",$post_entity);
+        $_SESSION['entity_name'] = $post_entity;
+      $_SESSION['role'] = $fet['role'];
+    }else {
+        echo "<script>alert('You do not have any access to the system, Please contact SuperAdmin!');</script>";
+         echo "<script>
+                window.location.href='sign.php';</script>";
+    }
+
 }
 
 $sesentity = $_SESSION['entity'];
+$ses_entity_id = $_SESSION['entity_id'];
 
-$role_table = strtolower($_SESSION['entity'] . " Role");
+$role_table = strtolower( str_replace(" ","_",$_SESSION['entity']) . "_Role");
 $role_name = $_SESSION['role'];
 $username = "";
 $generate_olr = 0;
@@ -34,7 +61,7 @@ $asset_req_manage = 0;
 $super_admin = 0;
 $new_emp = 0;
 $email = $_SESSION['email'];
-$query_role = mysqli_query($con, "Select * from `$role_table` Where name='$role_name' ");
+$query_role = mysqli_query($con, "SELECT * from `$role_table` Where name='$role_name' ");
 while ($row = mysqli_fetch_array($query_role)) {
   $generate_olr = $row['generate_olr'];
 
@@ -62,7 +89,7 @@ while ($row = mysqli_fetch_array($query_role)) {
     <div class="col-md-3 left_col hideOnprint">
       <div class="left_col scroll-view ">
         <div class="navbar nav_title " style="background:white;padding:0px;    padding-top: 81px; margin-top: -97px;border: 0;">
-          <a href="stats.php" class="site_title"><span><img style=" height: 109%;
+          <a href="index.php" class="site_title"><span><img style=" height: 109%;
     width: 89%;" src="../images/logomain.png" alt="..."></span></a>
         </div>
 
@@ -79,12 +106,12 @@ while ($row = mysqli_fetch_array($query_role)) {
                 $c = 1;
                 $email = $_SESSION['email'];
                 if ($_SESSION['role'] != "New Employee") {
-                  $entity_table = strtolower($_SESSION['entity'] . " Emp");
+                  $entity_table = strtolower($_SESSION['entity'] . "_Emp");
                 } else {
-                  $entity_table = strtolower($_SESSION['entity'] . " New_Emp");
+                  $entity_table = strtolower($_SESSION['entity'] . "_New_Emp");
                 }
 
-                $query = mysqli_query($con, "Select * from `$entity_table` WHERE role='$role_name' and email='$email'");
+                $query = mysqli_query($con, "SELECT * from `$entity_table` WHERE role='$role_name' and email='$email'");
                 while ($row = mysqli_fetch_array($query)) {
                   if ($c > 1) {
                   } else {
@@ -102,26 +129,26 @@ while ($row = mysqli_fetch_array($query_role)) {
 
         <br />
         <?php
-        $offerletter_pending_query = mysqli_query($con, "SELECT * FROM offer_letters where `entity_name`='$sesentity' and status = 0");
-        $offerletter_accepted_query = mysqli_query($con, "SELECT * FROM offer_letters where `entity_name`='$sesentity' and status = 1");
-        $offerletter_denied_query = mysqli_query($con, "SELECT * FROM offer_letters where `entity_name`='$sesentity' and status = 2");
-        $offerletter_budget_query = mysqli_query($con, "SELECT * FROM offer_letters where `entity_name`='$sesentity' and status = 3");
+        $offerletter_pending_query = mysqli_query($con, "SELECT * FROM offer_letters where `entity_id`='$ses_entity_id' and status = 0");
+        $offerletter_accepted_query = mysqli_query($con, "SELECT * FROM offer_letters where `entity_id`='$ses_entity_id' and status >= 1");
+        $offerletter_denied_query = mysqli_query($con, "SELECT * FROM offer_letters where `entity_id`='$ses_entity_id' and status = -2");
+        $offerletter_budget_query = mysqli_query($con, "SELECT * FROM offer_letters where `entity_id`='$ses_entity_id' and status = -3");
 
         if ($super_admin == 1) {
           $offerletter_pending_query = mysqli_query($con, "SELECT * FROM offer_letters where status = 0");
-          $offerletter_accepted_query = mysqli_query($con, "SELECT * FROM offer_letters where  status = 1");
-          $offerletter_denied_query = mysqli_query($con, "SELECT * FROM offer_letters where status = 2");
-          $offerletter_budget_query = mysqli_query($con, "SELECT * FROM offer_letters where status = 3");
+          $offerletter_accepted_query = mysqli_query($con, "SELECT * FROM offer_letters where  status >= 1");
+          $offerletter_denied_query = mysqli_query($con, "SELECT * FROM offer_letters where status = -2");
+          $offerletter_budget_query = mysqli_query($con, "SELECT * FROM offer_letters where status = -3");
         } elseif ($olr_sent_to_cand == 1 && $view_olr == 1) {
           $offerletter_pending_query = mysqli_query($con, "SELECT * FROM offer_letters where status = 0");
-          $offerletter_accepted_query = mysqli_query($con, "SELECT * FROM offer_letters where  status = 1");
-          $offerletter_denied_query = mysqli_query($con, "SELECT * FROM offer_letters where status = 2");
-          $offerletter_budget_query = mysqli_query($con, "SELECT * FROM offer_letters where status = 3");
+          $offerletter_accepted_query = mysqli_query($con, "SELECT * FROM offer_letters where  status >= 1");
+          $offerletter_denied_query = mysqli_query($con, "SELECT * FROM offer_letters where status = -2");
+          $offerletter_budget_query = mysqli_query($con, "SELECT * FROM offer_letters where status = -3");
         } elseif ($generate_olr == 1) {
           $offerletter_pending_query = mysqli_query($con, "SELECT * FROM offer_letters where requested_by='$email' and status = 0");
-          $offerletter_accepted_query = mysqli_query($con, "SELECT * FROM offer_letters where requested_by='$email' and status = 1");
-          $offerletter_denied_query = mysqli_query($con, "SELECT * FROM offer_letters where requested_by='$email' and status = 2");
-          $offerletter_budget_query = mysqli_query($con, "SELECT * FROM offer_letters where requested_by='$email' and status = 3");
+          $offerletter_accepted_query = mysqli_query($con, "SELECT * FROM offer_letters where requested_by='$email' and status >= 1");
+          $offerletter_denied_query = mysqli_query($con, "SELECT * FROM offer_letters where requested_by='$email' and status = -2");
+          $offerletter_budget_query = mysqli_query($con, "SELECT * FROM offer_letters where requested_by='$email' and status = -3");
         }
 
 
@@ -142,12 +169,12 @@ while ($row = mysqli_fetch_array($query_role)) {
               <?php
               if ($super_admin == 1) {
               ?>
-                <li><a><i class="fa fa-edit"></i>Add Masters <span class="fa fa-chevron-down"></span></a>
+                <li><a><i class="fa fa-users"></i>Add Masters <span class="fa fa-chevron-down"></span></a>
                   <ul class="nav child_menu">
 
                     <?php
 
-                    $entity_query = mysqli_query($con, "Select * from entity");
+                    $entity_query = mysqli_query($con, "SELECT * from entity");
                     while ($row = mysqli_fetch_array($entity_query)) {
                       echo "<li><a href='add_masters.php?page=" . $row['entity_name'] . "'>" . $row['entity_name'] . "</a></li>";
                     }
@@ -163,7 +190,7 @@ while ($row = mysqli_fetch_array($query_role)) {
                   <ul class="nav child_menu">
 
                     <?php
-                    $entity_query = mysqli_query($con, "Select * from entity");
+                    $entity_query = mysqli_query($con, "SELECT * from entity");
                     while ($row = mysqli_fetch_array($entity_query)) {
                       echo "<li><a href='manage_masters.php?page=" . $row['entity_name'] . "'>" . $row['entity_name'] . "</a></li>";
                     }
@@ -173,20 +200,15 @@ while ($row = mysqli_fetch_array($query_role)) {
                -->
                   </ul>
                 </li>
-                <li><a><i class="fa fa-edit"></i>Currency <span class="fa fa-chevron-down"></span></a>
-                  <ul class="nav child_menu">
-                    <li><a href="add_currency.php">Add Currency </a>
-                    <li><a href="update_currency.php">Update Currency </a>
-                    </li>
-
-                  </ul>
+                <li><a href="update_currency.php"> <i class="fa fa-usd"></i>  Currency<span class="fa fa-chevron-right"></span></a>
                 </li>
+             
 
 
-                <li><a><i class="fa fa-edit"></i>Add Department <span class="fa fa-chevron-down"></span></a>
+                <li><a><i class="fa fa-building"></i>Add Department <span class="fa fa-chevron-down"></span></a>
                   <ul class="nav child_menu">
                     <?php
-                    $entity_query = mysqli_query($con, "Select * from entity");
+                    $entity_query = mysqli_query($con, "SELECT * from entity");
                     while ($row = mysqli_fetch_array($entity_query)) {
                       echo "<li><a href='add_dep.php?page=" . $row['entity_name'] . "'>" . $row['entity_name'] . "</a></li>";
                     }
@@ -195,49 +217,48 @@ while ($row = mysqli_fetch_array($query_role)) {
                   </ul>
                 </li>
 
-                <!-- <li><a href="add_pos.php"><i class="fa fa-edit"></i>Add Role <span class="fa fa-chevron-right"></span></a></li> -->
 
+ <li><a><i class="fa fa-address-book"></i>Manage Roles <span class="fa fa-chevron-down"></span></a>
+                  <ul class="nav child_menu">
 
+                    <?php
+                    $entity_query = mysqli_query($con, "SELECT * from entity");
+                    while ($row = mysqli_fetch_array($entity_query)) {
+                      echo "<li><a href='manage_role.php?page=" .  str_replace(" ","_",$row['entity_name']) . "'>" . $row['entity_name'] . "</a></li>";
+                    }
+                    ?>
+
+                  </ul>
+                </li>
                 <li>
-                  <a><i class="fa fa-edit"></i>Add Roles <span class="fa fa-chevron-down"></span></a>
+                  <a><i class="fa fa-address-book-o"></i>Add Roles <span class="fa fa-chevron-down"></span></a>
                   <ul class="nav child_menu">
-
                     <?php
-                    $entity_query = mysqli_query($con, "Select * from entity");
+                    $entity_query = mysqli_query($con, "SELECT * from entity");
                     while ($row = mysqli_fetch_array($entity_query)) {
-                      echo "<li><a href='add_role.php?page=" . $row['entity_name'] . "'>" . $row['entity_name'] . "</a></li>";
+                      echo "<li><a href='add_role.php?page=" . str_replace(" ","_", $row['entity_name']) . "'>" . $row['entity_name'] . "</a></li>";
                     }
                     ?>
 
                   </ul>
                 </li>
-                <li><a><i class="fa fa-edit"></i>Manage Roles <span class="fa fa-chevron-down"></span></a>
-                  <ul class="nav child_menu">
-
-                    <?php
-                    $entity_query = mysqli_query($con, "Select * from entity");
-                    while ($row = mysqli_fetch_array($entity_query)) {
-                      echo "<li><a href='manage_role.php?page=" . $row['entity_name'] . "'>" . $row['entity_name'] . "</a></li>";
-                    }
-                    ?>
-
-                  </ul>
-                </li>
-                <li><a> <i class="fa fa-edit"></i>Offer Letter Template<span class="fa fa-chevron-down"></span></a>
+               
+                <li><a> <i class="fa fa-file-text" aria-hidden="true"></i>Offer Letter Template<span class="fa fa-chevron-down"></span></a>
                   <ul class="nav child_menu">
 
                     <li><a href='addTemplate.php'>Add Template</a></li>
-                    <li><a href='editTemplate.php'>Edit Template</a></li>
+                 <?php    $entity_query = mysqli_query($con, "SELECT * from entity");
+                    while ($row = mysqli_fetch_array($entity_query)) {
+                      echo "<li><a href='viewTemplates.php?page=" . str_replace(" ","_", $row['entity_name']) . "'> <i class='fa fa-eye' aria-hidden='true'></i>" . $row['entity_name'] . "</a></li>";
+                    }
+                    ?>
 
                   </ul>
                 </li>
-                <li><a href="add_pos.php"><i class="fa fa-edit"></i>Add Positions <span class="fa fa-chevron-right"></span></a>
-
-                </li>
-                <li><a><i class="fa fa-edit"></i> Add Job Title <span class="fa fa-chevron-down"></span></a>
+                     <li><a><i class="fa fa-suitcase" aria-hidden="true"></i> Add Job Title <span class="fa fa-chevron-down"></span></a>
                   <ul class="nav child_menu">
                     <?php
-                    $entity_query = mysqli_query($con, "Select * from `position_type`");
+                    $entity_query = mysqli_query($con, "SELECT * from `position_type`");
                     while ($row = mysqli_fetch_array($entity_query)) {
 
                       echo "<li><a href='add_job_title.php?type=" . $row['name'] . "'>" . $row['name'] . "</a></li>";
@@ -245,13 +266,18 @@ while ($row = mysqli_fetch_array($query_role)) {
                     ?>
                   </ul>
                 </li>
+                <li><a href="add_pos.php"><i class="fa fa-user" aria-hidden="true"></i>Add Positions <span class="fa fa-chevron-right"></span></a>
+
+                </li>
+           
                 <!-- <li><a href="add_entitlement.php"><i class="fa fa-edit"></i>Add Entitlement <span class="fa fa-chevron-right"></span></a>
            
           </li>
           <li><a href="assign_entitlement.php"><i class="fa fa-edit"></i>Assign Entitlement <span class="fa fa-chevron-right"></span></a>
             
           </li> -->
-                <li><a href="add_entity.php"> <i class="fa fa-edit"></i>Add Entity <span class="fa fa-chevron-right"></span></a>
+                <li><a href="add_entity.php"> <i class="fa fa-university" aria-hidden="true"></i>
+ Add Entity <span class="fa fa-chevron-right"></span></a>
 
                 </li>
 
@@ -262,7 +288,7 @@ while ($row = mysqli_fetch_array($query_role)) {
               }
               if ($olr_sent_to_cand == 1) {
               ?>
-                <li><a href="hr_new_employee_list.php"><i class="fa fa-eject"></i>New Employee<span class="fa fa-chevron-right"></span></a></li>
+                <li><a href="hr_new_employee_list.php"><i class="fa fa-plus-circle"></i>New Employee<span class="fa fa-chevron-right"></span></a></li>
 
               <?php
               }
@@ -274,15 +300,14 @@ while ($row = mysqli_fetch_array($query_role)) {
                 <li><a><i class="fa fa-user"></i> Recruitment <span class="fa fa-chevron-down"></span></a>
                   <ul class="nav child_menu">
 
-                    <li><a href="OLR_Pending.php">Offer Letter Requested <span class="badge badge-light"><?php echo $cnt; ?></span> <span class="fa fa-spinner"></span></a></li>
-                    <li><a href="adoHeadOLR_Accepted.php">Approved <span class="badge badge-light"><?php echo $cnt1; ?></span> <span class="fa fa-check-square"></span></a></li>
-                    <!--                       <li><a href="adoHeadOLR_Pending.php">Pending</a></li>
-    -->
-                    <li><a href="adoHeadOLR_Denied.php">Denied <span class="badge badge-light"><?php echo $cnt2; ?></span> <span class="fa fa-ban"></span></a></li>
+                    <li><a href="OLR_Pending.php">Offer Letter Requested <span class="badge badge-light"> <?php echo $cnt; ?></span> </a></li>
+                    <li><a href="adoHeadOLR_Accepted.php">Approved <span class="badge badge-light"><?php echo $cnt1; ?></span> </a></li>
+      
+                    <li><a href="adoHeadOLR_Denied.php">Denied <span class="badge badge-light"><?php echo $cnt2; ?></span> </a></li>
                     <li><a href="OLR_BudgetProb.php">Budget Unavailability <span class="badge badge-light"> <?php echo $cnt3; ?> </span></a></li>
                   </ul>
                 </li>
-                <li><a><i class="fa fa-gear"></i> Request for the Budget <span class="fa fa-chevron-down"></span></a>
+                <li><a><i class="fa fa-gear"></i>  Budget Requests<span class="fa fa-chevron-down"></span></a>
                   <ul class="nav child_menu">
 
                     <li><a href="adoHeadSendRequest.php">Send Request <span class="fa fa-edit"></span></a></li>
@@ -295,10 +320,16 @@ while ($row = mysqli_fetch_array($query_role)) {
                   <ul class="nav child_menu">
 
                     <?php
-                    $entity_query = mysqli_query($con, "Select * from entity");
+                    if( $super_admin == 1){
+                    $entity_query = mysqli_query($con, "SELECT * from entity");
                     while ($row = mysqli_fetch_array($entity_query)) {
                       echo "<li><a href='entity_transaction.php?page=" . $row['entity_name'] . "'>" . $row['entity_name'] . "</a></li>";
                     }
+                  }else{
+                    
+                      echo "<li><a href='entity_transaction.php?page=" . $_SESSION['entity'] . "'>" . str_replace("_"," ",$_SESSION['entity'] ). "</a></li>";
+                    
+                  }
                     ?>
 
                   </ul>
@@ -379,7 +410,7 @@ while ($row = mysqli_fetch_array($query_role)) {
                 <?php
                 if ($generate_olr == 1) {
                 ?>
-                  <li><a><i class="fa fa-edit"></i>Currency <span class="fa fa-chevron-down"></span></a>
+                  <li><a><i class="fa fa-usd"></i>Currency <span class="fa fa-chevron-down"></span></a>
                     <ul class="nav child_menu">
 
                       <li><a href="update_currency.php">Update Currency </a>
@@ -466,7 +497,7 @@ while ($row = mysqli_fetch_array($query_role)) {
               <?php
               if ($olr_sent_to_cand == 1) {
               ?>
-                <li><a><i class="fa fa-edit"></i>Updates on Equipments <span class="fa fa-chevron-down"></span></a>
+                <li><a><i class="fa fa-edit"></i>Equipment Updates<span class="fa fa-chevron-down"></span></a>
                   <ul class="nav child_menu">
 
                     <li><a href="hr_view_asset_status.php">View</a></li>
@@ -504,12 +535,12 @@ while ($row = mysqli_fetch_array($query_role)) {
               <?php
               if ($olr_sent_to_cand == 1) {
               ?>
-                <li> <a href="hr_exit_interview.php"> <i class="fa fa-envelope"></i> Termination Exit Interview <span class="fa fa-chevron-right"></span> </a></li>
-                <li> <a href="view_exit_interview.php"> <i class="fa fa-envelope"></i> View Exit Interview <span class="fa fa-chevron-right"></span> </a></li>
+                <li> <a href="hr_exit_interview.php"> <i class="fa fa-ban"></i> Termination EIF <span class="fa fa-chevron-right"></span> </a></li>
+                <li> <a href="view_exit_interview.php"> <i class="fa fa-file-text"></i> View Exit Interview <span class="fa fa-chevron-right"></span> </a></li>
                 <!-- <li> <a href="asset_not_recieved.php"> <i class="fa fa-ban"></i> Asset Not Recieved <span class="fa fa-chevron-right"></span> </a></li>   -->
-                <li> <a href="cifResults.php"> <i class="fa fa-envelope"></i> CIF Forms <span class="fa fa-chevron-right"></span> </a></li>
-                <li> <a href="feedbackResults.php"> <i class="fa fa-envelope"></i> Feedback Forms <span class="fa fa-chevron-right"></span> </a></li>
-                <li><a href='separationResults.php'><i class="fa fa-envelope"></i>Employee Separation <span class="fa fa-chevron-right"></span></a></li>
+                <li> <a href="cifResults.php"> <i class="fa fa-address-book"></i> CIF Forms <span class="fa fa-chevron-right"></span> </a></li>
+                <li> <a href="feedbackResults.php"> <i class="fa fa-comments"></i> Feedback Forms <span class="fa fa-chevron-right"></span> </a></li>
+                <li><a href='separationResults.php'><i class="fa fa-eject"></i>Employee Separation <span class="fa fa-chevron-right"></span></a></li>
               <?php
               }
               ?>
@@ -517,7 +548,7 @@ while ($row = mysqli_fetch_array($query_role)) {
               <?php
               if ($super_admin == 1) {
               ?>
-                <li> <a href="update_employee_details.php"> <i class="fa fa-envelope"></i> Update Emp. Details <span class="fa fa-chevron-right"></span> </a></li>
+                <li> <a href="update_employee_details.php"> <i class="fa fa-address-card"></i> Update Emp. Details <span class="fa fa-chevron-right"></span> </a></li>
 
               <?php
               }

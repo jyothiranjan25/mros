@@ -28,7 +28,8 @@ $emp_id = $_GET['emp_id'];
   <link href="../vendors/google-code-prettify/bin/prettify.min.css" rel="stylesheet">
 
   <!-- Custom styling plus plugins -->
-  <link href="../build/css/custom.min.css" rel="stylesheet">
+  <link href="../build/css/custom.min.css" rel="stylesheet">    <link href="../build/css/input.css" rel="stylesheet">
+
 
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>

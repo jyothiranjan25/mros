@@ -5,53 +5,19 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-    <!-- Meta, title, CSS, favicons, etc. -->
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-   <link rel="icon" href="images/ifim_logo.jpg" type="image/ico" />
-
-    <title>MROS | </title>
-
-    <!-- Bootstrap -->
  
-    <link href="../vendors/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
-    <!-- Font Awesome -->
-    <link href="../vendors/font-awesome/css/font-awesome.min.css" rel="stylesheet">
-    <!-- NProgress -->
-    <link href="../vendors/nprogress/nprogress.css" rel="stylesheet">
-    <!-- iCheck -->
-    <link href="../vendors/iCheck/skins/flat/green.css" rel="stylesheet">
-  
-    <!-- bootstrap-progressbar -->
-    <link href="../vendors/bootstrap-progressbar/css/bootstrap-progressbar-3.3.4.min.css" rel="stylesheet">
-    <!-- JQVMap -->
-    <link href="../vendors/jqvmap/dist/jqvmap.min.css" rel="stylesheet"/>
-    <!-- bootstrap-daterangepicker -->
-    <link href="../vendors/bootstrap-daterangepicker/daterangepicker.css" rel="stylesheet">
-  <link href="../vendors/switchery/dist/switchery.min.css" rel="stylesheet">
-    <!-- Custom Theme Style -->
-    <link href="../build/css/custom.min.css" rel="stylesheet">
-    <style>
-        .site_title{
-            overflow: inherit;
-        }
-        .nav_title{
-            height: 198px;
-            margin-top: -59px;
-        }
-        .required{
-          color: red;
-        }
-    </style>
+
+    <title>Offerletter Accept </title>
+
+    <?php
+include('includes/html_header.php'); ?>
+
     
   </head>
 
   <body class="nav-md">
     <?php
-include('includes/leftbar.php'); ?>
-<?php
+include('includes/leftbar.php'); 
 include('includes/topbar.php'); ?>
 
               
@@ -66,13 +32,13 @@ include('includes/topbar.php'); ?>
           <br />
 
 
-                <form id="save-pdf" name="save-pdf" action="rtfhtml1.php" method="post" enctype="multipart/form-data" class="form-horizontal">
+                <form id="save-pdf" name="save-pdf" action="olr_process.php" method="post" enctype="multipart/form-data" class="form-horizontal">
 
 
                 <?php 
                 
                 $olr_id=intval($_GET['olrid']);
-                $offerletter_query=mysqli_query($con,"SELECT * FROM offer_letters where offer_letters.id=$olr_id");
+                $offerletter_query=mysqli_query($con,"SELECT o.*,e.entity_name,c.symbol,c.name as currency_name, c.amount as camount FROM offer_letters o LEFT JOIN entity e ON e.id=o.entity_id LEFT JOIN currency_control c ON c.id=o.currency_type WHERE o.id=$olr_id");
 
 
                 $cnt=1;
@@ -200,29 +166,13 @@ include('includes/topbar.php'); ?>
                             <label  for="number"><b>Cost To Company:</b><span class="required">*</span>
                             </label> 
                         </div>
-                        <?php
-                        $cur_name=$row['currency_type'];
-                         if($cur_name !="INR(Rs)")
-                         {
-                           $query = "Select * from `currency_control` Where name='$cur_name'";
-                             $results = mysqli_query($con, $query);
-                             if (mysqli_num_rows($results) > 0)
-                             {
-                                 while ($conv_row=mysqli_fetch_array($results))
-                                 {
-                                     $show_ctc=$row['ctc']/$conv_row['amount'];                                        
-                                 }
-                             }
-                         }
-                         else{
-                           $show_ctc=$row['ctc'];
-                         }
-                        ?>
+                   
                         <div class="col-md-4 col-sm-6 ">
-                              <input name="ctc" type="number" id="ctc" value="<?php echo htmlentities($show_ctc);?>" required="required" class="form-control" placeholder="Per Annum" onfocusout="numberWithCommas()">
+                              <input name="ctc" type="number" id="ctc" value="<?= $row['ctc'];?>" required="required" class="form-control" placeholder="Per Annum" onfocusout="numberWithCommas()">
                         </div>
                         <div class="col-md-4 col-sm-6 ">
-                              <input readonly name="cur_type" type="text" id="cur_type" value="<?php echo htmlentities($row['currency_type']);?>" required="required" class="form-control" placeholder="Per Annum" onfocusout="numberWithCommas()">
+                              <input readonly name="cur_type" type="text" id="cur_type" value="<?= $row['currency_name'];?>" required="required" class="form-control" placeholder="Per Annum" onfocusout="numberWithCommas()">
+                              <input  type="text" name="symbol" id="cur_symbol" value="<?= $row['symbol'];?>" style="display:none">
                         </div>
                         <div class="col-md-4 col-sm-4 ">
                          <b> <h6 style="margin-top:6px;" id="commactc"> </h6><h6 style="margin-top:6px;" id="monthctc"> </h6><h6 style="margin-top:6px;" id="dctc"> </h6></b>
@@ -315,21 +265,17 @@ include('includes/topbar.php'); ?>
                                     </label> 
                           </div>
                                   
-                            <select class="col-md-5 col-sm-5" name="template_name" id="template_name" title="Select a Template type" class="form-control" required>
+                            <select class="col-md-5 col-sm-5" name="template_name" id="template_name" title="Select a Template type" class="form-control form-control-lg" required>
                           
                           <?php
-                                
-                                $entity = $row['entity_name'];
-
-                                $table_name= strtolower($entity."_Templates");                           
-                                $entity_query=mysqli_query($con,"Select `template_name` from `$table_name`");
+                                $table_name= strtolower($sesentity."_Templates");                           
+                                $entity_query=mysqli_query($con,"SELECT `id`,`template_name` from `$table_name`");
                                    while ($row=mysqli_fetch_array($entity_query))
                                        {
                                        ?>
-                                           <option value="<?php echo  $row['template_name']; ?>"><?php echo $row['template_name']; ?></option>
+                                           <option value="<?=  $row['id']; ?>"><?= ucwords($row['template_name']); ?></option>
                                       <?php
                                       }
-                                    
                           ?>
                         </select>
                     
@@ -372,68 +318,31 @@ include('includes/topbar.php'); ?>
     <script type="text/javascript">
     
  function numberWithCommas() {
+  
            var x = document.getElementById("ctc");
+           var curr = document.getElementById("cur_type").value;
+           var symbol = document.getElementById("cur_symbol").value;
+          
           y = x.value;
           y=y*1;
 i = y/12;
 j = i/30;
 
-
         
          z = (y).toLocaleString('en-IN');
       
-         document.getElementById("commactc").innerHTML = "&#8377;"  +  z + " / Annum";
+         document.getElementById("commactc").innerHTML =  symbol  +  z + " / Annum";
 
 i=(i).toLocaleString('en-IN');
 j=(j).toLocaleString('en-IN');
 
-             document.getElementById("monthctc").innerHTML = "&#8377;"  +  i + " / Month";
-             document.getElementById("dctc").innerHTML = "&#8377;"  +  j + " / day";
+             document.getElementById("monthctc").innerHTML =   symbol +  i + " / Month";
+             document.getElementById("dctc").innerHTML =  symbol +  j + " / day";
 }
+</script>
 
-    </script>
-
-    <!-- jQuery -->
-    <script src="../vendors/jquery/dist/jquery.min.js"></script>
-    <!-- Bootstrap -->
-    <script src="../vendors/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    <!-- FastClick -->
-    <script src="../vendors/fastclick/lib/fastclick.js"></script>
-    <!-- NProgress -->
-    <script src="../vendors/nprogress/nprogress.js"></script>
-    <!-- Chart.js -->
-    <script src="../vendors/Chart.js/dist/Chart.min.js"></script>
-    <!-- gauge.js -->
-    <script src="../vendors/gauge.js/dist/gauge.min.js"></script>
-    <!-- bootstrap-progressbar -->
-    <script src="../vendors/bootstrap-progressbar/bootstrap-progressbar.min.js"></script>
-    <!-- iCheck -->
-    <script src="../vendors/iCheck/icheck.min.js"></script>
-    <!-- Skycons -->
-    <script src="../vendors/skycons/skycons.js"></script>
-    <script src="../vendors/switchery/dist/switchery.min.js"></script>
-    <!-- Flot -->
-    <script src="../vendors/Flot/jquery.flot.js"></script>
-    <script src="../vendors/Flot/jquery.flot.pie.js"></script>
-    <script src="../vendors/Flot/jquery.flot.time.js"></script>
-    <script src="../vendors/Flot/jquery.flot.stack.js"></script>
-    <script src="../vendors/Flot/jquery.flot.resize.js"></script>
-    <!-- Flot plugins -->
-    <script src="../vendors/flot.orderbars/js/jquery.flot.orderBars.js"></script>
-    <script src="../vendors/flot-spline/js/jquery.flot.spline.min.js"></script>
-    <script src="../vendors/flot.curvedlines/curvedLines.js"></script>
-    <!-- DateJS -->
-    <script src="../vendors/DateJS/build/date.js"></script>
-    <!-- JQVMap -->
-    <script src="../vendors/jqvmap/dist/jquery.vmap.js"></script>
-    <script src="../vendors/jqvmap/dist/maps/jquery.vmap.world.js"></script>
-    <script src="../vendors/jqvmap/examples/js/jquery.vmap.sampledata.js"></script>
-    <!-- bootstrap-daterangepicker -->
-    <script src="../vendors/moment/min/moment.min.js"></script>
-    <script src="../vendors/bootstrap-daterangepicker/daterangepicker.js"></script>
-
-    <!-- Custom Theme Scripts -->
-    <script src="../build/js/custom.min.js"></script>
+ <?php
+include('includes/html_footer.php'); ?>
   
   </body>
 </html>

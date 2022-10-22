@@ -58,8 +58,8 @@ $personal_mail="";
     $mail->isHTML(true);                                  // Set email format to HTML
     
     $mail->Subject = 'Offer Letter';
-    $page_accept="https://mros.ifim.edu.in/dynamic/cand_offerletter_accept.php?id=".$olr_id;
-    $page_reject="https://mros.ifim.edu.in/dynamic/cand_offerletter_reject.php?id=".$olr_id;
+    $page_accept=$base_link."cand_offerletter_accept.php?id=".$olr_id;
+    $page_reject=$base_link."cand_offerletter_reject.php?id=".$olr_id;
     $body='This is the message body . You can write anything.<br><br><br>
     <a class="btn btn-primary" style="background-color: #000044a6;color: white;text-decoration: none;padding: 10px;" href="'.$page_accept.'" target="_blank">Accept</a>
     <a class="btn btn-primary" style="background-color: #c80e0ea6;color: white;text-decoration: none;padding: 10px;" href="'.$page_reject.'" target="_blank">Reject</a>';
@@ -132,7 +132,8 @@ $message_data=mysqli_fetch_array($message_query);
     <link href="../vendors/datatables.net-scroller-bs/css/scroller.bootstrap.min.css" rel="stylesheet">
 
     <!-- Custom Theme Style -->
-    <link href="../build/css/custom.min.css" rel="stylesheet">
+    <link href="../build/css/custom.min.css" rel="stylesheet">    <link href="../build/css/input.css" rel="stylesheet">
+
 
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.slim.min.js"></script>
     <script type="text/javascript" src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.bundle.min.js"></script>
