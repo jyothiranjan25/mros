@@ -1,6 +1,6 @@
 <?php
 include('../includes/dbconnection.php');
-error_reporting(0);
+
 $id=$_GET['id'];
 $curr_date=date("Y-m-d");
 $status=7;
@@ -10,4 +10,3 @@ echo '<script type="text/javascript">';
 echo 'alert("Thank you for your response");'; 
 echo 'window.close();';
 echo '</script>';
-?>

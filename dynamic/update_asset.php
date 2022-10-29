@@ -1,6 +1,6 @@
 <?php
 include('../includes/dbconnection.php');
-session_start(); 
+ 
 $val=$_GET['val'];
 $entity=$_SESSION['entity'];
 $title="";
@@ -8,5 +8,3 @@ $title="";
 // $results = mysqli_query($con, $query);
 echo $val." has been updated";
 // echo "<script>alert($val);</script>";
-
-?>

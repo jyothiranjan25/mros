@@ -1,12 +1,12 @@
 <?php
 include('../includes/dbconnection.php');
-error_reporting(0);
-session_start();
+
+
 // include('sendmailnoti.php');
 include('includes/leftbar.php');
 include('includes/topbar.php');
 $e = "New Employee";
-$entity =  str_replace(" ","_",$_SESSION['entity']);
+$entity =  str_replace(" ", "_", $_SESSION['entity']);
 $table = strtolower($entity . "_headcount");
 $roletable = strtolower($entity . "_role");
 $notification_table = strtolower($entity . "_notification");
@@ -16,7 +16,7 @@ $hc = 0;
 
 if (isset($_POST['submit'])) {
   $arr = array('1' => 'April', '2' => 'May', '3' => 'June', '4' => 'July', '5' => 'August', '6' => 'September', '7' => 'October', '8' => 'November', '9' => 'December', '10' => 'January', '11' => 'February', '12' => 'March',);
-  $entityname = str_replace(" ","_",$_POST['entityname']);
+  $entityname = str_replace(" ", "_", $_POST['entityname']);
   $ctc = $_POST['ctc'];
   $mctc = $ctc / 12;
   $pos = $_POST['pos'];
@@ -167,7 +167,7 @@ if (isset($_POST['submit'])) {
         }
       }
     }
-$status=0;
+    $status = 0;
     $query = mysqli_query($con, "INSERT INTO `offer_letters` (`id`,`cand_name`,`cand_address`,`jobtype`,`jobmonths`, `pos`, `job_title`,`personal_mail_id`, `joining_date`,`currency_type`, `ctc`, `probation`, `reporting_to`,`requested_by`,`replacement`, `expiry_date`, `work_time`, `work_days`,`entity_name`,`perks`,`status`,`olr_filled_date`)
                      VALUES ('$sn','$cand_name','$cand_address','$jobtype','$jobmonths', '$pos', '$job_title','$mail_id', '$joining_date','$cur_name','$ctc', '$probation', '$report_to','$requested_by','$replacement', '$expire_date', '$work_hour', '$work_days','$entityname','$perks','$status','$submit_date')");
     if (!$query) {
@@ -258,7 +258,8 @@ $status=0;
   <link href="../vendors/google-code-prettify/bin/prettify.min.css" rel="stylesheet">
 
   <!-- Custom styling plus plugins -->
-  <link href="../build/css/custom.min.css" rel="stylesheet">    <link href="../build/css/input.css" rel="stylesheet">
+  <link href="../build/css/custom.min.css" rel="stylesheet">
+  <link href="../build/css/input.css" rel="stylesheet">
 
   <link href="../build/css/rahul.css" rel="stylesheet">
   <style>

@@ -1,7 +1,7 @@
 <?php
-error_reporting(0);
+
 include('../includes/dbconnection.php');
-session_start();
+
 $entity = $_SESSION['entity'];
 $password = $_SESSION['password'];
 // $id = $_SESSION['id'];
@@ -9,7 +9,7 @@ $password = $_SESSION['password'];
 //   echo "<script>window.location.href='login.php';</script>";
 // }
 
-$entity_table=$entity."_emp";
+$entity_table = $entity . "_emp";
 
 if (isset($_POST['submit'])) {
 
@@ -18,22 +18,21 @@ if (isset($_POST['submit'])) {
   $email =  $_POST['email'];
   $old_password =  md5($_POST['old']);
   $passwordz =  md5($_POST['password']);
-if($password == $old_password){
+  if ($password == $old_password) {
 
-  $upd = mysqli_query($con, "UPDATE `$entity_table`  SET password='$passwordz' WHERE email = '$email'");
+    $upd = mysqli_query($con, "UPDATE `$entity_table`  SET password='$passwordz' WHERE email = '$email'");
 
-  if ($upd) {
-    echo "<script> alert('Updated Successfully!');</script>";
-    echo "<script>window.location.href='index.php';</script>";
+    if ($upd) {
+      echo "<script> alert('Updated Successfully!');</script>";
+      echo "<script>window.location.href='index.php';</script>";
+    } else {
+      $error = "----------------------------------------------------------->Error Description: " . mysqli_error($con);
+      echo $error;
+      echo "<script> alert('Something Gone Wrong!');</script>";
+    }
   } else {
-    $error = "----------------------------------------------------------->Error Description: " . mysqli_error($con);
-    echo $error;
-    echo "<script> alert('Something Gone Wrong!');</script>";
-  }
-}else{
     echo "<script> alert('Entered Wrong Old Password, Please try again!');</script>";
-
-}
+  }
 }
 
 
@@ -276,7 +275,7 @@ if($password == $old_password){
       } else if (confirmPassword != "") {
         document.getElementById("message").innerHTML = "";
       }
-     
+
     }
   </script>
   <!-- jQuery -->

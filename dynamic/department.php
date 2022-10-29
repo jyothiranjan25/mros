@@ -1,6 +1,6 @@
 <?php
 include('../includes/dbconnection.php');
-session_start(); 
+ 
 $dep=$_GET['dep'];
 $entity=$_SESSION['entity'];
  $rolename="";
@@ -22,6 +22,3 @@ else
 {
     echo "<option value=''>Please contact admin</option>";
 }
-
-?>
- 

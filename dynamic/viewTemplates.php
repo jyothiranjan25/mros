@@ -1,16 +1,14 @@
 <?php
 include('../includes/dbconnection.php');
-session_start();
-error_reporting(0);
+$entity_id = $_GET['id'];
+
 // if (!$_SESSION['id']) {
 //   echo "<script> window.location.href='login.php';</script>";
 // }
-$page=$_GET['page'];
-$table=$page."_templates";
-$num_records = mysqli_query($con, "SELECT * FROM $table");
+$page = $_GET['page'];
+$table = "templates";
+$num_records = mysqli_query($con, "SELECT * FROM $table WHERE entity_id='$entity_id' ");
 $num = mysqli_num_rows($num_records);
-
-
 ?>
 
 <!DOCTYPE html>
@@ -18,11 +16,11 @@ $num = mysqli_num_rows($num_records);
 
 <head>
 
-  <title>View  Templates!</title>
+  <title>View Templates!</title>
 
-  <?php 
-include('includes/html_header.php');
-?>
+  <?php
+  include('includes/html_header.php');
+  ?>
 </head>
 
 <body class="nav-md">
@@ -50,7 +48,7 @@ include('includes/html_header.php');
             <div class="x_title">
               <h2 style="color:black">Total Records <span style="color:blue"> <?php echo   $num ?></span></h2>
               <ul class="nav navbar-right panel_toolbox">
-                <a href="add_offer_letter.php" class="btn btn-primary" style="<?php echo $a_disabled; ?>color: white;">Add Template</a>
+                <a href="addTemplate.php" class="btn btn-primary" style="<?php echo $a_disabled; ?>color: white;">Add Template</a>
               </ul>
               <div class="clearfix"></div>
             </div>
@@ -76,7 +74,7 @@ include('includes/html_header.php');
                             <td><?php echo $sn ?></td>
                             <td><?php echo $row['template_name']  ?> </td>
                             <td><?php echo $row['description']  ?></td>
-                            <td><a  target="_blank" href="view_template.php?offer_id=<?= $row['id']  ?>&entity=<?= $page ?>" class="btn btn-danger">Template</a></td>
+                            <td><a target="_blank" href="view_template.php?offer_id=<?= $row['id']  ?>&entity=<?= $page ?>" class="btn btn-danger">Template</a></td>
                           </tr>
                         <?php $sn++;
                         } ?>
@@ -101,8 +99,8 @@ include('includes/html_header.php');
 
 
 
-<?php
-include('includes/html_footer.php'); ?>
+  <?php
+  include('includes/html_footer.php'); ?>
 
 </body>
 

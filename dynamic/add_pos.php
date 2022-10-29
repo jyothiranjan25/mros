@@ -1,32 +1,42 @@
 <?php
 include('../includes/dbconnection.php');
-error_reporting(0);
 $page = $_GET['page'];
 if (isset($_POST['submit'])) {
-$number = count($_POST["name"]);
-if($number > 0)
-{
-	for($i=0; $i<$number; $i++)
-	{
-		if(trim($_POST["name"][$i] != ''))
-		{
-			$pos_type_name=mysqli_real_escape_string($con, $_POST["name"][$i]);
-			$sql = "INSERT INTO `position_type`(name) VALUES('$pos_type_name')";
-			$check = mysqli_query($con, $sql);
+	$number = count($_POST["name"]);
+	if ($number > 0) {
+		for ($i = 0; $i < $number; $i++) {
+			if (trim($_POST["name"][$i] != '')) {
+				$pos_type_name = mysqli_real_escape_string($con, $_POST["name"][$i]);
+				$sql = "INSERT INTO `position_type`(name) VALUES('$pos_type_name')";
+				$check = mysqli_query($con, $sql);
+			}
 		}
+		if ($check) {
+
+			echo "<script>alert('Added Successfully!');</script>";
+		}
+	} else {
+		echo "<script>alert('Something gone wrong!');</script>";
+		// echo 'window.location.href = "add_pos.php"';
 	}
-	if($check){
+}
 
-		 echo "<script>alert('Added Successfully!');</script>";
+
+if (isset($_REQUEST['del'])) {
+	$id = $_REQUEST['del'];
+	$delete_query = mysqli_query($con, "DELETE FROM `position_type` WHERE `name`='$id'");
+	if ($delete_query) {
+		echo '<script type="text/javascript">';
+		echo 'alert("Position Type Deleted");';
+		echo 'window.location.href = "add_pos.php"';
+		echo '</script>';
+	} else {
+		echo '<script type="text/javascript">';
+		echo 'alert("Position Type can not be deleted");';
+		echo 'window.location.href = "add_pos.php"';
+		echo '</script>';
 	}
 }
-else
-{
-			 echo "<script>alert('Something gone wrong!');</script>";
-
-}
-}
-
 ?>
 
 <!DOCTYPE html>
@@ -87,8 +97,8 @@ else
 			<div class="row">
 				<div class="col-md-12 col-sm-12 ">
 					<div class="x_panel">
-					<br><br>
-					
+						<br><br>
+
 						<div class="x_content">
 							<br>
 
@@ -101,14 +111,42 @@ else
 											<td><button type="button" name="add" id="add" class="btn btn-success">Add More</button></td>
 										</tr>
 									</table>
-																<br>
-
-							<br>
-
-									<button type="submit" name="submit" id="submit" class="btn btn-secondary"  >Add Position Type</button>
+									<br>
+									<button type="submit" name="submit" id="submit" class="btn btn-secondary">Add Position Type</button>
 								</div>
 							</form>
 						</div>
+
+
+						<table id="datatable-buttons" class="table table-striped table-bordered table-hover" style="width:100%">
+							<thead>
+								<tr>
+									<th>SNo.</th>
+									<th>Name</th>
+									<th>Action</th>
+								</tr>
+							</thead>
+							<tbody>
+								<?php
+								$select_query = mysqli_query($con, "SELECT * FROM  `position_type`");
+								$cnt = 1;
+								while ($row = mysqli_fetch_array($select_query)) {
+								?>
+									<tr>
+										<td><?php echo htmlentities($cnt); ?></td>
+										<td><?php echo htmlentities($row['name']); ?></td>
+										<td>
+											<a href="add_pos.php?del=<?php echo htmlentities($row['name']); ?>" class="btn btn-danger"><i class="fa fa-trash" aria-hidden="true"></i>
+											</a>
+										</td>
+									</tr>
+								<?php
+									$cnt++;
+								}
+								?>
+							</tbody>
+						</table>
+
 					</div>
 				</div>
 			</div>
@@ -123,7 +161,7 @@ else
 
 	<!-- footer content -->
 	<footer>
-		
+
 		<div class="clearfix"></div>
 	</footer>
 	<!-- /footer content -->
@@ -142,7 +180,7 @@ else
 				$('#row' + button_id + '').remove();
 			});
 
-			
+
 
 		});
 	</script>

@@ -1,7 +1,5 @@
 <?php
 include('../includes/dbconnection.php');
-error_reporting(0);
-session_start();
    $role=$_SESSION['role'] ;
    $entity_id=$_SESSION['entity_id'] ;
 

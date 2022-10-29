@@ -1,5 +1,7 @@
 <?php
 include('../includes/dbconnection.php');
+$entity_id = $_GET['id'];
+
 
 if (!isset($_SESSION['email'])) {
   $_SESSION['msg'] = "You must log in first";
@@ -15,40 +17,40 @@ if (isset($_GET['logout'])) {
 }
 
 
-if($_POST['post_entity']){
-   
-$post_entity  = $_POST['post_entity'];
+if ($_POST['post_entity']) {
 
-  $inst_query = mysqli_query($con, "SELECT * from `entity` WHERE name='$post_entity'");
-    $inst_row = mysqli_fetch_array($inst_query);
-    $ses_entity_id = $inst_row['id'];
+  // $post_entity  = $_POST['post_entity'];
+
+  // $inst_query = mysqli_query($con, "SELECT * from `entity` WHERE `entity_name`='$post_entity'");
+  // $inst_row = mysqli_fetch_array($inst_query);
+  // $ses_entity_id = $inst_row['id'];
+  // // echo "<script>alert('" . $ses_entity_id . "');</script>";
 
 
- $adm_email=$_SESSION['email'];
-    $login_query = mysqli_query($con, "SELECT * from `login` WHERE email='$adm_email' AND entity_id='$ses_entity_id'");
-    $count = mysqli_num_rows($login_query);
-    $fet = mysqli_fetch_array($login_query);
-    if ($count > 0) {
+  // $adm_email = $_SESSION['email'];
+  // $login_query = mysqli_query($con, "SELECT * from `login` WHERE email='$adm_email' AND entity_id='$ses_entity_id'");
+  // $count = mysqli_num_rows($login_query);
+  // $fet = mysqli_fetch_array($login_query);
+  if ($count > 0) {
 
-        unset($_SESSION['entity']);
+    unset($_SESSION['entity']);
     unset($_SESSION['entity_id']);
-$_SESSION['entity_id'] = $ses_entity_id;
-// $_SESSION['entity']=$post_entity;
-      $_SESSION['entity'] =  str_replace(" ","_",$post_entity);
-        $_SESSION['entity_name'] = $post_entity;
-      $_SESSION['role'] = $fet['role'];
-    }else {
-        echo "<script>alert('You do not have any access to the system, Please contact SuperAdmin!');</script>";
-         echo "<script>
+    $_SESSION['entity_id'] = $ses_entity_id;
+    // $_SESSION['entity']=$post_entity;
+    $_SESSION['entity'] =  str_replace(" ", "_", $post_entity);
+    $_SESSION['entity_name'] = $post_entity;
+    $_SESSION['role'] = $fet['role'];
+  } else {
+    echo "<script>alert('You do not have any access to the system, Please contact SuperAdmin!');</script>";
+    echo "<script>
                 window.location.href='sign.php';</script>";
-    }
-
+  }
 }
 
 $sesentity = $_SESSION['entity'];
 $ses_entity_id = $_SESSION['entity_id'];
 
-$role_table = strtolower( str_replace(" ","_",$_SESSION['entity']) . "_Role");
+// $role_table = strtolower(str_replace(" ", "_", $_SESSION['entity']) . "_Role");
 $role_name = $_SESSION['role'];
 $username = "";
 $generate_olr = 0;
@@ -56,12 +58,14 @@ $accept_reject_olr = 0;
 $approve_olr = 0;
 $olr_sent_to_cand = 0;
 $view_olr = 0;
+$accounts = 0;
 $edit_olr = 0;
 $asset_req_manage = 0;
 $super_admin = 0;
 $new_emp = 0;
+$it = 0;
 $email = $_SESSION['email'];
-$query_role = mysqli_query($con, "SELECT * from `$role_table` Where name='$role_name' ");
+$query_role = mysqli_query($con, "SELECT * from `role` Where name='$role_name' ");
 while ($row = mysqli_fetch_array($query_role)) {
   $generate_olr = $row['generate_olr'];
 
@@ -174,9 +178,9 @@ while ($row = mysqli_fetch_array($query_role)) {
 
                     <?php
 
-                    $entity_query = mysqli_query($con, "SELECT * from entity");
+                    $entity_query = mysqli_query($con, "SELECT * FROM entity");
                     while ($row = mysqli_fetch_array($entity_query)) {
-                      echo "<li><a href='add_masters.php?page=" . $row['entity_name'] . "'>" . $row['entity_name'] . "</a></li>";
+                      echo "<li><a href='add_masters.php?page=" . $row['entity_name'] . '&id=' . $row['id'] . "'>" . $row['name'] . "</a></li>";
                     }
                     ?>
                     <!-- <li><a href="add_masters_bschool.php">B-School</a></li>
@@ -192,7 +196,7 @@ while ($row = mysqli_fetch_array($query_role)) {
                     <?php
                     $entity_query = mysqli_query($con, "SELECT * from entity");
                     while ($row = mysqli_fetch_array($entity_query)) {
-                      echo "<li><a href='manage_masters.php?page=" . $row['entity_name'] . "'>" . $row['entity_name'] . "</a></li>";
+                      echo "<li><a href='manage_masters.php?page=" . $row['entity_name'] . '&id=' . $row['id'] . "'>" . $row['name'] . "</a></li>";
                     }
                     ?>
                     <!-- <li><a href="add_masters_bschool.php">B-School</a></li>
@@ -200,9 +204,9 @@ while ($row = mysqli_fetch_array($query_role)) {
                -->
                   </ul>
                 </li>
-                <li><a href="update_currency.php"> <i class="fa fa-usd"></i>  Currency<span class="fa fa-chevron-right"></span></a>
+                <li><a href="update_currency.php"> <i class="fa fa-usd"></i> Currency<span class="fa fa-chevron-right"></span></a>
                 </li>
-             
+
 
 
                 <li><a><i class="fa fa-building"></i>Add Department <span class="fa fa-chevron-down"></span></a>
@@ -210,7 +214,7 @@ while ($row = mysqli_fetch_array($query_role)) {
                     <?php
                     $entity_query = mysqli_query($con, "SELECT * from entity");
                     while ($row = mysqli_fetch_array($entity_query)) {
-                      echo "<li><a href='add_dep.php?page=" . $row['entity_name'] . "'>" . $row['entity_name'] . "</a></li>";
+                      echo "<li><a href='add_dep.php?page=" . $row['entity_name'] . '&id=' . $row['id'] . "'>" . $row['name'] . "</a></li>";
                     }
                     ?>
 
@@ -218,44 +222,49 @@ while ($row = mysqli_fetch_array($query_role)) {
                 </li>
 
 
- <li><a><i class="fa fa-address-book"></i>Manage Roles <span class="fa fa-chevron-down"></span></a>
-                  <ul class="nav child_menu">
-
-                    <?php
-                    $entity_query = mysqli_query($con, "SELECT * from entity");
-                    while ($row = mysqli_fetch_array($entity_query)) {
-                      echo "<li><a href='manage_role.php?page=" .  str_replace(" ","_",$row['entity_name']) . "'>" . $row['entity_name'] . "</a></li>";
-                    }
-                    ?>
-
-                  </ul>
-                </li>
                 <li>
                   <a><i class="fa fa-address-book-o"></i>Add Roles <span class="fa fa-chevron-down"></span></a>
                   <ul class="nav child_menu">
                     <?php
                     $entity_query = mysqli_query($con, "SELECT * from entity");
                     while ($row = mysqli_fetch_array($entity_query)) {
-                      echo "<li><a href='add_role.php?page=" . str_replace(" ","_", $row['entity_name']) . "'>" . $row['entity_name'] . "</a></li>";
+                      echo "<li><a href='add_role.php?page=" . str_replace(" ", "_", $row['entity_name']) . '&id=' . $row['id'] . "'>" . $row['name'] . "</a></li>";
                     }
                     ?>
 
                   </ul>
                 </li>
-               
+
+
+                <li><a><i class="fa fa-address-book"></i>Manage Roles <span class="fa fa-chevron-down"></span></a>
+                  <ul class="nav child_menu">
+
+                    <?php
+                    $entity_query = mysqli_query($con, "SELECT * from entity");
+                    while ($row = mysqli_fetch_array($entity_query)) {
+                      echo "<li><a href='manage_role.php?page=" .  str_replace(" ", "_", $row['entity_name']) . '&id=' . $row['id'] . "'>" . $row['name'] . "</a></li>";
+                    }
+                    ?>
+
+                  </ul>
+                </li>
+
+
                 <li><a> <i class="fa fa-file-text" aria-hidden="true"></i>Offer Letter Template<span class="fa fa-chevron-down"></span></a>
                   <ul class="nav child_menu">
 
                     <li><a href='addTemplate.php'>Add Template</a></li>
-                 <?php    $entity_query = mysqli_query($con, "SELECT * from entity");
+                    <?php $entity_query = mysqli_query($con, "SELECT * from entity");
                     while ($row = mysqli_fetch_array($entity_query)) {
-                      echo "<li><a href='viewTemplates.php?page=" . str_replace(" ","_", $row['entity_name']) . "'> <i class='fa fa-eye' aria-hidden='true'></i>" . $row['entity_name'] . "</a></li>";
+                      echo "<li><a href='viewTemplates.php?page=" . str_replace(" ", "_", $row['entity_name']) . '&id=' . $row['id'] .  "'> <i class='fa fa-eye' aria-hidden='true'></i>" . $row['name'] . "</a></li>";
                     }
                     ?>
 
                   </ul>
                 </li>
-                     <li><a><i class="fa fa-suitcase" aria-hidden="true"></i> Add Job Title <span class="fa fa-chevron-down"></span></a>
+                <li><a href="add_pos.php"><i class="fa fa-user" aria-hidden="true"></i>Add Positions <span class="fa fa-chevron-right"></span></a>
+                </li>
+                <li><a><i class="fa fa-suitcase" aria-hidden="true"></i> Add Job Title <span class="fa fa-chevron-down"></span></a>
                   <ul class="nav child_menu">
                     <?php
                     $entity_query = mysqli_query($con, "SELECT * from `position_type`");
@@ -266,10 +275,8 @@ while ($row = mysqli_fetch_array($query_role)) {
                     ?>
                   </ul>
                 </li>
-                <li><a href="add_pos.php"><i class="fa fa-user" aria-hidden="true"></i>Add Positions <span class="fa fa-chevron-right"></span></a>
 
-                </li>
-           
+
                 <!-- <li><a href="add_entitlement.php"><i class="fa fa-edit"></i>Add Entitlement <span class="fa fa-chevron-right"></span></a>
            
           </li>
@@ -277,7 +284,7 @@ while ($row = mysqli_fetch_array($query_role)) {
             
           </li> -->
                 <li><a href="add_entity.php"> <i class="fa fa-university" aria-hidden="true"></i>
- Add Entity <span class="fa fa-chevron-right"></span></a>
+                    Add Entity <span class="fa fa-chevron-right"></span></a>
 
                 </li>
 
@@ -302,12 +309,12 @@ while ($row = mysqli_fetch_array($query_role)) {
 
                     <li><a href="OLR_Pending.php">Offer Letter Requested <span class="badge badge-light"> <?php echo $cnt; ?></span> </a></li>
                     <li><a href="adoHeadOLR_Accepted.php">Approved <span class="badge badge-light"><?php echo $cnt1; ?></span> </a></li>
-      
+
                     <li><a href="adoHeadOLR_Denied.php">Denied <span class="badge badge-light"><?php echo $cnt2; ?></span> </a></li>
                     <li><a href="OLR_BudgetProb.php">Budget Unavailability <span class="badge badge-light"> <?php echo $cnt3; ?> </span></a></li>
                   </ul>
                 </li>
-                <li><a><i class="fa fa-gear"></i>  Budget Requests<span class="fa fa-chevron-down"></span></a>
+                <li><a><i class="fa fa-gear"></i> Budget Requests<span class="fa fa-chevron-down"></span></a>
                   <ul class="nav child_menu">
 
                     <li><a href="adoHeadSendRequest.php">Send Request <span class="fa fa-edit"></span></a></li>
@@ -320,16 +327,15 @@ while ($row = mysqli_fetch_array($query_role)) {
                   <ul class="nav child_menu">
 
                     <?php
-                    if( $super_admin == 1){
-                    $entity_query = mysqli_query($con, "SELECT * from entity");
-                    while ($row = mysqli_fetch_array($entity_query)) {
-                      echo "<li><a href='entity_transaction.php?page=" . $row['entity_name'] . "'>" . $row['entity_name'] . "</a></li>";
+                    if ($super_admin == 1) {
+                      $entity_query = mysqli_query($con, "SELECT * from entity");
+                      while ($row = mysqli_fetch_array($entity_query)) {
+                        echo "<li><a href='entity_transaction.php?page=" . $row['entity_name'] . "'>" . $row['entity_name'] . "</a></li>";
+                      }
+                    } else {
+
+                      echo "<li><a href='entity_transaction.php?page=" . $_SESSION['entity'] . "'>" . str_replace("_", " ", $_SESSION['entity']) . "</a></li>";
                     }
-                  }else{
-                    
-                      echo "<li><a href='entity_transaction.php?page=" . $_SESSION['entity'] . "'>" . str_replace("_"," ",$_SESSION['entity'] ). "</a></li>";
-                    
-                  }
                     ?>
 
                   </ul>

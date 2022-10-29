@@ -1,6 +1,6 @@
 <?php
 include('../includes/dbconnection.php');
-session_start(); 
+ 
 $name=$_GET['name'];
 $entity=$_SESSION['entity'];
 
@@ -22,5 +22,3 @@ else
 {
     echo "<option value=0>First Select Position Type</option>";
 }
-
-?>

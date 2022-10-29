@@ -1,5 +1,5 @@
 <?php
-      session_start();
+      
       // include ('includes/rtf-html converter.php');
       require ('includes/mpdf/vendor/autoload.php');
       $target_file = $_SESSION['filename'];
@@ -22,5 +22,3 @@
 
       $mpdf->Output($target_file."pdf",'F');
       echo "<script>alert('Pdf Generated.');window.location.href ='adoHeadOLR_Accepted.php';</script>";
-
- ?>

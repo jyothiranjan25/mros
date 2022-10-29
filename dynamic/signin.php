@@ -1,7 +1,7 @@
 <?php
 include('../includes/dbconnection.php');
 
-session_start();
+
 
 require "vendor/autoload.php";
 
@@ -14,6 +14,6 @@ use myPHPnotes\Microsoft\Auth;
 // $callback = "http://localhost/mros/dynamic/login.php";
 // $scopes = ["User.Read"];
 
-$microsoft = new Auth($tenant, $client_id, $client_secret,$callback, $scopes);
+$microsoft = new Auth($tenant, $client_id, $client_secret, $callback, $scopes);
 
 header("location: " . $microsoft->getAuthUrl());

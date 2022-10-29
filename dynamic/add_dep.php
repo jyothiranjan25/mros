@@ -1,7 +1,25 @@
 <?php
 include('../includes/dbconnection.php');
-error_reporting(0);
-$page = strtolower($_GET['page'] . "_Dep");
+$entity_id = $_GET['id'];
+$page = $_GET['page'];
+
+if (isset($_REQUEST['del'])) {
+  $id = $_REQUEST['del'];
+  $name = $_REQUEST['name'];
+  $delete_query = mysqli_query($con, "DELETE FROM `department` WHERE `id`='$id' AND `name`='$name'");
+  if ($delete_query) {
+    echo '<script type="text/javascript">';
+    echo 'alert("Position Type Deleted");';
+    echo 'window.location.href = "add_dep.php?page=' . $page . '&id=' . $entity_id . ' " ';
+    echo '</script>';
+  } else {
+    echo '<script type="text/javascript">';
+    echo 'alert("Position Type can not be deleted");';
+    echo 'window.location.href = "add_dep.php?page=' . $page . '&id=' . $entity_id . ' " ';
+    echo '</script>';
+  }
+}
+?>
 
 
 ?>
@@ -28,7 +46,8 @@ $page = strtolower($_GET['page'] . "_Dep");
   <link href="../vendors/google-code-prettify/bin/prettify.min.css" rel="stylesheet">
 
   <!-- Custom styling plus plugins -->
-  <link href="../build/css/custom.min.css" rel="stylesheet">    <link href="../build/css/input.css" rel="stylesheet">
+  <link href="../build/css/custom.min.css" rel="stylesheet">
+  <link href="../build/css/input.css" rel="stylesheet">
 
 
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
@@ -77,14 +96,12 @@ $page = strtolower($_GET['page'] . "_Dep");
             </div>
             <div class="x_content">
               <br />
-
-
-
               <form name="add_name" id="add_name">
                 <div class="table-responsive">
                   <table class="table table-bordered" id="dynamic_field">
                     <tr>
                       <td><input type="text" name="name[]" placeholder="Enter Department Name for <?php echo $page; ?>" class="form-control name_list" /></td>
+                      <!-- <td><input type="hiddden" name="" value="<?php echo $entity_id ?>" placeholder="entity" class="form-control name_list" /></td> -->
                       <td><button type="button" name="add" id="add" class="btn btn-success">Add More</button></td>
                     </tr>
                   </table>
@@ -92,17 +109,43 @@ $page = strtolower($_GET['page'] . "_Dep");
                 </div>
               </form>
             </div>
+
+
+            <table id="datatable-buttons" class="table table-striped table-bordered table-hover" style="width:100%">
+              <thead>
+                <tr>
+                  <th>SNo.</th>
+                  <th>Department</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                <?php
+                $select_query = mysqli_query($con, "SELECT * FROM  `department` WHERE `entity_id`='$entity_id'");
+                $cnt = 1;
+                while ($row = mysqli_fetch_array($select_query)) {
+                ?>
+                  <tr>
+                    <td><?php echo htmlentities($cnt); ?></td>
+                    <td><?php echo htmlentities($row['name']); ?></td>
+                    <td>
+                      <a href="add_dep.php?del=<?php echo htmlentities($row['id']); ?>&name=<?php echo htmlentities($row['name']); ?>" class="btn btn-danger"><i class="fa fa-trash" aria-hidden="true"></i>
+                      </a>
+                    </td>
+                  </tr>
+                <?php
+                  $cnt++;
+                }
+                ?>
+              </tbody>
+            </table>
           </div>
         </div>
       </div>
-
-
-
-
-
     </div>
   </div>
   <!-- /page content -->
+
 
   <!-- footer content -->
   <footer>

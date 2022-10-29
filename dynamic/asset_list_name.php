@@ -1,6 +1,6 @@
 <?php
 include('../includes/dbconnection.php');
-session_start(); 
+ 
 $name=$_GET['name'];
 $entity=$_SESSION['entity'];
 $title="";
@@ -56,5 +56,3 @@ if($_SESSION['role']==$title)
     }
 
 }
-
-?>

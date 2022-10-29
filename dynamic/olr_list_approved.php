@@ -1,7 +1,7 @@
 <?php
 include('../includes/dbconnection.php');
-error_reporting(0);
-session_start();
+
+
 $entity = $_SESSION['entity'];
 $notification_table = strtolower($entity . " notification");
 ?>
@@ -57,8 +57,8 @@ if (isset($_REQUEST['olrid'])) {
   // $mail->addAttachment('/tmp/image.jpg', 'new.jpg');    // Optional name
   $mail->isHTML(true);                                  // Set email format to HTML
   $mail->Subject = 'Offer Letter';
-  $page_accept = $base_link."cand_offerletter_accept.php?id=" . $olr_id;
-  $page_reject = $base_link."cand_offerletter_reject.php?id=" . $olr_id;
+  $page_accept = $base_link . "cand_offerletter_accept.php?id=" . $olr_id;
+  $page_reject = $base_link . "cand_offerletter_reject.php?id=" . $olr_id;
   $body = 'Dear ' . $cand_name . ' ,<br>You have recieved email from ' . $entity_cand . '<br>Please go through and revert as requested<br><br><br><br><br>
     <a class="btn btn-primary" style="background-color: #000044a6;color: white;text-decoration: none;padding: 10px;" href="' . $page_accept . '" target="_blank">Accept</a>
     <a class="btn btn-primary" style="background-color: #c80e0ea6;color: white;text-decoration: none;padding: 10px;" href="' . $page_reject . '" target="_blank">Reject</a><br><br><br><br><br>Reach out to HR @ ' . $results123['email'];
@@ -122,7 +122,8 @@ if (isset($_REQUEST['olrid'])) {
   <link href="../vendors/datatables.net-scroller-bs/css/scroller.bootstrap.min.css" rel="stylesheet">
 
   <!-- Custom Theme Style -->
-  <link href="../build/css/custom.min.css" rel="stylesheet">    <link href="../build/css/input.css" rel="stylesheet">
+  <link href="../build/css/custom.min.css" rel="stylesheet">
+  <link href="../build/css/input.css" rel="stylesheet">
 
 
   <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.slim.min.js"></script>
@@ -211,7 +212,7 @@ if (isset($_REQUEST['olrid'])) {
                             <td><?php echo htmlentities($cnt); ?></td>
                             <td><?php echo htmlentities($row['cand_name']); ?></td>
                             <td><?php echo htmlentities($row['personal_mail_id']); ?></td>
-                            <td><?php echo date("jS-M-Y",strtotime(($row['joining_date']))); ?></td>
+                            <td><?php echo date("jS-M-Y", strtotime(($row['joining_date']))); ?></td>
                             <td><?php echo htmlentities(inr_format($row['ctc'])); ?></td>
                             <td><?php echo htmlentities($row['pos']); ?></td>
                             <td><?php echo htmlentities($row['job_title']); ?></td>
@@ -219,28 +220,31 @@ if (isset($_REQUEST['olrid'])) {
                             <td><?php echo htmlentities($row['replacement']); ?><br>(<?php echo htmlentities($row['datesubmitted']); ?>)</td>
 
                             <td>
-                               <?php 
-                               
-                               $file = "../offer_letters/".str_replace(' ','_',$row['entity_name'])."/OLR_SN_".$row['id'].".pdf";
-                               
-                               if(file_exists($file)){
+                              <?php
 
-                            ?>  
-                            
-                            <a style="color:black" href="../offer_letters/<?= str_replace(" ","_",$row['entity_name']); ?>/OLR_SN_<?= $row['id']; ?>.pdf" target="_blank" class="btn btn-warning"><i class="fa fa-eye" aria-hidden="true"></i> View </a>
-                          
-                          
-                          <?php } else { echo "No Attachment"; } ?>
+                              $file = "../offer_letters/" . str_replace(' ', '_', $row['entity_name']) . "/OLR_SN_" . $row['id'] . ".pdf";
+
+                              if (file_exists($file)) {
+
+                              ?>
+
+                                <a style="color:black" href="../offer_letters/<?= str_replace(" ", "_", $row['entity_name']); ?>/OLR_SN_<?= $row['id']; ?>.pdf" target="_blank" class="btn btn-warning"><i class="fa fa-eye" aria-hidden="true"></i> View </a>
 
 
+                              <?php } else {
+                                echo "No Attachment";
+                              } ?>
 
-                          
-                          </td>
+
+
+
+                            </td>
                             <td>
-                              
-                         
-                            
-                            <a href="olr_list_approved.php?olrid=<?php echo htmlentities($row['id']); ?>" class="btn btn-primary"><i class="fa fa-paper-plane-o" aria-hidden="true"></i> SEND </a></td>
+
+
+
+                              <a href="olr_list_approved.php?olrid=<?php echo htmlentities($row['id']); ?>" class="btn btn-primary"><i class="fa fa-paper-plane-o" aria-hidden="true"></i> SEND </a>
+                            </td>
 
                           </tr>
                         <?php $cnt = $cnt + 1;

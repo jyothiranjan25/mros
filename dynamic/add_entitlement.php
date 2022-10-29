@@ -1,6 +1,5 @@
 <?php
 include('../includes/dbconnection.php');
-error_reporting(0);
 $page = strtolower($_GET['page'] . "_Dep");
 
 

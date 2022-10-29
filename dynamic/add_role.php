@@ -1,15 +1,17 @@
 <?php
 include('../includes/dbconnection.php');
-error_reporting(0);
 $page = strtolower($_GET['page']);
-$role_page = strtolower($page . "_Role");
+$entity_id = $_GET['id'];
+
+
 if (isset($_POST['submit'])) {
   $val = 0;
   $name = $_POST['rolename'];
-  $selection = mysqli_query($con, "SELECT `name` FROM `$role_page` WHERE name='$name'");
+  $selection = mysqli_query($con, "SELECT `name` FROM `role` WHERE name='$name'");
   $avail = mysqli_num_rows($selection);
   if ($avail == 0) {
     $name = strtolower($_POST['rolename']);
+    $entity_id = $_POST['entity_id'];
     $authority1 = $_POST['authority1'] == 1 ? "1" : "0";
     $authority2 = $_POST['authority2'] == 1 ? "1" : "0";
     $authority3 = $_POST['authority3'] == 1 ? "1" : "0";
@@ -21,24 +23,20 @@ if (isset($_POST['submit'])) {
     $authority9 = $_POST['authority9'] == 1 ? "1" : "0";
     $authority10 = $_POST['authority10'] == 1 ? "1" : "0";
 
-    if($authority1 == 0 && $authority2 == 0 && $authority3 == 0 && $authority4 == 0 && $authority5 == 0 && $authority6 == 0 && $authority7 == 0 && $authority8 == 0 && $authority9 == 0 && $authority10 == 0){
-       echo "<script>alert('Please add atleast one access to the role.');</script>";
-    }
-   
-   else{
-    $insert = mysqli_query($con, "INSERT INTO `$role_page` (`name`,`generate_olr`,`accept_reject_olr`,`approve_olr`,`olr_sent_to_cand`,`view_olr`,`accounts`,`asset_req_manage`,`super_admin`,`new_emp`,`IT`) 
-          VALUES ('$name', '$authority1', '$authority2','$authority3','$authority4','$authority5','$authority6','$authority7','$authority8','$authority9','$authority10')");
-    if ($insert) {
-      echo "<script>alert('Role: " . $name . " Added Successfully!');</script>";
+    if ($authority1 == 0 && $authority2 == 0 && $authority3 == 0 && $authority4 == 0 && $authority5 == 0 && $authority6 == 0 && $authority7 == 0 && $authority8 == 0 && $authority9 == 0 && $authority10 == 0) {
+      echo "<script>alert('Please add atleast one access to the role.');</script>";
     } else {
-      echo "<script>alert('" . mysqli_error($con) . "');</script>";
+      $insert = mysqli_query($con, "INSERT INTO `role` (`name`,`generate_olr`,`accept_reject_olr`,`approve_olr`,`olr_sent_to_cand`,`view_olr`,`accounts`,`asset_req_manage`,`super_admin`,`new_emp`,`IT`,`entity_id`) 
+          VALUES ('$name', '$authority1', '$authority2','$authority3','$authority4','$authority5','$authority6','$authority7','$authority8','$authority9','$authority10','$entity_id')");
+      if ($insert) {
+        echo "<script>alert('Role: " . $name . " Added Successfully!');</script>";
+      } else {
+        echo "<script>alert('" . mysqli_error($con) . "');</script>";
+      }
     }
-  }
-  
   } else {
     echo "<script>alert('" . $name . " is already a role');</script>";
   }
-
 }
 
 ?>
@@ -65,7 +63,8 @@ if (isset($_POST['submit'])) {
   <link href="../vendors/google-code-prettify/bin/prettify.min.css" rel="stylesheet">
 
   <!-- Custom styling plus plugins -->
-  <link href="../build/css/custom.min.css" rel="stylesheet">    <link href="../build/css/input.css" rel="stylesheet">
+  <link href="../build/css/custom.min.css" rel="stylesheet">
+  <link href="../build/css/input.css" rel="stylesheet">
 
   <style>
     .site_title {
@@ -91,7 +90,7 @@ if (isset($_POST['submit'])) {
     <div class="">
       <div class="page-title">
         <div class="title_left">
-          <h3>Add Roles for: <span style="color:black"> <?= strtoupper(str_replace("_"," ",$page)); ?> </span> </h3>
+          <h3>Add Roles for: <span style="color:black"> <?= strtoupper(str_replace("_", " ", $page)); ?> </span> </h3>
         </div>
       </div>
       <div class="clearfix"></div>
@@ -186,13 +185,11 @@ if (isset($_POST['submit'])) {
                     <label for="authority10">IT</label><br>
                   </div>
 
+                  <div class="col-md-2 col-sm-3 ">
+                    <input type="hidden" id="entity_id" name="entity_id" value="<?php echo $entity_id ?>">
+                  </div>
+
                 </div>
-
-
-
-
-
-
                 <div class="ln_solid"></div>
                 <div class="item form-group">
                   <div class="col-md-6 col-sm-6 offset-md-4">
@@ -216,12 +213,6 @@ if (isset($_POST['submit'])) {
   <!-- /page content -->
 
   <!-- footer content -->
-  <footer>
-    <div class="pull-right">
-      Gentelella - Bootstrap Admin Template by <a href="https://colorlib.com">Colorlib</a>
-    </div>
-    <div class="clearfix"></div>
-  </footer>
   <!-- /footer content -->
   </div>
   </div>

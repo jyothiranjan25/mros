@@ -1,6 +1,6 @@
 <?php 
                   include('../includes/dbconnection.php');
-        //  session_start();
+        //  
                   if(isset($_POST['save']))
                   {
                     $olr_id=$_GET['id'];
@@ -516,5 +516,3 @@
                    
 
                   }
-
-                ?>

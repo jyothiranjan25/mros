@@ -1,9 +1,8 @@
 <?php
 include('../includes/dbconnection.php');
 require "vendor/autoload.php";
-// error_reporting(0);
-session_start();
-echo "<script>alert('TEST');</script>";
+
+// echo "<script>alert('TEST');</script>";
 
 use myPHPnotes\Microsoft\Auth;
 use myPHPnotes\Microsoft\Handlers\Session;
@@ -30,18 +29,28 @@ if ($_SESSION['email'] == "") {
 
 if ($email) {
 
-  $query_entity = "SELECT `entity_id`,`role` FROM `login` WHERE email='$email'";
-  $resultz = mysqli_query($con, $query_entity);
-  $rowz = mysqli_fetch_array($resultz);
+  $query_entity = "SELECT emp.entity_id as entity_id, r.name as role 
+  FROM `employee` emp
+  INNER JOIN `role` r
+  ON r.id=emp.role
+  WHERE email='$email'";
+  $login_result = mysqli_query($con, $query_entity);
+  $rowz = mysqli_fetch_array($login_result);
   $entity_id = $rowz['entity_id'];
   $role = $rowz['role'];
 
   if ($role) {
-    echo "<script>alert('$role ');</script>";
-    $query = "SELECT * FROM entity WHERE id='$entity_id' ";
+    // echo "<script>alert('$role ');</script>";
+    $query = "SELECT e.entity_name as entity_name, r.name as role_name , emp.entity_id
+    FROM `employee` emp
+    INNER JOIN `role` r
+    ON r.id=emp.role
+    INNER JOIN `entity` e
+    ON e.id=emp.entity_id 
+    WHERE email='$email'";
     $results = mysqli_query($con, $query);
 
-    if (mysqli_num_rows($results) > 0) {
+    if (mysqli_num_rows($results) == 1) {
       $row = mysqli_fetch_array($results);
       $_SESSION['email'] = $email;
       $_SESSION['entity'] =  str_replace(" ", "_", $row['entity_name']);
@@ -52,6 +61,10 @@ if ($email) {
       // $_SESSION['empid'] = $row['emp_id'];
       header('location: index.php');
       // echo "<script>alert('".$_SESSION['success']."');</script>";
+    } else if (mysqli_num_rows($results) > 1) {
+      $row = mysqli_fetch_array($results);
+      $_SESSION['email'] = $email;
+      header('location: user_roles.php');
     } else {
       echo "<script>alert('No role assigned for $email, Please contact SuperAdmin! ');</script>";
       //  header('location: index.php');
@@ -59,8 +72,7 @@ if ($email) {
   } else {
     echo "<script>alert('No user access for $email, Please contact SuperAdmin! ');</script>";
     //  header('location: sign.php');
-    echo "<script>
-                window.location.href='sign.php';</script>";
+    echo "<script>window.location.href='sign.php';</script>";
   }
 }
 ?>

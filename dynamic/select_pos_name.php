@@ -1,6 +1,6 @@
 <?php
 include('../includes/dbconnection.php');
-session_start(); 
+ 
 $type=$_GET['type'];
 
 $query = "SELECT * from `position` Where type='$type'";
@@ -18,6 +18,3 @@ else
 {
     echo "<option value=0>First Select Position Type </option>";
 }
-
-?>
- 
