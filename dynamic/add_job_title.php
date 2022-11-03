@@ -1,7 +1,7 @@
 <?php
 include('../includes/dbconnection.php');
 $type = $_GET['type'];
-$entity_id = $_GET['id'];
+$entity_id = $_SESSION['id'];
 
 if (isset($_POST['submit'])) {
   $number = count($_POST["name"]);
@@ -10,16 +10,12 @@ if (isset($_POST['submit'])) {
       if (trim($_POST["name"][$i] != '')) {
 
         $pos_type_name = mysqli_real_escape_string($con, $_POST["name"][$i]);
-        $sql = "INSERT INTO `position`(type,name) VALUES('$type','$pos_type_name')";
+        $sql = "INSERT INTO `position`(type,name,entity_id) VALUES('$type','$pos_type_name','$entity_id')";
         mysqli_query($con, $sql);
-
         $entity_sql = "SELECT * from `entity`";
         $entity_result = mysqli_query($con, $entity_sql);
-
         while ($row = mysqli_fetch_array($entity_result)) {
-          $entity = $row['entity_name'];
-          $table = strtolower($entity . " headcount");
-          // echo $table;
+          $table = " headcount";
           for ($j = 1; $j < 13; $j++) {
             $value = 0;
             $insert_sql = "INSERT INTO `headcount`(`position`,`month`,`hc`,`entity_id`) VALUES('$pos_type_name','$j','$value','$entity_id')";
@@ -42,17 +38,18 @@ if (isset($_REQUEST['del'])) {
   $id = $_REQUEST['poid'];
   $name = $_REQUEST['del'];
   $ptype = $_REQUEST['type'];
+  $entity = $_REQUEST['id'];
 
   $delete_query = mysqli_query($con, "DELETE FROM `position` WHERE `id`='$id'AND `type`='$ptype'AND `name`='$name' ");
   if ($delete_query) {
     echo '<script type="text/javascript">';
     echo 'alert("Job Type Deleted");';
-    echo 'window.location.href = "add_job_title.php?type=' . $type . '"';
+    echo 'window.location.href = "add_job_title.php?type=' . $type . '&id=' . $entity_id . '"';
     echo '</script>';
   } else {
     echo '<script type="text/javascript">';
     echo 'alert("Job Type can not be deleted");';
-    echo 'window.location.href = "add_job_title.php?type=' . $type . '"';
+    echo 'window.location.href = "add_job_title.php?type=' . $type . '&id=' . $entity_id . '"';
     echo '</script>';
   }
 }
@@ -141,7 +138,6 @@ if (isset($_REQUEST['del'])) {
                     </tr>
                   </table>
                   <br>
-
                   <button name="submit" type="submit" class="btn btn-secondary">Submit</button>
                   <!-- <input type="button" name="submit" id="submit" class="btn btn-secondary" value="Submit"> -->
                 </div>
@@ -171,7 +167,7 @@ if (isset($_REQUEST['del'])) {
                     <td><?php echo htmlentities($row['name']); ?></td>
                     <!-- <td><?php echo htmlentities($row['entitlement_test']); ?></td> -->
                     <td>
-                      <a href="add_job_title.php?del=<?php echo htmlentities($row['name']); ?>&type=<?php echo htmlentities($row['type']); ?>&poid=<?php echo htmlentities($row['id']); ?>" class="btn btn-danger"><i class="fa fa-trash" aria-hidden="true"></i></a>
+                      <a href="add_job_title.php?del=<?php echo htmlentities($row['name']); ?>&type=<?php echo htmlentities($row['type']); ?>&poid=<?php echo htmlentities($row['id']); ?>&id=<?php echo htmlentities($row['entity_id']); ?>" class="btn btn-danger"><i class="fa fa-trash" aria-hidden="true"></i></a>
                     </td>
                   </tr>
                 <?php

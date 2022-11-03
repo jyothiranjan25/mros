@@ -1,13 +1,13 @@
 <?php
 include('../includes/dbconnection.php');
-
+$entity_id = $_SESSION['id'];
 
 if (isset($_GET['emp_id'])) {
   $emp_id = $_GET['emp_id'];
   $s = 11;
   $sql = "UPDATE `employee_details` SET `status`='$s' WHERE `emp_id`='$emp_id'";
   mysqli_query($con, $sql);
-  echo "<script>window.location.href='hr_new_employee_list.php';</script>";
+  echo "<script>window.location.href='hr_new_employee_list.php?id='$entity_id;</script>";
 }
 ?>
 
@@ -30,17 +30,9 @@ if (isset($_GET['emp_id'])) {
   <div class="right_col" role="main">
     <div class="">
       <div class="page-title">
-
-
-
       </div>
-
       <div class="clearfix"></div>
-
       <div class="row">
-
-
-
         <div class="col-md-12 col-sm-12 ">
           <div class="x_panel">
             <div class="x_title">
@@ -48,9 +40,6 @@ if (isset($_GET['emp_id'])) {
               <ul class="nav navbar-right panel_toolbox">
                 <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
                 </li>
-
-
-
               </ul>
               <div class="clearfix"></div>
             </div>
@@ -58,7 +47,6 @@ if (isset($_GET['emp_id'])) {
               <div class="row">
                 <div class="col-sm-12">
                   <div class="card-box table-responsive">
-
                     <table id="datatable-buttons" class="table table-striped table-bordered" style="width:100%">
                       <thead>
                         <tr>
@@ -69,14 +57,9 @@ if (isset($_GET['emp_id'])) {
                           <th>Controls</th>
                         </tr>
                       </thead>
-
-
                       <tbody>
                         <?php
-
-
-
-                        $offerletter_query = mysqli_query($con, "SELECT * FROM `employee_details` WHERE `status` = 10");
+                        $offerletter_query = mysqli_query($con, "SELECT * FROM `employee_details` WHERE `status` = 10 AND entity='$entity_id'");
                         $cnt = 1;
                         while ($row = mysqli_fetch_array($offerletter_query)) {
                         ?>
@@ -95,7 +78,10 @@ if (isset($_GET['emp_id'])) {
                             <td><?php echo htmlentities(date("d-M-Y", strtotime($row['joining_date']))); ?></td>
 
 
-                            <td><a href="hr_assign_assets.php?emp_id=<?php echo htmlentities($row['emp_id']); ?>&joining_date=<?php echo htmlentities($row['joining_date']); ?>&employee_entity=<?php echo htmlentities($row['entity']); ?>" class="btn btn-success"> Assign </a>&nbsp;<a href="hr_view_asset_status.php?emp_id=<?php echo htmlentities($row['emp_id']); ?>" class="btn btn-warning"> View Status</a>&nbsp;<a href="hr_new_employee_list.php?emp_id=<?php echo htmlentities($row['emp_id']); ?>" class="btn btn-danger"> Mark as complete</a></td>
+                            <td><a href="hr_assign_assets.php?emp_id=<?php echo htmlentities($row['emp_id']); ?>&joining_date=<?php echo htmlentities($row['joining_date']); ?>&id=<?php echo htmlentities($row['entity']); ?>" class="btn btn-success"> Assign </a>&nbsp;
+                              <a href="hr_view_asset_status.php?emp_id=<?php echo htmlentities($row['emp_id']); ?>&id=<?php echo htmlentities($row['entity']); ?>" class="btn btn-warning"> View Status</a>&nbsp;
+                              <a href="hr_new_employee_list.php?emp_id=<?php echo htmlentities($row['emp_id']); ?>&id=<?php echo htmlentities($row['entity']); ?>" class="btn btn-danger"> Mark as complete</a>
+                            </td>
                           </tr>
 
                         <?php $cnt = $cnt + 1;

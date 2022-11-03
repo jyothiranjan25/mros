@@ -121,10 +121,7 @@ if (isset($_POST['submit'])) {
 
                         <tbody id="databody">
                           <?php
-
-
-
-                          $offerletter_query = mysqli_query($con, "SELECT * FROM `assets` WHERE `emp_id`= '" . $emp_id . "' ORDER BY `dept`");
+                          $offerletter_query = mysqli_query($con, "SELECT * FROM `assets` ORDER BY `dept`");
                           $cnt = 1;
                           while ($row = mysqli_fetch_array($offerletter_query)) {
                             $assigned_date = $row['assigned_date'];
@@ -137,9 +134,7 @@ if (isset($_POST['submit'])) {
                               $result = "Candidate confirmation received";
                             }
                           ?>
-
                             <tr>
-
                               <td><?php echo $cnt; ?></td>
                               <td><?php echo htmlentities($row['asset_name']); ?></td>
                               <td><?php echo htmlentities($row['dept']); ?></td>
@@ -148,15 +143,10 @@ if (isset($_POST['submit'])) {
                               <td><?php echo $assigned_date; ?></td>
                               <td><?php echo $result; ?></td>
                               <td><input type="checkbox" value="<?php echo $row['sn']; ?>" name="value[]"></td>
-
-
                             </tr>
-
                           <?php $cnt = $cnt + 1;
                           } ?>
                         </tbody>
-
-
                       </table>
                       <br>
                       <br>
@@ -168,14 +158,9 @@ if (isset($_POST['submit'])) {
             </div>
           </div>
         </div>
-
       </div>
     </div>
   </div>
-
-
-
-
   <!-- /page content -->
 
   <!-- footer content -->

@@ -1,4 +1,7 @@
 <?php
+
+use Beta\Microsoft\Graph\Model\Employee;
+
 include('../includes/dbconnection.php');
 
 if (isset($_GET['accept_id'])) {
@@ -28,7 +31,7 @@ if (isset($_GET['accept_id'])) {
   if (!$insert_employee_table) {
     echo "<script>alert('" . $olr_id . "')</script>";
   }
-  $new_emp_table = $entity . " new_emp";
+  $new_emp_table = "new_employee";
   $role_new_emp = "New Employee";
   $insert_employee_table = mysqli_query($con, "INSERT INTO `$new_emp_table` (`name`,`email`,`emp_id`,`role`) 
    VALUES ('$cand_name','$email_emp','$emp_em_id','$role_new_emp')");
@@ -76,7 +79,7 @@ if (isset($_GET['accept_id'])) {
 
 
   //  $mail->addAddress($row['personal_mail_id'], $row['cand_name']); 
-  $table = strtolower($entity . " emp");
+  $table = "employee";
   $mailing = "SELECT * FROM `$table` ";
   $sendmail = mysqli_query($con, $mailing);
   while ($row = mysqli_fetch_array($sendmail)) {
@@ -155,9 +158,6 @@ if (isset($_GET['accept_id'])) {
               <ul class="nav navbar-right panel_toolbox">
                 <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
                 </li>
-
-
-
               </ul>
               <div class="clearfix"></div>
             </div>
@@ -172,26 +172,15 @@ if (isset($_GET['accept_id'])) {
                           <th>SNo.</th>
                           <th>Offer Letter SN </th>
                           <th>Candidate Name</th>
-
                           <th>PHONE NUMBER</th>
-
-
-
-
-
                           <th>Details</th>
                           <th>Action</th>
                         </tr>
                       </thead>
-
-
                       <tbody>
                         <?php
 
                         $feedback = mysqli_query($con, "SELECT * FROM candidate_personal_info");
-
-
-
                         $cnt = 1;
                         while ($row = mysqli_fetch_array($feedback)) {
                           $oid = $row['olr_id'];
@@ -204,23 +193,8 @@ if (isset($_GET['accept_id'])) {
                               <td><?php echo htmlentities($cnt); ?></td>
                               <td><?php echo "OLR_SN_" . htmlentities($row['olr_id']); ?></td>
                               <td><?php echo htmlentities($row['name']); ?></td>
-
-
-
-
-
-
-
-
                               <td><?php echo htmlentities($row['phone_number']); ?></td>
-
-
-
-
-
-
                               <td><a href="CIF.php?id=<?php echo htmlentities($row['olr_id']); ?>" target="_blank" class="btn btn-primary"><i class="fa fa-eye" aria-hidden="true"></i> View CIF Form </a>
-
                               </td>
                               <td>
                                 <?php

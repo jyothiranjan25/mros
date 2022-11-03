@@ -1,9 +1,9 @@
 <?php
 include('../includes/dbconnection.php');
-$emp_id = $_GET['id'];
+$emp_id = $_GET['empid'];
 $page = $_GET['page'];
 // entity_id here
-$entity = $_GET['entityid'];
+$entity = $_GET['id'];
 // entity_id end
 
 // $entity_name = $_GET['entity_name'];
@@ -165,7 +165,7 @@ if (isset($_POST['submit'])) {
                     <select name="role" id="roles" title="Select a Role" class="form-control" required="">
                       <?php
 
-                      $entity_query = mysqli_query($con, "Select * from `role`");
+                      $entity_query = mysqli_query($con, "SELECT * FROM `role` WHERE entity_id=$entity_id ");
                       while ($row = mysqli_fetch_array($entity_query)) {
                       ?>
                         <option required="required" value="<?php echo  $row['name']; ?>"><?php echo $row['name']; ?></option>
@@ -187,7 +187,7 @@ if (isset($_POST['submit'])) {
 
                       <?php
 
-                      $entity_query = mysqli_query($con, "Select * from `department`");
+                      $entity_query = mysqli_query($con, "SELECT * FROM `department`WHERE entity_id=$entity_id");
                       while ($row = mysqli_fetch_array($entity_query)) {
                       ?>
                         <option required="required" value="<?php echo  $row['name']; ?>"><?php echo $row['name']; ?></option>

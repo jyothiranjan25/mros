@@ -1,19 +1,14 @@
 <?php
 include('../includes/dbconnection.php');
-
+$entity_id = $_SESSION['entity_id'];
 ?>
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
-
-
   <title>Offerletter Accept </title>
-
   <?php
   include('includes/html_header.php'); ?>
-
-
 </head>
 
 <body class="nav-md">
@@ -26,22 +21,12 @@ include('../includes/dbconnection.php');
   <!-- page content -->
   <div class="right_col" role="main">
     <!-- top tiles -->
-
     <!-- /top tiles -->
-
-
     <br />
-
-
     <form id="save-pdf" name="save-pdf" action="olr_process.php" method="post" enctype="multipart/form-data" class="form-horizontal">
-
-
       <?php
-
       $olr_id = intval($_GET['olrid']);
       $offerletter_query = mysqli_query($con, "SELECT o.*,e.entity_name,c.symbol,c.name as currency_name, c.amount as camount FROM offer_letters o LEFT JOIN entity e ON e.id=o.entity_id LEFT JOIN currency_control c ON c.id=o.currency_type WHERE o.id=$olr_id");
-
-
       $cnt = 1;
       while ($row = mysqli_fetch_array($offerletter_query)) {
 

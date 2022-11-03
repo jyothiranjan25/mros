@@ -4,6 +4,7 @@ include('../includes/dbconnection.php');
 
 $email = $_SESSION['email'];
 $entity = $_SESSION['entity'];
+$entity_id = $_SESSION['id'];
 
 if (isset($_REQUEST['del'])) {
   $delid = intval($_GET['del']);
@@ -199,10 +200,6 @@ if (isset($_REQUEST['olrid'])) {
                             <td><?php echo htmlentities($cnt); ?></td>
                             <td><?php echo htmlentities($row['cand_name']); ?></td>
                             <td><?php echo htmlentities(date("jS-M-Y", strtotime($row['joining_date']))); ?></td>
-
-
-
-
                             <td><b><?php echo htmlentities(inr_format($row['ctc'], 2)); ?></b></td>
                             <td><?php echo htmlentities($row['pos']); ?></td>
                             <td><?php echo htmlentities($row['job_title']); ?></td>
@@ -216,25 +213,21 @@ if (isset($_REQUEST['olrid'])) {
 
                             }
                             ?>
-
-
-
-                            <!-- adoEditOLR.php?olrid=<?php echo htmlentities($row['id']); ?>
- -->
+                            <!-- adoEditOLR.php?olrid=<?php echo htmlentities($row['id']); ?>-->
                             <?php
                             if ($accept_reject_olr == 1 || $approve_olr == 1) {
                             ?>
                               <td>
-                                <a href="adoEditOLR.php?olrid=<?php echo htmlentities($row['id']); ?>" class="btn btn-primary" onclick="return confirm('Do you want to Accept the Offer Letter Request? (Requested By <?php echo htmlentities($row['requested_by']); ?>)');"> ACCEPT</a>
+                                <a href="adoEditOLR.php?olrid=<?php echo htmlentities($row['id']); ?>&id=<?php echo $entity_id ?>" class="btn btn-primary" onclick="return confirm('Do you want to Accept the Offer Letter Request? (Requested By <?php echo htmlentities($row['requested_by']); ?>)');"> ACCEPT</a>
                               </td>
                               <td>
-                                <a href="adoHeadOLR_Pending.php?del=<?php echo htmlentities($row['id']); ?>" class="btn btn-danger" onclick="return confirm('Do you want to reject the Offer Letter Request? (Requested  By <?php echo htmlentities($row['requested_by']); ?>)');"> REJECT</a>
+                                <a href="adoHeadOLR_Pending.php?del=<?php echo htmlentities($row['id']); ?> &id=<?php echo $entity_id ?>" class="btn btn-danger" onclick="return confirm('Do you want to reject the Offer Letter Request? (Requested  By <?php echo htmlentities($row['requested_by']); ?>)');"> REJECT</a>
+                                <a href="viewOLRdetails.php?olrid=<?php echo htmlentities($row['id']); ?>&id=<?php echo $entity_id ?>" class="btn btn-success"> <span class="fa fa-eye"></span> View Details </a>
                               </td>
                             <?php
                             } else {
                             ?>
-                              <td><a href="viewOLRdetails.php?olrid=<?php echo htmlentities($row['id']); ?>" class="btn btn-success"> <span class="fa fa-eye"></span> View Details </a></td>
-
+                              <td><a href="viewOLRdetails.php?olrid=<?php echo htmlentities($row['id']); ?>&id=<?php echo $entity_id ?>" class="btn btn-success"> <span class="fa fa-eye"></span> View Details </a></td>
                             <?php
                             }
                             ?>

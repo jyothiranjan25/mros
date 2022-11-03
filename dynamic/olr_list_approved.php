@@ -43,27 +43,24 @@ if (isset($_REQUEST['olrid'])) {
   $personal_mail = "";
   $status = 5;
   $name = mysqli_query($con, "SELECT * FROM offer_letters where `id`='$olr_id' ");
-
   $row = mysqli_fetch_array($name);
-
   $cand_name = $row['cand_name'];
   $entity_cand = $row['entity_name'];
   $job_title = $row['job_title'];
   $personal_mail = $row['personal_mail_id'];
 
-
-  $mail->addAddress($row['personal_mail_id'], $row['cand_name']);
-  $mail->addAttachment('../Offer_Letters/' . $row['entity_name'] . '/OLR_SN_' . $row['id'] . '.pdf', 'OFFER LETTER');         // Add attachments
-  // $mail->addAttachment('/tmp/image.jpg', 'new.jpg');    // Optional name
-  $mail->isHTML(true);                                  // Set email format to HTML
-  $mail->Subject = 'Offer Letter';
-  $page_accept = $base_link . "cand_offerletter_accept.php?id=" . $olr_id;
-  $page_reject = $base_link . "cand_offerletter_reject.php?id=" . $olr_id;
-  $body = 'Dear ' . $cand_name . ' ,<br>You have recieved email from ' . $entity_cand . '<br>Please go through and revert as requested<br><br><br><br><br>
-    <a class="btn btn-primary" style="background-color: #000044a6;color: white;text-decoration: none;padding: 10px;" href="' . $page_accept . '" target="_blank">Accept</a>
-    <a class="btn btn-primary" style="background-color: #c80e0ea6;color: white;text-decoration: none;padding: 10px;" href="' . $page_reject . '" target="_blank">Reject</a><br><br><br><br><br>Reach out to HR @ ' . $results123['email'];
-  $mail->Body    = $body;
-  $mail->AltBody = 'There has been some issue . Please contact HR @ ' . $results123['email'] . " and get your offer letter approoved";
+  // $mail->addAddress($row['personal_mail_id'], $row['cand_name']);
+  // $mail->addAttachment('../Offer_Letters/' . $row['entity_name'] . '/OLR_SN_' . $row['id'] . '.pdf', 'OFFER LETTER');         // Add attachments
+  // // $mail->addAttachment('/tmp/image.jpg', 'new.jpg');    // Optional name
+  // $mail->isHTML(true);                                  // Set email format to HTML
+  // $mail->Subject = 'Offer Letter';
+  // $page_accept = $base_link . "cand_offerletter_accept.php?id=" . $olr_id;
+  // $page_reject = $base_link . "cand_offerletter_reject.php?id=" . $olr_id;
+  // $body = 'Dear ' . $cand_name . ' ,<br>You have recieved email from ' . $entity_cand . '<br>Please go through and revert as requested<br><br><br><br><br>
+  //   <a class="btn btn-primary" style="background-color: #000044a6;color: white;text-decoration: none;padding: 10px;" href="' . $page_accept . '" target="_blank">Accept</a>
+  //   <a class="btn btn-primary" style="background-color: #c80e0ea6;color: white;text-decoration: none;padding: 10px;" href="' . $page_reject . '" target="_blank">Reject</a><br><br><br><br><br>Reach out to HR @ ' . $results123['email'];
+  // $mail->Body    = $body;
+  // $mail->AltBody = 'There has been some issue . Please contact HR @ ' . $results123['email'] . " and get your offer letter approoved";
 
   if (!$mail->send()) {
     echo '<script type="text/javascript">';
@@ -86,7 +83,7 @@ if (isset($_REQUEST['olrid'])) {
 
     echo '<script type="text/javascript">';
     echo 'alert("Offer Letter sent to candidate.");';
-    echo 'window.location.href = "index.php";';
+    // echo 'window.location.href = "index.php";';
     echo '</script>';
   }
 }

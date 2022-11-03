@@ -1,6 +1,6 @@
 <?php
 include('../includes/dbconnection.php');
-
+$entity_id = $_SESSION['id'];
 
 $email = $_SESSION['email'];
 ?>
@@ -111,7 +111,7 @@ $email = $_SESSION['email'];
 
 
                             <td><?php echo htmlentities($row['datesubmitted']); ?></td>
-                            <td><a href="viewOLRdetails.php?olrid=<?php echo htmlentities($row['id']); ?>" class="btn btn-success"> <span class="fa fa-eye"></span> View Details </a></td>
+                            <td><a href="viewOLRdetails.php?olrid=<?php echo htmlentities($row['id']); ?>&id=<?php echo ($entity_id); ?>" class="btn btn-success"> <span class="fa fa-eye"></span> View Details </a></td>
 
                           </tr>
                         <?php $cnt = $cnt + 1;

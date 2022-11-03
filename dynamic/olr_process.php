@@ -6,9 +6,9 @@
 
 
     $entity = $_SESSION['entity'];
-    $table = strtolower($entity . "_headcount");
-    $entity_tran = strtolower($entity . '_transaction');
-    $notification_table = $entity . "_notification";
+    $table = "headcount";
+    $entity_tran = "transactions";
+    $notification_table = "notification";
 
     // function amount_inr_format($num)
     // {

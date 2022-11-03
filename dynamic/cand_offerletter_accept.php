@@ -45,11 +45,6 @@ $mail->addAddress($row['personal_mail_id'], $row['cand_name']);     // Add a rec
 $mail->addReplyTo($results123['email'], 'OFFER LETTER DETAILS');
 // $mail->addCC('cc@example.com');
 // $mail->addBCC('bcc@example.com');
-
-
-
-
-
 // $mail->addAttachment('AmansCV.pdf','OFFER LETTER');         // Add attachments
 // $mail->addAttachment('/tmp/image.jpg', 'new.jpg');    // Optional name
 $mail->isHTML(true);                                  // Set email format to HTML

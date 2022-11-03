@@ -1,11 +1,28 @@
 <?php
 include('../includes/dbconnection.php');
-$entity_id = $_GET['id'];
+$entity_id = $_SESSION['id'];
 $page = $_GET['page'];
+
+
+if (isset($_POST['submit'])) {
+  $name = $_POST['name'];
+  $entity_id = $_POST['entity_id'];
+
+  $inset_query = mysqli_query($con, "INSERT INTO `department` (name, entity_id)
+  VALUES ('$name', '$entity_id')");
+
+  if ($inset_query === TRUE) {
+    echo "<script>alert('" . $name . " department is added successfull');</script>";
+  } else {
+    echo "<script>alert('Fail to add department');</script>";
+  }
+}
 
 if (isset($_REQUEST['del'])) {
   $id = $_REQUEST['del'];
   $name = $_REQUEST['name'];
+  $page = $_REQUEST['entitynm'];
+  $entity_id = $_REQUEST['entityid'];
   $delete_query = mysqli_query($con, "DELETE FROM `department` WHERE `id`='$id' AND `name`='$name'");
   if ($delete_query) {
     echo '<script type="text/javascript">';
@@ -96,16 +113,31 @@ if (isset($_REQUEST['del'])) {
             </div>
             <div class="x_content">
               <br />
-              <form name="add_name" id="add_name">
-                <div class="table-responsive">
-                  <table class="table table-bordered" id="dynamic_field">
-                    <tr>
-                      <td><input type="text" name="name[]" placeholder="Enter Department Name for <?php echo $page; ?>" class="form-control name_list" /></td>
-                      <!-- <td><input type="hiddden" name="" value="<?php echo $entity_id ?>" placeholder="entity" class="form-control name_list" /></td> -->
-                      <td><button type="button" name="add" id="add" class="btn btn-success">Add More</button></td>
-                    </tr>
-                  </table>
-                  <input type="button" name="submit" id="submit" class="btn btn-info" value="Submit" />
+              <form action="" method="post" enctype="multipart/form-data" id="demo-form2" data-parsley-validate class="form-horizontal form-label-left">
+                <div class="item form-group">
+                  <label class="col-form-label col-md-3 col-sm-3 label-align" for="last-name">Department<span class="required">*</span>
+                  </label>
+                  <div class="col-md-6 col-sm-6 ">
+                    <input name="name" id="name" title="" class="form-control" required="">
+                  </div>
+                </div>
+
+                <input type="hidden" name="entity_id" id="entity_id" value="<?= $entity_id ?>">
+                <!-- <form action="" method="post" enctype="multipart/form-data" id="demo-form2" data-parsley-validate class="form-horizontal form-label-left">
+                  <div class="item form-group">
+                    <label class="col-form-label col-md-3 col-sm-3 label-align" for="last-name">entity<span class="required">*</span>
+                    </label>
+                    <div class="col-md-6 col-sm-6 ">
+                      <input name="entity_id" id="entity_id" title="" class="form-control" required="">
+                    </div>
+                  </div> -->
+
+                <div class="item form-group">
+                  <div class="col-md-6 col-sm-6 offset-md-3">
+                    <!-- <button class="btn btn-primary" type="button">Cancel</button> -->
+                    <button class="btn btn-primary" type="reset">Reset</button>
+                    <button name="submit" type="submit" class="btn btn-success">Submit</button>
+                  </div>
                 </div>
               </form>
             </div>
@@ -129,7 +161,7 @@ if (isset($_REQUEST['del'])) {
                     <td><?php echo htmlentities($cnt); ?></td>
                     <td><?php echo htmlentities($row['name']); ?></td>
                     <td>
-                      <a href="add_dep.php?del=<?php echo htmlentities($row['id']); ?>&name=<?php echo htmlentities($row['name']); ?>" class="btn btn-danger"><i class="fa fa-trash" aria-hidden="true"></i>
+                      <a href="add_dep.php?del=<?php echo htmlentities($row['id']); ?>&name=<?php echo htmlentities($row['name']); ?>&entityid=<?php echo htmlentities($entity_id); ?>&entitynm=<?php echo htmlentities($page); ?>" class="btn btn-danger"><i class="fa fa-trash" aria-hidden="true"></i>
                       </a>
                     </td>
                   </tr>

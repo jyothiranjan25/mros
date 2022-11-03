@@ -197,7 +197,7 @@ if (isset($_REQUEST['olrid'])) {
                         $offerletter_query = mysqli_query($con, "SELECT * FROM offer_letters");
                         $cnt = 1;
                         while ($row = mysqli_fetch_array($offerletter_query)) {
-                          if ($row['date_sent']) {
+                          if ($row['date_sent'] == TRUE) {
                             if ($row['status'] == 5 || $row['status'] == 6 || $row['status'] == 7) {
                               if ($row['status'] == 5) {
                                 $status = "Sent";
@@ -206,9 +206,6 @@ if (isset($_REQUEST['olrid'])) {
                               } elseif ($row['status'] == 7) {
                                 $status = "Rejected";
                               }
-
-
-
                         ?>
                               <tr>
                                 <td><?php echo htmlentities($cnt); ?></td>

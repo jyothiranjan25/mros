@@ -1,22 +1,26 @@
 <?php
 include('../includes/dbconnection.php');
-
-
 // include('sendmailnoti.php');
+
 include('includes/leftbar.php');
 include('includes/topbar.php');
+include('includes/html_footer1.php');
+include('includes/html_header.php');
+
+
+$entity_id = $_SESSION['id'];
 $e = "New Employee";
 $entity =  str_replace(" ", "_", $_SESSION['entity']);
-$table = strtolower($entity . "_headcount");
-$roletable = strtolower($entity . "_role");
-$notification_table = strtolower($entity . "_notification");
+$table = "headcount";
+$roletable = "role";
+$notification_table = "notification";
 $valid = 2;
 $budget = 0;
 $hc = 0;
 
 if (isset($_POST['submit'])) {
   $arr = array('1' => 'April', '2' => 'May', '3' => 'June', '4' => 'July', '5' => 'August', '6' => 'September', '7' => 'October', '8' => 'November', '9' => 'December', '10' => 'January', '11' => 'February', '12' => 'March',);
-  $entityname = str_replace(" ", "_", $_POST['entityname']);
+  $entityname = "IFIMentity";
   $ctc = $_POST['ctc'];
   $mctc = $ctc / 12;
   $pos = $_POST['pos'];
@@ -168,8 +172,8 @@ if (isset($_POST['submit'])) {
       }
     }
     $status = 0;
-    $query = mysqli_query($con, "INSERT INTO `offer_letters` (`id`,`cand_name`,`cand_address`,`jobtype`,`jobmonths`, `pos`, `job_title`,`personal_mail_id`, `joining_date`,`currency_type`, `ctc`, `probation`, `reporting_to`,`requested_by`,`replacement`, `expiry_date`, `work_time`, `work_days`,`entity_name`,`perks`,`status`,`olr_filled_date`)
-                     VALUES ('$sn','$cand_name','$cand_address','$jobtype','$jobmonths', '$pos', '$job_title','$mail_id', '$joining_date','$cur_name','$ctc', '$probation', '$report_to','$requested_by','$replacement', '$expire_date', '$work_hour', '$work_days','$entityname','$perks','$status','$submit_date')");
+    $query = mysqli_query($con, "INSERT INTO `offer_letters` (`id`,`cand_name`,`cand_address`,`jobtype`,`jobmonths`, `pos`, `job_title`,`personal_mail_id`, `joining_date`,`currency_type`, `ctc`, `probation`, `reporting_to`,`requested_by`,`replacement`, `expiry_date`, `work_time`, `work_days`,`entity_id`,`perks`,`status`,`olr_filled_date`)
+                     VALUES ('$sn','$cand_name','$cand_address','$jobtype','$jobmonths', '$pos', '$job_title','$mail_id', '$joining_date','$cur_name','$ctc', '$probation', '$report_to','$requested_by','$replacement', '$expire_date', '$work_hour', '$work_days','$entity_id','$perks','$status','$submit_date')");
     if (!$query) {
       echo "<script>alert('Offer Letter Request Failed!');</script>";
 
@@ -181,52 +185,52 @@ if (isset($_POST['submit'])) {
     //               $message="<h3>Offer Letter Details</h3><br><p>GREETINGS.</p><br><p>It is to inform you that a new offer letter has been requested by ".$requested_by."</p><p>No response recieved from ".$report_to."</p>";
 
 
-    // $noti_query=mysqli_query($con,"INSERT INTO `$notification_table` (`from_mail`, `subject`, `title`, `message`, `timestamp`) VALUES ('$requested_by', '$subject', '$title', '$message', CURRENT_TIMESTAMP)");
+    // $noti_query=mysqli_query($con,"INSERT INTO `$notification_table` (`from_mail`, `subject`, `title`, `message`, `timestamp`, `entity_id`) VALUES ('$requested_by', '$subject', '$title', '$message', CURRENT_TIMESTAMP)");
 
 
     if ($query) {
-      if ($status == 0) {
+      // if ($status == 0) {
 
 
-        echo "<script>alert('Offer Letter Details has been submitted Successfully :)');</script>";
-        $mailto = "mailto:" . $requested_by;
-        $message = "<p>GREETINGS,</p><p>This is to inform you that a new offer letter has been Requested by " . $username . " ( <a href='" . $mailto . "'>" . $requested_by . "</a> ) </p><p><b><u> Offer Letter Details are :</u></b></p><p><b>Cadidate Name :</b> " . $cand_name . "</p><p><b>Email Id : </b>" . $mail_id . " </p><p><b>Job Type : </b>" . $jobtype . "," . $jobmonths . "</p><p><b>Joining Date: </b>" . $joining_date . "</p><p><b>Position: </b>" . $pos . "</p><p><b>Job Title: </b>" . $job_title . "</p> <p>Candidate will be reporting to " . $report_to . "</p>";
+      echo "<script>alert('Offer Letter Details has been submitted Successfully :)');</script>";
+      // $mailto = "mailto:" . $requested_by;
+      // $message = "<p>GREETINGS,</p><p>This is to inform you that a new offer letter has been Requested by " . $username . " ( <a href='" . $mailto . "'>" . $requested_by . "</a> ) </p><p><b><u> Offer Letter Details are :</u></b></p><p><b>Cadidate Name :</b> " . $cand_name . "</p><p><b>Email Id : </b>" . $mail_id . " </p><p><b>Job Type : </b>" . $jobtype . "," . $jobmonths . "</p><p><b>Joining Date: </b>" . $joining_date . "</p><p><b>Position: </b>" . $pos . "</p><p><b>Job Title: </b>" . $job_title . "</p> <p>Candidate will be reporting to " . $report_to . "</p>";
 
-        $mail->Subject = "Offer Letter Requested by " . $username;
+      // // $mail->Subject = "Offer Letter Requested by " . $username;
 
-        $mail->Body = $message;
-        $mail->AltBody = 'This is to inform you that a new offer letter has been Requested by ' . $username;
-        if (!$mail->send()) {
-          echo '<script type="text/javascript">';
-          echo 'alert("Notification not sent.");';
-          echo '</script>';
-        } else {
-          echo '<script type="text/javascript">';
-          echo 'alert("Notification sent.");';
-          echo 'window.location.href = "index.php";';
-          echo '</script>';
-        }
-      } else if ($status == 3) {
-        echo "<script>alert('Offer Letter Details has been submitted with Budget Unavailability');</script>";
+      // $mail->Body = $message;
+      // $mail->AltBody = 'This is to inform you that a new offer letter has been Requested by ' . $username;
+      // if (!$mail->send()) {
+      // echo '<script type="text/javascript">';
+      // echo 'alert("Notification not sent.");';
+      // echo '</script>';
+      // } else {
+      // echo '<script type="text/javascript">';
+      // echo 'alert("Notification sent.");';
+      // echo 'window.location.href = "index.php";';
+      // echo '</script>';
+      // }
+      // } else if ($status == 3) {
+      // echo "<script>alert('Offer Letter Details has been submitted with Budget Unavailability');</script>";
 
 
-        $message = "<p>GREETINGS.</p><p>This is to inform you that a new offer letter has been Requested by " . $requested_by . "<b> (Issue : Budget Unavailability) </b></p> <p>offer letter submitted to " . $report_to . "</p><p><b><u> Offer Letter Details are:</u></b></p><p><b>Cadidate Name :</b> " . $cand_name . "</p><p><b>Email Id :</b>" . $mail_id . " </p><p><b>Job Type : </b>" . $jobtype . "," . $jobmonths . "</p><p><b>Joining Date: </b>" . $joining_date . "</p><p><b>Position: </b>" . $pos . "</p><p><b>Job Title: </b>" . $job_title . "</p>";
+      // $message = "<p>GREETINGS.</p><p>This is to inform you that a new offer letter has been Requested by " . $requested_by . "<b> (Issue : Budget Unavailability) </b></p> <p>offer letter submitted to " . $report_to . "</p><p><b><u> Offer Letter Details are:</u></b></p><p><b>Cadidate Name :</b> " . $cand_name . "</p><p><b>Email Id :</b>" . $mail_id . " </p><p><b>Job Type : </b>" . $jobtype . "," . $jobmonths . "</p><p><b>Joining Date: </b>" . $joining_date . "</p><p><b>Position: </b>" . $pos . "</p><p><b>Job Title: </b>" . $job_title . "</p>";
 
-        $mail->Subject = "Offer Letter Requested by " . $username;
+      // $mail->Subject = "Offer Letter Requested by " . $username;
 
-        $mail->Body = $message;
-        $mail->AltBody = 'This is to inform you that a new offer letter has been Requested by ' . $username;
-        if (!$mail->send()) {
-          echo '<script type="text/javascript">';
-          echo 'alert("Notification not sent.");';
-          echo '</script>';
-        } else {
-          echo '<script type="text/javascript">';
-          echo 'alert("Notification sent.");';
-          echo 'window.location.href = "index.php";';
-          echo '</script>';
-        }
-      }
+      // $mail->Body = $message;
+      // $mail->AltBody = 'This is to inform you that a new offer letter has been Requested by ' . $username;
+      // if (!$mail->send()) {
+      // echo '<script type="text/javascript">';
+      // echo 'alert("Notification not sent.");';
+      // echo '</script>';
+      // } else {
+      // echo '<script type="text/javascript">';
+      // echo 'alert("Notification sent.");';
+      // // echo 'window.location.href = "OLR.php";';
+      //     // echo '</script>';
+      //   }
+      // }
     } else {
       echo "<script>alert('Something gone Wrong.');</script>";
     }
@@ -248,20 +252,6 @@ if (isset($_POST['submit'])) {
 
   <title>MROS | </title>
 
-  <!-- Bootstrap -->
-  <link href="../vendors/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
-  <!-- Font Awesome -->
-  <link href="../vendors/font-awesome/css/font-awesome.min.css" rel="stylesheet">
-  <!-- NProgress -->
-  <link href="../vendors/nprogress/nprogress.css" rel="stylesheet">
-  <!-- bootstrap-wysiwyg -->
-  <link href="../vendors/google-code-prettify/bin/prettify.min.css" rel="stylesheet">
-
-  <!-- Custom styling plus plugins -->
-  <link href="../build/css/custom.min.css" rel="stylesheet">
-  <link href="../build/css/input.css" rel="stylesheet">
-
-  <link href="../build/css/rahul.css" rel="stylesheet">
   <style>
     .site_title {
       overflow: inherit;
@@ -324,7 +314,7 @@ if (isset($_POST['submit'])) {
   <script>
     function select_pos_name(str) {
       var req = new XMLHttpRequest();
-      req.open("get", "select_pos_name.php?type=" + str, true);
+      req.open("get", "select_pos_name.php?name=" + str, true);
       req.send();
       req.onreadystatechange = function() {
         if (req.readyState == 4 && req.status == 200) {
@@ -337,20 +327,11 @@ if (isset($_POST['submit'])) {
 </head>
 
 <body class="nav-md">
-
-
-
-
-
   <!-- page content -->
   <div class="right_col" role="main">
     <!-- top tiles -->
-
     <!-- /top tiles -->
-
-
     <br />
-
     <form action="" method="post" enctype="multipart/form-data" class="form-horizontal">
       <div class="x_content">
         <center>
@@ -370,7 +351,6 @@ if (isset($_POST['submit'])) {
                                                 }
                                                 $id = $id + 1;
                                                 echo "OLR_SN_" . $id;
-
                                                 ?>" disabled="true" id="sn" required="required" class="form-control">
           </div>
 
@@ -426,20 +406,14 @@ if (isset($_POST['submit'])) {
             <label for="number"><b>Position:</b><span class="required">*</span></label>
           </div>
           <div class="col-md-2 col-sm-6 ">
-
-
-
             <select name="pos" id="pos" title="Select a Position" class="form-control" required="" onchange="select_pos_name(this.value);">
               <option value=0>Select Position</option>
               <?php
-
-              $entity_query = mysqli_query($con, "Select Distinct `type` from `position`");
+              $entity_query = mysqli_query($con, "SELECT * FROM `position_type`");
               while ($row = mysqli_fetch_array($entity_query)) {
-
               ?>
-                <option required="required" value="<?php echo  $row['type']; ?>"><?php echo $row['type']; ?></option>
+                <option required="required" value="<?php echo  $row['name']; ?>"><?php echo $row['name']; ?></option>
               <?php
-
               }
               ?>
             </select>
@@ -470,17 +444,13 @@ if (isset($_POST['submit'])) {
             <select name="" title="Select Department" class="form-control" required="" onchange="selectdep(this.value);">
               <option value="0">Select Department</option>
               <?php
-              $dep_table = strtolower($_SESSION['entity'] . "_Dep");
-              $dep_query = mysqli_query($con, "SELECT * from `$dep_table`");
-
+              $dep_table = "department";
+              $dep_query = mysqli_query($con, "SELECT * FROM `$dep_table` WHERE entity_id='$entity_id'");
               while ($row = mysqli_fetch_array($dep_query)) {
-
               ?>
                 <option required="required" value="<?php echo  $row['name']; ?>"><?php echo $row['name']; ?></option>
               <?php
-
               }
-
               ?>
             </select>
           </div>
@@ -625,35 +595,25 @@ if (isset($_POST['submit'])) {
             </label>
           </div>
           <div class="col-form-label col-md-2 col-sm-3 label-align">
-            <select name="entityname" title="Select an Entity" class="form-control" required="">
+            <select name="entity_name" title="Select an Entity" class="form-control" required="">
               <?php
               if ($super_admin == 0) {
-
               ?>
                 <option required="required" value="<?php echo $_SESSION['entity']; ?>"><?php echo $_SESSION['entity']; ?></option>
               <?php
-
               } else {
-
               ?>
-
                 <?php
-
                 $entity_query = mysqli_query($con, "Select * from entity");
                 while ($row = mysqli_fetch_array($entity_query)) {
-
                 ?>
-                  <option required="required" value="<?php echo  $row['entity_name']; ?>"><?php echo $row['entity_name']; ?></option>
+                  <option required="required" value="<?php echo  $row['id']; ?>"><?php echo $row['name']; ?></option>
               <?php
-
                 }
               }
               ?>
-
-
             </select>
           </div>
-
         </div>
         <br>
 
@@ -664,41 +624,22 @@ if (isset($_POST['submit'])) {
             <label for="perks"><b>Other Perks :</b>
             </label>
           </div>
-
-
           <div class="col-md-6 col-sm-6  ">
             <textarea name="perks" id="perks" class="form-control"></textarea>
             <br>
             <br>
             <br>
           </div>
-
-
-
           <div class="col-md-2 offset-md-5">
-            <button type="submit" name="submit" type="button" class="btn btn-info btn-lg" style="padding: 16px;
-                        width: 194px;border-radius: 10px;background-color: #3f51b5;">SUBMIT</button>
+            <button type="submit" name="submit" type="button" class="btn btn-info btn" style="padding: 16px; width: 194px;border-radius: 10px;background-color: #3f51b5;">SUBMIT</button>
           </div>
-
-
-
         </div>
     </form>
   </div>
   </div>
-
-  <br>
-  <br>
-  <br>
-  <br>
-  <br>
-
   </div>
-
   </div>
   <!-- /page content -->
-
-
   </div>
   </div>
   <script type="text/javascript">
@@ -708,19 +649,12 @@ if (isset($_POST['submit'])) {
       y = y * 1;
       i = y / 12;
       j = i / 30;
-
-
-
       z = (y).toLocaleString('en-IN');
-
       document.getElementById("commactc").innerHTML = "&#8377;" + z + " / Annum";
-
       i = (i).toLocaleString('en-IN');
       j = (j).toLocaleString('en-IN');
-
       document.getElementById("monthctc").innerHTML = "&#8377;" + i + " / Month";
       document.getElementById("dctc").innerHTML = "&#8377;" + j + " / day";
-
     }
   </script>
   <script type="text/javascript">
@@ -751,22 +685,6 @@ if (isset($_POST['submit'])) {
       }
     }
   </script>
-  <!-- jQuery -->
-  <!-- jQuery -->
-  <script src="../vendors/jquery/dist/jquery.min.js"></script>
-  <!-- Bootstrap -->
-  <script src="../vendors/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-  <!-- FastClick -->
-  <script src="../vendors/fastclick/lib/fastclick.js"></script>
-  <!-- NProgress -->
-  <script src="../vendors/nprogress/nprogress.js"></script>
-  <!-- bootstrap-wysiwyg -->
-  <script src="../vendors/bootstrap-wysiwyg/js/bootstrap-wysiwyg.min.js"></script>
-  <script src="../vendors/jquery.hotkeys/jquery.hotkeys.js"></script>
-  <script src="../vendors/google-code-prettify/src/prettify.js"></script>
-
-  <!-- Custom Theme Scripts -->
-  <script src="../build/js/custom.min.js"></script>
 </body>
 
 </html>

@@ -1,7 +1,7 @@
 <?php
 include('../includes/dbconnection.php');
 $page = $_GET['page'];
-$entity_id = $_GET['id'];
+$entity_id = $_SESSION['id'];
 
 // $dep_page = strtolower($page . "_Dep");
 // $role_page = strtolower($page . "_Role");
@@ -183,15 +183,11 @@ if (isset($_POST['submit'])) {
                     <select name="role" id="roles" title="Select a Role" class="form-control" required="">
                       <?php
 
-                      $entity_query = mysqli_query($con, "SELECT * FROM `role`");
+                      $entity_query = mysqli_query($con, "SELECT * FROM `role`WHERE entity_id='$entity_id'");
                       while ($row = mysqli_fetch_array($entity_query)) {
-                        if ($row['new_emp'] != 1) {
-
-
                       ?>
-                          <option required="required" value="<?php echo  $row['id']; ?>"><?php echo $row['name']; ?></option>
+                        <option required="required" value="<?php echo  $row['id']; ?>"><?php echo $row['name']; ?></option>
                       <?php
-                        }
                       }
                       ?>
                     </select>

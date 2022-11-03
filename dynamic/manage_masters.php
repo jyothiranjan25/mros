@@ -1,7 +1,7 @@
 <?php
 include('../includes/dbconnection.php');
 $page = $_GET['page'];
-$entity_id = $_GET['id'];
+$entity_id = $_SESSION['id'];
 $email = $_SESSION['email'];
 
 
@@ -128,7 +128,7 @@ if (isset($_REQUEST['del'])) {
                             <td><?php echo htmlentities($row['role']); ?></td>
                             <td><?php echo htmlentities($row['dep']); ?></td>
                             <td>
-                              <a href="edit_masters.php?id=<?php echo htmlentities($row['emp_id']); ?>&page=<?php echo htmlentities($page); ?>&entityid=<?php echo $entity_id ?>" class="btn btn-primary">Add Role</a>
+                              <a href="edit_masters.php?empid=<?php echo htmlentities($row['emp_id']); ?>&page=<?php echo htmlentities($page); ?>&id=<?php echo $entity_id ?>" class="btn btn-primary">Add Role</a>
                               <a href="manage_masters.php?del=<?php echo htmlentities($row['id']); ?>&entity=<?php echo htmlentities($page); ?>&role=<?php echo htmlentities($row['role']); ?>&entityid=<?php echo $entity_id ?>" class="btn btn-danger"><i class="fa fa-trash" aria-hidden="true"></i>
                               </a>
                             </td>

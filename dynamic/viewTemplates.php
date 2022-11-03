@@ -1,6 +1,6 @@
 <?php
 include('../includes/dbconnection.php');
-$entity_id = $_GET['id'];
+$entity_id = $_SESSION['id'];
 
 // if (!$_SESSION['id']) {
 //   echo "<script> window.location.href='login.php';</script>";

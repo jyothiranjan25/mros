@@ -2,7 +2,7 @@
 include('../includes/dbconnection.php');
 $get_role_name = $_GET['name'];
 $page = $_GET['page'];
-$entity_id = $_GET['id'];
+$entity_id = $_SESSION['id'];
 
 
 

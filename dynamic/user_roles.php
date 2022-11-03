@@ -1,5 +1,7 @@
 <?php
 include('../includes/dbconnection.php');
+$entity_id = $_GET['entity_id'];
+
 if (isset($_GET['logout'])) {
     session_destroy();
     unset($_SESSION['mailid']);
@@ -12,7 +14,8 @@ if (isset($_GET['role'])) {
     $_SESSION['entity_name'] = $_GET['entity_name'];
     $_SESSION['role'] = $_GET['role'];
     $_SESSION['entity_id'] = $_GET['entity_id'];
-    header("location: index.php");
+    // $entity_id =  $_SESSION['entity_id'];
+    header("location: index.php?id=$entity_id");
 }
 
 // $_SESSION['email'] = $email;

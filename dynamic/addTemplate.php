@@ -1,14 +1,14 @@
 <?php
 
 include('../includes/dbconnection.php');
-
+$entity_id = $_SESSION['id'];
 
 
 
 $template_name = mysqli_real_escape_string($con, $_POST['template_name']);
 if ($template_name) {
   $entity = $_POST['entity'];
-  $table = strtolower(str_replace(" ", "_", $entity) . "_Templates");
+  $table = "templates";
   $data = mysqli_query($con, "SELECT html from $table WHERE template_name='$template_name';");
   $row = mysqli_fetch_array($data);
   $num_rows = mysqli_num_rows($data);
@@ -16,48 +16,40 @@ if ($template_name) {
     $html = $row['html'];
   }
 }
-
-
-
-
-
-
-
 if (isset($_POST['submit'])) {
-
   $entity_name = str_replace(" ", "_", $_POST['entity']);
   $template_name = ($_POST['template_name']);
-
   $html = $_POST['html'];
+  $table_name = "templates";
+  // $flag = mysqli_query($con, "SHOW TABLES LIKE `$table_name`");
+  // $num_tables = mysqli_num_rows($flag);
 
-  $table_name = strtolower($entity_name . "_Templates");
-  $flag = mysqli_query($con, "SHOW TABLES LIKE `$table_name`");
-  $num_tables = mysqli_num_rows($flag);
+  // if (!($num_tables > 0)) 
+  // {
+  //   echo $num_tables;
+  //   $create_template_table = mysqli_query($con, "CREATE TABLE `$table_name` ( `id` INT(20) NOT NULL AUTO_INCREMENT , `template_name` VARCHAR(100) NOT NULL ,`html` TEXT NOT NULL , PRIMARY KEY (`id`) , UNIQUE(`template_name`)) ENGINE = InnoDB;");
+  //   if (!$create_template_table) {
+  //     echo mysqli_error($con);
+  //   }
 
-  if (!($num_tables > 0)) {
-    echo $num_tables;
-    $create_template_table = mysqli_query($con, "CREATE TABLE `$table_name` ( `id` INT(20) NOT NULL AUTO_INCREMENT , `template_name` VARCHAR(100) NOT NULL ,`html` TEXT NOT NULL , PRIMARY KEY (`id`) , UNIQUE(`template_name`)) ENGINE = InnoDB;");
-    if (!$create_template_table) {
-      echo mysqli_error($con);
-    }
-
-    $insert = mysqli_query($con, "INSERT INTO `$table_name` (`template_name`,`html`) 
+  $insert = mysqli_query($con, "INSERT INTO `$table_name` (`template_name`,`html`) 
          VALUES ('$template_name','$html')");
-    if (!$insert) {
-      echo mysqli_error($con);
-    } else {
-      echo "<script>alert('Template: " . $template_name . " created');</script>";
-    }
+  if (!$insert) {
+    echo mysqli_error($con);
   } else {
-    $insert = mysqli_query($con, "INSERT INTO `$table_name` (`template_name`,`html`) 
-         VALUES ('$template_name','$html')");
-    if (!$insert) {
-      echo mysqli_error($con);
-    } else {
-      echo "<script>alert('Template: " . $template_name . " created');</script>";
-    }
+    echo "<script>alert('Template: " . $template_name . " created');</script>";
   }
 }
+// else {
+//   $insert = mysqli_query($con, "INSERT INTO `$table_name` (`template_name`,`html`) 
+//          VALUES ('$template_name','$html')");
+//   if (!$insert) {
+//     echo mysqli_error($con);
+//   } else {
+//     echo "<script>alert('Template: " . $template_name . " created');</script>";
+//   }
+// }
+// }
 
 
 if (isset($_POST['update'])) {
@@ -67,7 +59,6 @@ if (isset($_POST['update'])) {
   $template_name = ($_POST['template_name']);
   $html = $_POST['html'];
 
-
   $upd = mysqli_query($con, "UPDATE  `$table_name` SET html='$html' WHERE `template_name` ='$template_name'");
   if (!$upd) {
     echo mysqli_error($con);
@@ -75,7 +66,6 @@ if (isset($_POST['update'])) {
     echo "<script>alert('Template: " . $template_name . " Updated Successfully!');</script>";
   }
 }
-
 ?>
 
 <!DOCTYPE html>
@@ -148,7 +138,7 @@ if (isset($_POST['update'])) {
     function selecttype(str) {
 
       var req = new XMLHttpRequest();
-      req.open("get", "template_name.php?entity=" + str, true);
+      req.open("get", "template_name.php?id=" + str, true);
       req.send();
       req.onreadystatechange = function() {
         if (req.readyState == 4 && req.status == 200) {
@@ -192,28 +182,22 @@ if (isset($_POST['update'])) {
             <div class="x_content">
               <br>
               <form name="email" id="email" data-parsley-validate class="form-horizontal form-label-left" method="POST">
-
                 <div class="item form-group">
-                  <label class=" col-md-3 col-sm-3 " class="form-control" for="entity_name">Select the entity for which the new template is being generated:<span class="required">*</span>
+                  <label class=" col-md-3 col-sm-3 " class="form-control" for="entity_name">Select Entity :<span class="required">*</span>
                   </label>
                   <div class="col-md-4 col-sm-4 " style="margin-top: 6px;">
                     <select class="form-control" name="entity" id="entity" onchange="selecttype(this.value)" required>
                       <option value="">Select Entity</option>
-
-
                       <?php
-
-                      $entity_query = mysqli_query($con, "SELECT * from `entity`");
+                      $entity_query = mysqli_query($con, "SELECT * FROM `entity` WHERE id=$entity_id");
                       while ($row = mysqli_fetch_array($entity_query)) {
-
                         if ($entity == $row['entity_name']) {
-
                           $selected = "selected";
                         } else {
                           $selected = "";
                         }
                       ?>
-                        <option <?= $selected ?> required="required" value="<?php echo  $row['entity_name']; ?>"><?php echo $row['name']; ?></option>
+                        <option <?= $selected ?> required="required" value="<?php echo  $row['id']; ?>"><?php echo $row['name']; ?></option>
                       <?php
                       }
                       ?>
@@ -231,18 +215,14 @@ if (isset($_POST['update'])) {
                   <div class="col-md-4 col-sm-4 " style="margin-top: 6px;">
                     <input required name="template_name" onblur="myFunction('email')" onfocus="this.value=''" list="school" type="text" class="form-control" value="<?php echo $template_name ?>" placeholder="offer letter template name" autocomplete="off">
                     <datalist id="school">
-                      <?php
-                      $sel_test = mysqli_query($atr, "SELECT name FROM offer_letters");
-                      if (mysqli_num_rows($sel_test)) {
-                        while ($row = mysqli_fetch_array($sel_test)) {
-                          echo "<option value='" . $row['name'] . "'></option>";
-                        }
-                      }
-                      ?>
+
                     </datalist>
                   </div>
                 </div>
               </form>
+
+
+
               <form action="" method="post" enctype="multipart/form-data" id="demo-form2" data-parsley-validate class="form-horizontal form-label-left">
 
 
@@ -337,23 +317,6 @@ if (isset($_POST['update'])) {
       document.getElementById(x).submit();
     }
   </script>
-
-
-  <!-- jQuery -->
-  <script src="../vendors/jquery/dist/jquery.min.js"></script>
-  <!-- Bootstrap -->
-  <script src="../vendors/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-  <!-- FastClick -->
-  <script src="../vendors/fastclick/lib/fastclick.js"></script>
-  <!-- NProgress -->
-  <script src="../vendors/nprogress/nprogress.js"></script>
-  <!-- bootstrap-wysiwyg -->
-  <script src="../vendors/bootstrap-wysiwyg/js/bootstrap-wysiwyg.min.js"></script>
-  <script src="../vendors/jquery.hotkeys/jquery.hotkeys.js"></script>
-  <script src="../vendors/google-code-prettify/src/prettify.js"></script>
-
-  <!-- Custom Theme Scripts -->
-  <script src="../build/js/custom.min.js"></script>
 
 </body>
 

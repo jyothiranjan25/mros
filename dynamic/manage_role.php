@@ -1,11 +1,11 @@
 <?php
 include('../includes/dbconnection.php');
 $page = str_replace(" ", "_", $_GET['page']);
-$table = strtolower($page . "_role");
+$table = "role";
 $total_roles = "";
 $email = $_SESSION['email'];
 
-$entity_id = $_GET['id'];
+$entity_id = $_SESSION['id'];
 
 ?>
 <!DOCTYPE html>

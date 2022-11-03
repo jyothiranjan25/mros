@@ -1,7 +1,7 @@
 <?php
 include('../includes/dbconnection.php');
 $page = strtolower($_GET['page']);
-$entity_id = $_GET['id'];
+$entity_id = $_SESSION['id'];
 
 
 if (isset($_POST['submit'])) {

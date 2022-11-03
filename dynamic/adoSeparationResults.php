@@ -30,10 +30,10 @@ if (isset($_REQUEST['con'])) {
   }
 
 
-  $table = strtolower($entity . "_headcount");
+  $table = "headcount";
 
 
-  $entity_tran = strtolower($entity . '_transaction');
+  $entity_tran = "transactions";
 
   $budget_q = mysqli_query($con, "SELECT * from separation WHERE empid='$emp_id'");
   while ($rows = mysqli_fetch_array($budget_q)) {
@@ -49,7 +49,7 @@ if (isset($_REQUEST['con'])) {
     }
 
     if ($jobtype == "parttime") {
-      $jobmons = $monthy + $jobmonths;
+      $jobmons = ($monthy) + ($jobmonths);
     }
 
     if ($jobtype == "fulltime") {
@@ -114,17 +114,17 @@ if (isset($_REQUEST['con'])) {
   $mail = new PHPMailer;
 
   //$mail->SMTPDebug = 3;   
-  $xyz = $results123['email'];                            // Enable verbose debug output
+  // $xyz = $results123['email'];                            // Enable verbose debug output
 
-  $mail->isSMTP();                                      // Set mailer to use SMTP
-  $mail->Host = 'smtp.live.com';  // Specify main and backup SMTP servers
-  $mail->SMTPAuth = true;                               // Enable SMTP authentication
-  $mail->Username = $results123['email'];                 // SMTP username
-  $mail->Password = $results123['password'];                           // SMTP password
-  $mail->SMTPSecure = 'tls';                            // Enable TLS encryption, `ssl` also accepted
-  $mail->Port = 587;                                    // TCP port to connect to
+  // $mail->isSMTP();                                      // Set mailer to use SMTP
+  // $mail->Host = 'smtp.live.com';  // Specify main and backup SMTP servers
+  // $mail->SMTPAuth = true;                               // Enable SMTP authentication
+  // $mail->Username = $results123['email'];                 // SMTP username
+  // $mail->Password = $results123['password'];                           // SMTP password
+  // $mail->SMTPSecure = 'tls';                            // Enable TLS encryption, `ssl` also accepted
+  // $mail->Port = 587;                                    // TCP port to connect to
 
-  $mail->setFrom($results123['email'], 'IFIM HR');
+  // $mail->setFrom($results123['email'], 'IFIM HR');
   // Add a recipient
   // $mail->addAddress('ellen@example.com');               // Name is optional
 
@@ -132,7 +132,7 @@ if (isset($_REQUEST['con'])) {
   // $mail->addBCC('bcc@example.com');
 
 
-  $name = mysqli_query($con, "SELECT ed.*,e.entity_name FROM employee_details ed LEFT JOIN entity e ON e.id = ed.event WHERE `emp_id`='$emp_id' ");
+  $name = mysqli_query($con, "SELECT ed.*,e.entity_name FROM employee_details ed LEFT JOIN entity e ON e.id = ed.entity WHERE `emp_id`='$emp_id' ");
 
   $row = mysqli_fetch_array($name);
 
@@ -142,9 +142,9 @@ if (isset($_REQUEST['con'])) {
 
 
 
-  $table = strtolower($entity . "_emp");
+  $table = "employee";
   //  echo $table;
-  $mailing = "SELECT * FROM `$table` WHERE `role` = 'HR'";
+  $mailing = "SELECT * FROM `$table` WHERE `role` = '6'";
   $sendmail = mysqli_query($con, $mailing);
   $num_send_mail = mysqli_num_rows($sendmail);
   while ($row = mysqli_fetch_array($sendmail)) {
@@ -389,14 +389,14 @@ if (isset($_REQUEST['del'])) {
                                 <td><?php
                                     echo "<a class='btn btn-primary' onclick='return confirm('Are you sure you want to Confirm this?')' href='adoSeparationResults.php?con=" . $row['empid'] . "&status=" . $rows['status'] . " '>Confirm</a>"; ?>
 
-                                  <a href="adoSeparationResults.php?del=<?php echo htmlentities($row['empid']); ?>" class="btn btn-danger" onclick="return confirm('Do you want to Reject the Separation Request? (Requested  By <?php echo htmlentities($row['requestedby']); ?>)');">Reject</a>
+                                  <a href="adoSeparationResults.php?del=<?php echo htmlentities($row['empid']); ?>&id=<?php echo htmlentities($row['entity']); ?>" class="btn btn-danger" onclick="return confirm('Do you want to Reject the Separation Request? (Requested  By <?php echo htmlentities($row['requestedby']); ?>)');">Reject</a>
 
 
 
 
                                 </td>
                               <?php } else { ?>
-                                <td><a href="#" class="btn btn-success"> Confirmed </a></td><?php }
+                                <td><a href="" class="btn btn-success"> Confirmed </a></td><?php }
                                                                                         }  ?>
                           </tr>
                         <?php $cnt = $cnt + 1;

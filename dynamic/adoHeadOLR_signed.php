@@ -4,6 +4,7 @@ include('../includes/dbconnection.php');
 // include('sendmailnoti.php');
 
 $entity = $_SESSION['entity'];
+$entity_id = $_SESSION['entity_id'];
 
 $notification_table = $entity . "_notification";
 
@@ -54,7 +55,7 @@ if (isset($_POST['submit'])) {
     //         echo '</script>';
     //     }
 
-    echo "<script>alert('Offer Letter saved successfully.');window.location.href='adoHeadOLR_Accepted.php';</script>";
+    echo "<script>alert('Offer Letter saved successfully.');window.location.href='adoHeadOLR_Accepted.php?id=$enity_id.';</script>";
 
     echo "</br>";
   } else {

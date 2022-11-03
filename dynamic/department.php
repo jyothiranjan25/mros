@@ -1,6 +1,6 @@
 <?php
 include('../includes/dbconnection.php');
- 
+
 $dep=$_GET['dep'];
 $entity=$_SESSION['entity'];
  $rolename="";
